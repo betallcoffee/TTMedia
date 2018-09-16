@@ -13,7 +13,7 @@
 #include <map>
 #include <vector>
 
-#include "TTBuffer.hpp"
+#include "TTByteBuffer.hpp"
 #include "TTURL.hpp"
 #include "TTTCPSocket.hpp"
 
@@ -24,11 +24,12 @@ namespace TT {
         ~HTTPClient();
         
         typedef std::map<std::string, std::string> HeaderMap;
-        typedef std::function<void(Buffer &data)> DataRecivedCallback;
+        typedef std::function<void(ByteBuffer &data)> DataRecivedCallback;
         typedef std::function<void()> ErrorCallback;
         void Get(std::shared_ptr<URL> url, const HeaderMap &headers, DataRecivedCallback dataCallback, ErrorCallback errorCallback);
+        void cancel();
         
-        int GetStatusCode() { return _statusCode; }
+        int statusCode() { return _statusCode; }
         
     private:
         void skipToNext();
@@ -38,8 +39,12 @@ namespace TT {
         
         std::shared_ptr<TCPSocket> _socket;
         
-        enum {kMaxBufferSize = 10 * 1024};
-        Buffer _buffer;
+        enum {
+            kMaxBufferSize = 1024 * 1024,
+            kMaxBytesSize = 10 * 1024,
+        };
+        ByteBuffer _buffer;
+        char _bytes[kMaxBytesSize];
         
         enum ParseStatus {
             kParseFirstLine,

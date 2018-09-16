@@ -13,7 +13,7 @@
 
 #include "TTHTTPClient.hpp"
 #include "TTIO.hpp"
-#include "TTBuffer.hpp"
+#include "TTByteBuffer.hpp"
 #include "TTMutex.hpp"
 
 namespace TT {
@@ -37,7 +37,7 @@ namespace TT {
         
     private:
         pthread_mutex_t _mutex;
-        Buffer _buffer;
+        ByteBuffer _buffer;
         
     };
 }

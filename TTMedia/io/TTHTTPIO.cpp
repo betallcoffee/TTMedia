@@ -14,8 +14,11 @@ typedef enum {
     kIOMessageTypeOpen,
 } IOMessageType;
 
-HTTPIO::HTTPIO() : _mutex(PTHREAD_MUTEX_INITIALIZER)
-, _cond(&_mutex) {
+HTTPIO::HTTPIO()
+: _mutex(PTHREAD_MUTEX_INITIALIZER)
+, _cond(&_mutex)
+, _buffer(10 * 1024 * 1024)
+{
     _messageLoop.setMessageHandle(std::bind(&HTTPIO::handleMessage, this, std::placeholders::_1));
 }
 
@@ -96,10 +99,10 @@ int64_t HTTPIO::speed() {
     return 0;
 }
 
-void HTTPIO::onDataRecived(Buffer &data) {
+void HTTPIO::onDataRecived(ByteBuffer &data) {
     _cond.notify([this, &data](){
-        _buffer.appendBuffer(data);
-        data.retrieve(data.readableBytes());
+        size_t size = _buffer.appendBuffer(data);
+        data.retrieve(size);
     });
 }
 

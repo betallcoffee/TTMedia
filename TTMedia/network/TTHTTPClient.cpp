@@ -15,7 +15,9 @@ static const char *kCRLF = "\r\n";
 static const char kColon = ':';
 static const char *kHTTP = "HTTP/1.";
 
-HTTPClient::HTTPClient() {
+HTTPClient::HTTPClient()
+: _buffer(kMaxBufferSize)
+{
     
 }
 
@@ -61,14 +63,11 @@ void HTTPClient::Get(std::shared_ptr<URL> url,
         _parseStatus = kParseFirstLine;
         if (writeSize == request.size()) {
             do {
-                _buffer.ensureWriteable(kMaxBufferSize);
-                uint8_t *buf = reinterpret_cast<uint8_t*>(_buffer.beginWrite());
-                size_t size = _buffer.writeableBytes();
-                int ret = _socket->read(buf, size);
+                int ret = _socket->read(reinterpret_cast<uint8_t *>(_bytes), kMaxBytesSize);
                 if (ret < 0) {
                     break;
                 } else {
-                    _buffer.reviseWriteable(ret);
+                    _buffer.append(_bytes, ret);
                 }
                     
                 if (kParseFirstLine == _parseStatus) {
@@ -102,6 +101,10 @@ void HTTPClient::Get(std::shared_ptr<URL> url,
             }
         }
     }
+}
+
+void HTTPClient::cancel() {
+
 }
 
 void HTTPClient::skipToNext() {

@@ -13,7 +13,7 @@
 
 #include "TTMessageLoop.hpp"
 #include "TTHTTPClient.hpp"
-#include "TTBuffer.hpp"
+#include "TTByteBuffer.hpp"
 #include "TTMutex.hpp"
 #include "TTCond.hpp"
 
@@ -41,7 +41,7 @@ namespace TT {
         int64_t speed() override;
         
     private:
-        void onDataRecived(Buffer &data);
+        void onDataRecived(ByteBuffer &data);
         
         void handleMessage(std::shared_ptr<Message> message);
         MessageLoop _messageLoop;
@@ -51,8 +51,7 @@ namespace TT {
         HTTPClient _client;
         std::shared_ptr<URL> _url;
         HTTPClient::HeaderMap _headers;
-        Buffer _buffer;
-        
+        ByteBuffer _buffer;
     };
 }
 

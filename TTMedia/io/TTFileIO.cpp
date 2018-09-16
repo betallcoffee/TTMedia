@@ -10,7 +10,9 @@
 
 using namespace TT;
 
-FileIO::FileIO() {
+FileIO::FileIO()
+: _buffer(1024 * 1024)
+{
     
 }
 
