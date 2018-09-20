@@ -64,19 +64,6 @@ size_t ByteBuffer::appendBuffer(ByteBuffer &buffer)
     return size;
 }
 
-const char *ByteBuffer::find(const char *sub) {
-    Mutex m(&_mutex);
-    size_t size = strlen(sub);
-    if (size > readableBytes()) {
-        return NULL;
-    } else if (strncmp(sub, beginRead(), size) == 0) {
-        return beginRead();
-    }
-    
-    const char *res = std::search(beginRead(), beginWrite(), sub, sub + size);
-    return res == beginWrite() ? NULL : res;
-}
-
 bool ByteBuffer::beginCRLF() {
     Mutex m(&_mutex);
     if (readableBytes() > 2) {
@@ -95,7 +82,12 @@ const char *ByteBuffer::findCRLF()
 
 const char *ByteBuffer::findCRLF(char *start)
 {
-    return find(kCRLF);
+    return findSubString(kCRLF);
+}
+
+const char *ByteBuffer::findSubString(const char *sub) {
+    Mutex m(&_mutex);
+    return find(sub);
 }
 
 void ByteBuffer::skipSpace() {
@@ -111,7 +103,7 @@ void ByteBuffer::skipSpace() {
 
 void ByteBuffer::skipCRLF() {
     Mutex m(&_mutex);
-    const char *crlf = findCRLF();
+    const char *crlf = find(kCRLF);
     int n = static_cast<int>(crlf - beginRead());
     n += strlen(kCRLF);
     retrieve(n);
@@ -146,6 +138,18 @@ int ByteBuffer::readInt() {
 std::string ByteBuffer::toString() {
     Mutex m(&_mutex);
     return std::string(beginRead(), readableBytes());
+}
+
+const char *ByteBuffer::find(const char *sub) {
+    size_t size = strlen(sub);
+    if (size > readableBytes()) {
+        return NULL;
+    } else if (strncmp(sub, beginRead(), size) == 0) {
+        return beginRead();
+    }
+    
+    const char *res = std::search(beginRead(), beginWrite(), sub, sub + size);
+    return res == beginWrite() ? NULL : res;
 }
 
 bool ByteBuffer::ensureWriteable(size_t n) {

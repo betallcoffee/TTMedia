@@ -43,7 +43,7 @@ namespace TT {
         size_t append(const char *data, size_t n);
         size_t appendBuffer(ByteBuffer &buffer);
         
-        const char *find(const char *sub);
+        const char *findSubString(const char *sub);
         bool beginCRLF();
         const char *findCRLF();
         const char *findCRLF(char *start);
@@ -63,7 +63,7 @@ namespace TT {
         
     private:
         static const char kCRLF[];
-        
+        const char *find(const char *sub);
         char *begin() { return &*buffer_.begin(); }
         void expend(size_t size);
         bool canExpand(size_t size);

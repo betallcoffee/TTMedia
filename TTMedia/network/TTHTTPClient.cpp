@@ -119,7 +119,7 @@ bool HTTPClient::parserFirstLine() {
     size_t len = std::strlen(kHTTP);
     if (std::strncmp(begin, kHTTP, len) == 0) {
         _httpVer.assign(begin + len - 2, 3);
-        const char *space = _buffer.find(" ");
+        const char *space = _buffer.findSubString(" ");
         if (space) {
             _buffer.retrieve(space - begin);
         } else {

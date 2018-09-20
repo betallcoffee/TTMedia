@@ -98,9 +98,6 @@ namespace TT {
         
         bool encode();
         
-        static void *inputThreadEntry(void *arg);
-        void inputLoop();
-        
     private:
         std::shared_ptr<URL> _saveUrl;
         
