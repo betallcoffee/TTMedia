@@ -10,11 +10,7 @@
 #define TTFileIO_hpp
 
 #include <pthread.h>
-
-#include "TTHTTPClient.hpp"
 #include "TTIO.hpp"
-#include "TTByteBuffer.hpp"
-#include "TTMutex.hpp"
 
 namespace TT {
     class FileIO : public IO {
@@ -36,8 +32,6 @@ namespace TT {
         int64_t speed() override;
         
     private:
-        pthread_mutex_t _mutex;
-        ByteBuffer _buffer;
         
     };
 }

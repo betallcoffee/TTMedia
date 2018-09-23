@@ -9,8 +9,6 @@
 #ifndef TTHTTPIO_hpp
 #define TTHTTPIO_hpp
 
-#include <pthread.h>
-
 #include "TTMessageLoop.hpp"
 #include "TTHTTPClient.hpp"
 #include "TTByteBuffer.hpp"
@@ -43,13 +41,9 @@ namespace TT {
     private:
         void onDataRecived(ByteBuffer &data);
         
-        void handleMessage(std::shared_ptr<Message> message);
         MessageLoop _messageLoop;
-        
-        pthread_mutex_t _mutex;
         Cond _cond;
         HTTPClient _client;
-        std::shared_ptr<URL> _url;
         HTTPClient::HeaderMap _headers;
         ByteBuffer _buffer;
     };

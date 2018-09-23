@@ -12,7 +12,11 @@
 
 using namespace TT;
 
-IO::IO() {
+IO::IO()
+: _mutex(PTHREAD_MUTEX_INITIALIZER)
+, _isOpened(false)
+, _url(nullptr)
+{
     
 }
 

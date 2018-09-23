@@ -11,6 +11,7 @@
 
 #include <stdint.h>
 #include <unistd.h>
+#include <pthread.h>
 
 #include "TTURL.hpp"
 
@@ -36,7 +37,11 @@ namespace TT {
         virtual int64_t downPos() = 0;
         virtual int64_t speed() = 0;
         
-    private:
+    protected:
+        pthread_mutex_t _mutex;
+        bool _isOpened;
+        std::shared_ptr<URL> _url;
+        
         int _flag;
         uint64_t _length;
         uint64_t _readPos;

@@ -17,6 +17,14 @@ _msgQueue(nullptr) {
     pthread_create(&_msgThread, nullptr, MessageLoop::messageThreadEntry, this);
 }
 
+MessageLoop::MessageLoop(const char *threadName)
+: _isRunning(true)
+, _threadName(threadName)
+, _msgMutex(PTHREAD_MUTEX_INITIALIZER)
+, _msgQueue(nullptr) {
+    pthread_create(&_msgThread, nullptr, MessageLoop::messageThreadEntry, this);
+}
+
 MessageLoop::~MessageLoop() {
 }
 

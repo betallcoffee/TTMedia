@@ -15,11 +15,10 @@ typedef enum {
 } IOMessageType;
 
 HTTPIO::HTTPIO()
-: _mutex(PTHREAD_MUTEX_INITIALIZER)
+: _messageLoop("HTTPIO")
 , _cond(&_mutex)
 , _buffer(10 * 1024 * 1024)
 {
-    _messageLoop.setMessageHandle(std::bind(&HTTPIO::handleMessage, this, std::placeholders::_1));
 }
 
 HTTPIO::~HTTPIO() {
@@ -36,13 +35,20 @@ bool HTTPIO::canOpen(std::shared_ptr<URL> url) {
 }
 
 bool HTTPIO::open(std::shared_ptr<URL> url, uint64_t offset, int flag) {
+    close();
     _url = url;
-    _messageLoop.postMessage(kIOMessageTypeOpen);
+    std::shared_ptr<Message> openMessage = std::make_shared<Message>(kIOMessageTypeOpen);
+    openMessage->setMessageHandle([this, url](std::shared_ptr<Message> msg) {
+        _isOpened = true;
+        _client.Get(url, _headers, std::bind(&HTTPIO::onDataRecived, this, std::placeholders::_1), nullptr);
+    });
+    _messageLoop.postMessage(openMessage);
     return true;
 }
 
 void HTTPIO::close() {
-    _messageLoop.stop();
+    _isOpened = false;
+    _client.cancel();
 }
 
 size_t HTTPIO::read(uint8_t *pBuf, size_t size) {
@@ -50,8 +56,15 @@ size_t HTTPIO::read(uint8_t *pBuf, size_t size) {
         return 0;
     }
     
+    if (!_isOpened) {
+        return 0;
+    }
+    
     size_t readSize = 0;
     _cond.wait([this, size](){
+        if (!_isOpened) {
+            return true;
+        }
         size_t readableSize = _buffer.readableBytes();
         if (readableSize >= size) {
             return true;
@@ -59,12 +72,14 @@ size_t HTTPIO::read(uint8_t *pBuf, size_t size) {
             return false;
         }
     }, [this, pBuf, size, &readSize](){
-        const char *begin = _buffer.beginRead();
-        if (begin) {
-            size_t readableSize = _buffer.readableBytes();
-            readSize = size <= readableSize ? size : readableSize;
-            memcpy(pBuf, begin, readSize);
-            _buffer.retrieve(readSize);
+        if (_isOpened) {
+            const char *begin = _buffer.beginRead();
+            if (begin) {
+                size_t readableSize = _buffer.readableBytes();
+                readSize = size <= readableSize ? size : readableSize;
+                memcpy(pBuf, begin, readSize);
+                _buffer.retrieve(readSize);
+            }
         }
     });
     
@@ -100,16 +115,13 @@ int64_t HTTPIO::speed() {
 }
 
 void HTTPIO::onDataRecived(ByteBuffer &data) {
+    if (!_isOpened) {
+        return;
+    }
     _cond.notify([this, &data](){
         size_t size = _buffer.appendBuffer(data);
         data.retrieve(size);
     });
-}
-
-void HTTPIO::handleMessage(std::shared_ptr<Message> message) {
-    if (kIOMessageTypeOpen == message->code()) {
-        _client.Get(_url, _headers, std::bind(&HTTPIO::onDataRecived, this, std::placeholders::_1), nullptr);
-    }
 }
 
 

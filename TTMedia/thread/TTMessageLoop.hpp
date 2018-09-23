@@ -9,6 +9,7 @@
 #ifndef TTMessageLoop_hpp
 #define TTMessageLoop_hpp
 
+#include <string>
 #include <pthread.h>
 #include "TTQueue.hpp"
 
@@ -33,6 +34,7 @@ namespace TT {
     class MessageLoop {
     public:
         MessageLoop();
+        MessageLoop(const char *threadName);
         ~MessageLoop();
         
         typedef std::function<void(std::shared_ptr<Message> msg)> MessageHandle;
@@ -51,6 +53,7 @@ namespace TT {
         MessageHandle _handle;
         
         bool _isRunning;
+        std::string _threadName;
         pthread_t _msgThread;
         pthread_mutex_t _msgMutex;
     };
