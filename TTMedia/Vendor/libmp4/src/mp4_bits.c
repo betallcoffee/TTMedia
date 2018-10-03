@@ -49,6 +49,12 @@ struct mp4_bits {
 
 	void (*end_of_stream) (void *par);
 	void *par;
+    
+    void *read_opaque;
+    uint8_t (*read_byte) (mp4_bits_t *bs);
+    uint32_t (*read_data) (mp4_bits_t *bs, char *data, uint32_t nbBytes);
+    int (*seek) (mp4_bits_t *bs, uint64_t offset);
+    uint64_t (*read_available) (mp4_bits_t *bs)
 };
 
 struct mp4_bits *mp4_bs_create(char *buffer, uint64_t BufferSize, uint32_t mode)
@@ -69,8 +75,12 @@ struct mp4_bits *mp4_bs_create(char *buffer, uint64_t BufferSize, uint32_t mode)
 	tmp->current = 0;
 	tmp->bsmode = mode;
 	tmp->stream = NULL;
+    tmp->read_byte = NULL;
+    tmp->read_opaque = NULL;
+    tmp->seek = NULL;
 
 	switch (tmp->bsmode) {
+    case MP4_BITS_READ_CUSTOM:
 	case MP4_BITS_READ:
 		tmp->nbBits = 8;
 		tmp->current = 0;
@@ -125,6 +135,9 @@ struct mp4_bits *mp4_bs_create_from_file(FILE * f, uint32_t mode)
 	tmp->position = 0;
 	tmp->stream = f;
 	tmp->fd = fileno(f);
+    tmp->read_byte = NULL;
+    tmp->read_opaque = NULL;
+    tmp->seek = NULL;
 
 	/*get the size of this file (for read streams) */
 	tmp->position = mp4_ftell64(f);
@@ -150,6 +163,68 @@ void mp4_bs_destroy(struct mp4_bits *bs)
 	free(bs);
 }
 
+void mp4_bs_set_read_opaque(struct mp4_bits *bs, void *read_opaque) {
+    if (!bs) {
+        return;
+    }
+    
+    if (bs->bsmode == MP4_BITS_READ_CUSTOM) {
+        bs->read_opaque = read_opaque;
+    }
+}
+
+void *mp4_bs_get_read_opaque(struct mp4_bits *bs) {
+    if (!bs) {
+        return NULL;
+    }
+    
+    if (bs->bsmode == MP4_BITS_READ_CUSTOM) {
+        return bs->read_opaque;
+    }
+    
+    return NULL;
+}
+
+void mp4_bs_set_read_byte_func(struct mp4_bits *bs, uint8_t (*read_byte) (struct mp4_bits *bs)) {
+    if (!bs) {
+        return;
+    }
+    
+    if (bs->bsmode == MP4_BITS_READ_CUSTOM) {
+        bs->read_byte = read_byte;
+    }
+}
+
+void mp4_bs_set_read_data_func(struct mp4_bits *bs, uint32_t (*read_data) (struct mp4_bits *bs, char *data, uint32_t nbBytes)) {
+    if (!bs) {
+        return;
+    }
+    
+    if (bs->bsmode == MP4_BITS_READ_CUSTOM) {
+        bs->read_data = read_data;
+    }
+}
+
+void mp4_bs_set_seek_func(struct mp4_bits *bs, int (*seek) (struct mp4_bits *bs, uint64_t offset)) {
+    if (!bs) {
+        return;
+    }
+    
+    if (bs->bsmode == MP4_BITS_READ_CUSTOM) {
+        bs->seek = seek;
+    }
+}
+
+void mp4_bs_set_read_available_func(struct mp4_bits *bs, uint64_t (*read_available) (mp4_bits_t *bs)) {
+    if (!bs) {
+        return;
+    }
+    
+    if (bs->bsmode == MP4_BITS_READ_CUSTOM) {
+        bs->read_available = read_available;
+    }
+}
+
 /*returns 1 if aligned wrt current mode, 0 otherwise*/
 static int bs_is_align(struct mp4_bits *bs)
 {
@@ -165,12 +240,22 @@ static int bs_is_align(struct mp4_bits *bs)
 /*fetch a new byte in the bitstream switch between packets*/
 static uint8_t bs_read_byte(struct mp4_bits *bs)
 {
-	if (bs->bsmode == MP4_BITS_READ) {
+	if (bs->bsmode == MP4_BITS_READ
+        || bs->bsmode == MP4_BITS_READ_CUSTOM) {
 		if (bs->position == bs->size) {
 			if (bs->end_of_stream)
 				bs->end_of_stream(bs->par);
 			return 0;
 		}
+        
+        if (bs->bsmode == MP4_BITS_READ_CUSTOM) {
+            if (bs->read_byte) {
+                bs->position++;
+                return bs->read_byte(bs);
+            }
+            return 0;
+        }
+        
 		return (uint8_t) bs->original[bs->position++];
 	}
 	/*we are in FILE mode, test for end of file */
@@ -324,6 +409,12 @@ uint32_t mp4_bs_read_data(struct mp4_bits *bs, char *data, uint32_t nbBytes)
 	if (bs_is_align(bs)) {
 		switch (bs->bsmode) {
 		case MP4_BITS_READ:
+            if (bs->read_data) {
+                uint32_t size = bs->read_data(bs, data, nbBytes);
+                bs->position += size;
+                return size;
+            }
+            
 			memcpy(data, bs->original + bs->position, nbBytes);
 			bs->position += nbBytes;
 			return nbBytes;
@@ -546,7 +637,8 @@ uint32_t mp4_bs_write_data(struct mp4_bits *bs, char *data, uint32_t nbBytes)
 uint8_t mp4_bs_align(struct mp4_bits * bs)
 {
 	uint8_t res = 8 - bs->nbBits;
-	if ((bs->bsmode == MP4_BITS_READ) || (bs->bsmode == MP4_BITS_FILE_READ)) {
+	if ((bs->bsmode == MP4_BITS_READ) || (bs->bsmode == MP4_BITS_FILE_READ)
+        || (bs->bsmode == MP4_BITS_READ_CUSTOM)) {
 		if (res > 0) {
 			mp4_bs_read_int(bs, res);
 		}
@@ -564,6 +656,14 @@ uint8_t mp4_bs_align(struct mp4_bits * bs)
 uint64_t mp4_bs_available(struct mp4_bits * bs)
 {
 	int64_t cur, end;
+    
+    if (bs->bsmode == MP4_BITS_READ_CUSTOM) {
+        if (bs->read_available) {
+            return bs->read_available(bs);
+        } else {
+            return 0;
+        }
+    }
 
 	/*in WRITE mode only, this should not be called, but return something big in case ... */
 	if ((bs->bsmode == MP4_BITS_WRITE)
@@ -657,6 +757,16 @@ void mp4_bs_skip_bytes(struct mp4_bits *bs, uint64_t nbBytes)
 		bs->position += nbBytes;
 		return;
 	}
+    
+    if (bs->bsmode == MP4_BITS_READ_CUSTOM) {
+        if (bs->seek) {
+            if (bs->seek(bs, bs->position + nbBytes) == 0) {
+                bs->position += nbBytes;
+            }
+        }
+        return;
+    }
+    
 	/*for writing we must do it this way, otherwise pb in dynamic buffers */
 	while (nbBytes) {
 		mp4_bs_write_int(bs, 0, 8);
@@ -709,6 +819,15 @@ static int bs_seek_intern(struct mp4_bits *bs, uint64_t offset)
 		bs->nbBits = (bs->bsmode == MP4_BITS_READ) ? 8 : 0;
 		return 0;
 	}
+    
+    if (bs->bsmode == MP4_BITS_READ_CUSTOM) {
+        if (bs->seek(bs, offset) == 0) {
+            bs->position = offset;
+            bs->nbBits = 8;
+            return 0;
+        }
+        return -1;
+    }
 
 	mp4_fseek64(bs->stream, offset, SEEK_SET);
 
@@ -782,6 +901,13 @@ uint64_t mp4_bs_get_refreshed_size(struct mp4_bits * bs)
 uint64_t mp4_bs_get_size(struct mp4_bits * bs)
 {
 	return bs->size;
+}
+
+void mp4_bs_set_size(struct mp4_bits * bs, uint64_t size)
+{
+    if (bs) {
+        bs->size = size;
+    }
 }
 
 uint64_t mp4_bs_get_position(struct mp4_bits * bs)

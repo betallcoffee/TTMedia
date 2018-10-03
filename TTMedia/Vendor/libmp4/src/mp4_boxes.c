@@ -288,7 +288,6 @@ int mp4_parse_box(struct mp4_box **box, mp4_bits_t * bs)
 int mp4_parse_root_box(struct mp4_box **box, mp4_bits_t * bs)
 {
 	int ret;
-	uint64_t start;
 
 	/*at least we can get the box size and type */
 	if (mp4_bs_available(bs) < 8) {
@@ -296,11 +295,9 @@ int mp4_parse_root_box(struct mp4_box **box, mp4_bits_t * bs)
 		return -1;
 	}
 
-	start = mp4_bs_get_position(bs);
 	ret = mp4_parse_box(box, bs);
 	if (ret) {
 		verbose_err("mp4_parse_box failed \n");
-		mp4_bs_seek(bs, start);
 		if (*box)
 			(*box)->destroy(*box);
 		*box = NULL;

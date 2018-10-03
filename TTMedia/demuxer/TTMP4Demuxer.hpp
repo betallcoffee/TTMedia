@@ -48,8 +48,18 @@ namespace TT {
         std::shared_ptr<VideoCodec> videoCodec() override;
         
     private:
+        static uint8_t readByte(mp4_bits_t *bs);
+        uint8_t readByte();
+        static uint32_t readData(mp4_bits_t *bs, char *data, uint32_t nbBytes);
+        uint32_t readData(char *data, uint32_t nbBytes);
+        static int seekOffset(mp4_bits_t *bs, uint64_t offset);
+        int seekOffset(uint64_t offset);
+        static uint64_t readAvailable(mp4_bits_t *bs);
+        uint64_t readAvailable();
+        
         bool parseBox();
         int64_t parseBoxHeader(struct mp4_box **box, mp4_bits_t *bs);
+        bool parseBoxBody();
         
         std::shared_ptr<URL> _url;
         std::shared_ptr<IO> _io;
@@ -57,8 +67,14 @@ namespace TT {
         pthread_mutex_t _mutex;
         bool _isEOF = false;
         
-        struct mp4_bits *_bitStream;
+        mp4_bits_t *_bitStream;
         struct mp4_box *_newBox;
+        int64_t _newBoxSize;
+        enum ParseStatus {
+            kParseBoxHeader,
+            kParseBoxBody,
+        };
+        ParseStatus _parseStatus;
         
         /* moov box */
         struct mp4_moov_box *_moov;
@@ -71,7 +87,5 @@ namespace TT {
         mp4_list_t *_rootBoxes;
     };
 }
-
-
 
 #endif /* TTMP4Demuxer_hpp */

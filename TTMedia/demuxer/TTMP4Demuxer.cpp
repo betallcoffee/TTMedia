@@ -29,6 +29,8 @@ MP4Demuxer::~MP4Demuxer() {
         mp4_list_destroy(_rootBoxes);
         _rootBoxes = nullptr;
     }
+    
+    close();
 }
 
 int MP4Demuxer::probe(std::shared_ptr<URL> url) {
@@ -44,12 +46,22 @@ bool MP4Demuxer::open(std::shared_ptr<URL> url) {
     if (_io) {
         _url = url;
         if (_io->open(_url, 0, 0)) {
+            _bitStream = mp4_bs_create(nullptr, _io->size(), MP4_BITS_READ_CUSTOM);
+            if (_bitStream == nullptr) {
+                return false;
+            }
+            
+            mp4_bs_set_read_opaque(_bitStream, this);
+            mp4_bs_set_read_byte_func(_bitStream, MP4Demuxer::readByte);
+            mp4_bs_set_read_data_func(_bitStream, MP4Demuxer::readData);
+            mp4_bs_set_seek_func(_bitStream, MP4Demuxer::seekOffset);
+            mp4_bs_set_read_available_func(_bitStream, MP4Demuxer::readAvailable);
             do {
                 if (!parseBox()) {
                     _io->close();
                     return false;
                 }
-            } while (_moov == nullptr);
+            } while (_moov == nullptr || _mdat == nullptr);
             
             return true;
         }
@@ -59,13 +71,21 @@ bool MP4Demuxer::open(std::shared_ptr<URL> url) {
 }
 
 void MP4Demuxer::close() {
+    if (_bitStream) {
+        mp4_bs_destroy(_bitStream);
+        _bitStream = nullptr;
+    }
     
+    if (_io) {
+        _io->close();
+    }
 }
 
 std::shared_ptr<Packet> MP4Demuxer::read() {
-    if (parseBox()){
-        
+    if (!_isOpened) {
+        return nullptr;
     }
+    
     return nullptr;
 }
 
@@ -81,74 +101,126 @@ std::shared_ptr<VideoCodec> MP4Demuxer::videoCodec() {
     return _videoCodec;
 }
 
+uint8_t MP4Demuxer::readByte(mp4_bits_t *bs) {
+    void *opaque = mp4_bs_get_read_opaque(bs);
+    if (opaque) {
+        MP4Demuxer *self = (MP4Demuxer *)opaque;
+        return self->readByte();
+    }
+    return 0;
+}
+
+uint8_t MP4Demuxer::readByte() {
+    uint8_t byte = 0;
+    _io->read(&byte, 1);
+    return byte;
+}
+
+uint32_t MP4Demuxer::readData(mp4_bits_t *bs, char *data, uint32_t nbBytes) {
+    void *opaque = mp4_bs_get_read_opaque(bs);
+    if (opaque) {
+        MP4Demuxer *self = (MP4Demuxer *)opaque;
+        return self->readData(data, nbBytes);
+    }
+    return 0;
+}
+
+uint32_t MP4Demuxer::readData(char *data, uint32_t nbBytes) {
+    size_t readSize = _io->read((uint8_t *)data, nbBytes);
+    if (readSize < nbBytes) {
+        return 0;
+    }
+    return nbBytes;
+}
+
+int MP4Demuxer::seekOffset(mp4_bits_t *bs, uint64_t offset) {
+    void *opaque = mp4_bs_get_read_opaque(bs);
+    if (opaque) {
+        MP4Demuxer *self = (MP4Demuxer *)opaque;
+        return self->seekOffset(offset);
+    }
+    return -1;
+}
+
+int MP4Demuxer::seekOffset(uint64_t offset) {
+    if (_io->seek(offset)) {
+        return 0;
+    }
+    return -1;
+}
+
+uint64_t MP4Demuxer::readAvailable(mp4_bits_t *bs) {
+    void *opaque = mp4_bs_get_read_opaque(bs);
+    if (opaque) {
+        MP4Demuxer *self = (MP4Demuxer *)opaque;
+        return self->readAvailable();
+    }
+    return 0;
+}
+
+uint64_t MP4Demuxer::readAvailable() {
+    return _io->readAvailable();
+}
+
 bool MP4Demuxer::parseBox() {
-    _newBox = nullptr;
-    char boxHeader[8] = {0};
-    size_t readSize = _io->read((uint8_t *)boxHeader, 8);
+    size_t readSize = _io->readAvailable();
     if (readSize < 8) {
         LOG(ERROR) << "can not read box header, so close";
         return false;
     }
-    struct mp4_bits *bs = mp4_bs_create(boxHeader, 8, MP4_BITS_READ);
-    int64_t size = parseBoxHeader(&_newBox, bs);
-    mp4_bs_destroy(bs);
-    if (size < 0 || _newBox == nullptr) {
+    _newBoxSize = parseBoxHeader(&_newBox, _bitStream);
+    if (_newBoxSize < 0 || _newBox == nullptr) {
         LOG(ERROR) << "parse box header failed, so close";
         return false;
-    }
-    
-    char *boxData = (char *)malloc(_newBox->size);
-    readSize = _io->read((uint8_t *)boxData, _newBox->size);
-    if (readSize < _newBox->size) {
-        LOG(ERROR) << "can not read box data, so close";
-        free(boxData);
-        return false;
-    }
-    bs = mp4_bs_create(boxData, _newBox->size, MP4_BITS_READ);
-    int ret = _newBox->read(_newBox, bs);
-    mp4_bs_destroy(bs);
-    free(boxData);
-    if (ret) {
-        LOG(ERROR) << "read failed";
-        _newBox->destroy(_newBox);
-        _newBox = nullptr;
-        return false;
-    }
-    _newBox->size = size;
-
-    switch (_newBox->type) {
-            /*moov box */
-        case MP4_BOX_TYPE_moov: {
-            if (_moov) {
-                _newBox->destroy(_newBox);
-                _newBox = nullptr;
-            } else {
-                _moov = (struct mp4_moov_box *)_newBox;
+    } else {
+        switch (_newBox->type) {
+                /*moov box */
+            case MP4_BOX_TYPE_moov: {
+                if (_moov) {
+                    _newBox->destroy(_newBox);
+                    _newBox = nullptr;
+                    return false;
+                } else {
+                    if (parseBoxBody()) {
+                        _moov = (struct mp4_moov_box *)_newBox;
+                    }
+                }
+                /*set our pointer to the movie */
+                // mov->moov->mov = mov;
             }
-            /*set our pointer to the movie */
-            // mov->moov->mov = mov;
-        }
-            break;
-        case MP4_BOX_TYPE_ftyp: {
-            /*one and only one ftyp box */
-            if (_brand) {
-                _newBox->destroy(_newBox);
-                _newBox = nullptr;
-            } else {
-                _brand = (struct mp4_ftyp_box *)_newBox;
+                break;
+            case MP4_BOX_TYPE_ftyp: {
+                /*one and only one ftyp box */
+                if (_brand) {
+                    _newBox->destroy(_newBox);
+                    _newBox = nullptr;
+                    return false;
+                } else {
+                    if (parseBoxBody()) {
+                        _brand = (struct mp4_ftyp_box *)_newBox;
+                    }
+                }
             }
+                break;
+            case MP4_BOX_TYPE_mdat: {
+                _mdat = (struct mp4_mdat_box *)_newBox;
+            }
+                break;
+            default: {
+                if (!parseBoxBody()) {
+                    return false;
+                }
+            }
+                break;
         }
-            break;
-        default:
-            break;
+        
+        /* chain this box with the father and the other at same level */
+        if (_newBox) {
+            mp4_list_add(_rootBoxes, _newBox);
+        }
+        
+        return true;
     }
-    
-    /* chain this box with the father and the other at same level */
-    if (_newBox) {
-        mp4_list_add(_rootBoxes, _newBox);
-    }
-    
-    return true;
 }
 
 int64_t MP4Demuxer::parseBoxHeader(struct mp4_box **box, mp4_bits_t * bs) {
@@ -178,7 +250,7 @@ int64_t MP4Demuxer::parseBoxHeader(struct mp4_box **box, mp4_bits_t * bs) {
         LOG(INFO) << "size: " << size;
     } else if (size == 0) {
         /* box extend to the end of file */
-        size = mp4_bs_available(bs) + 8;
+        size = 8;
     }
     
     /* extended type */
@@ -213,4 +285,16 @@ int64_t MP4Demuxer::parseBoxHeader(struct mp4_box **box, mp4_bits_t * bs) {
     *box = new_box;
     
     return size;
+}
+
+bool MP4Demuxer::parseBoxBody() {
+    int ret = _newBox->read(_newBox, _bitStream);
+    if (ret) {
+        LOG(ERROR) << "read failed";
+        _newBox->destroy(_newBox);
+        _newBox = nullptr;
+        return false;
+    }
+    _newBox->size = _newBoxSize;
+    return true;
 }

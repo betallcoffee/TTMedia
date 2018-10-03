@@ -15,12 +15,11 @@ using namespace TT;
 
 const char ByteBuffer::kCRLF[] = { "\r\n" };
 
-ByteBuffer::ByteBuffer(size_t maxSize)
-: maxSize_(maxSize)
+ByteBuffer::ByteBuffer(size_t capacity)
+: _mutex(PTHREAD_MUTEX_INITIALIZER)
+, capacity_(capacity)
 , readIndex_(0)
 , writeIndex_(0)
-, _mutex(PTHREAD_MUTEX_INITIALIZER)
-, _cond(&_mutex)
 {
 }
 
@@ -34,38 +33,19 @@ bool ByteBuffer::unlock() {
     return true;
 }
 
-void ByteBuffer::clear() {
-    Mutex m(&_mutex);
-    readIndex_ = writeIndex_ = 0;
-}
-
-size_t ByteBuffer::append(const char *data, size_t n)
-{
-    _cond.wait([this, n](){
-        return ensureWriteable(n);
-    }, [this, &n, data](){
-        if (ensureWriteable(n)) {
-            std::copy(data, data + n, beginWrite());
-            writeIndex_ += n;
-        } else {
-            n = 0;
-        }
-    });
-    return n;
-}
-
-size_t ByteBuffer::appendBuffer(ByteBuffer &buffer)
-{
-    buffer.lock();
-    char *data = buffer.beginRead();
-    size_t size = buffer.readableBytes();
-    size = append(data, size);
-    buffer.unlock();
-    return size;
+const char *ByteBuffer::find(const char *sub) {
+    size_t size = strlen(sub);
+    if (size > readableBytes()) {
+        return NULL;
+    } else if (strncmp(sub, beginRead(), size) == 0) {
+        return beginRead();
+    }
+    
+    const char *res = std::search(beginRead(), beginWrite(), sub, sub + size);
+    return res == beginWrite() ? NULL : res;
 }
 
 bool ByteBuffer::beginCRLF() {
-    Mutex m(&_mutex);
     if (readableBytes() > 2) {
         char *begin = beginRead();
         if (strncmp(begin, kCRLF, 2) == 0) {
@@ -82,16 +62,10 @@ const char *ByteBuffer::findCRLF()
 
 const char *ByteBuffer::findCRLF(char *start)
 {
-    return findSubString(kCRLF);
-}
-
-const char *ByteBuffer::findSubString(const char *sub) {
-    Mutex m(&_mutex);
-    return find(sub);
+    return find(kCRLF);
 }
 
 void ByteBuffer::skipSpace() {
-    Mutex m(&_mutex);
     while (readableBytes()) {
         if (*beginRead() == ' ') {
             retrieve(1);
@@ -102,7 +76,6 @@ void ByteBuffer::skipSpace() {
 }
 
 void ByteBuffer::skipCRLF() {
-    Mutex m(&_mutex);
     const char *crlf = find(kCRLF);
     int n = static_cast<int>(crlf - beginRead());
     n += strlen(kCRLF);
@@ -110,7 +83,6 @@ void ByteBuffer::skipCRLF() {
 }
 
 bool ByteBuffer::getLine(std::string &line) {
-    Mutex m(&_mutex);
     const char *begin = beginRead();
     const char *end = findCRLF();
     if (end == NULL) return false;
@@ -120,7 +92,6 @@ bool ByteBuffer::getLine(std::string &line) {
 }
 
 int ByteBuffer::readInt() {
-    Mutex m(&_mutex);
     int n = 0;
     while (readableBytes()) {
         char ch = *beginRead();
@@ -135,24 +106,44 @@ int ByteBuffer::readInt() {
     return n;
 }
 
+void ByteBuffer::clear() {
+    Mutex m(&_mutex);
+    readIndex_ = writeIndex_ = 0;
+}
+
+size_t ByteBuffer::append(const char *data, size_t n)
+{
+    Mutex m(&_mutex);
+    if (expendWriteable(n)) {
+        std::copy(data, data + n, beginWrite());
+        writeIndex_ += n;
+    } else {
+        n = 0;
+    }
+    return n;
+}
+
+size_t ByteBuffer::appendBuffer(ByteBuffer &buffer)
+{
+    buffer.lock();
+    char *data = buffer.beginRead();
+    size_t size = buffer.readableBytes();
+    size = append(data, size);
+    buffer.unlock();
+    return size;
+}
+
+bool ByteBuffer::ensureWriteable(size_t n) {
+    Mutex m(&_mutex);
+    return expendWriteable(n);
+}
+
 std::string ByteBuffer::toString() {
     Mutex m(&_mutex);
     return std::string(beginRead(), readableBytes());
 }
 
-const char *ByteBuffer::find(const char *sub) {
-    size_t size = strlen(sub);
-    if (size > readableBytes()) {
-        return NULL;
-    } else if (strncmp(sub, beginRead(), size) == 0) {
-        return beginRead();
-    }
-    
-    const char *res = std::search(beginRead(), beginWrite(), sub, sub + size);
-    return res == beginWrite() ? NULL : res;
-}
-
-bool ByteBuffer::ensureWriteable(size_t n) {
+bool ByteBuffer::expendWriteable(size_t n) {
     if (n > writeableBytes()) {
         expend(n);
         if (n > writeableBytes()) {
@@ -177,7 +168,7 @@ void ByteBuffer::expend(size_t size) {
 
 bool ByteBuffer::canExpand(size_t size) {
     if (size > writeableBytes() + prependableBytes()) {
-        if (size + readableBytes() > maxSize_) {
+        if (size + readableBytes() > capacity_) {
             return false;
         }
     }

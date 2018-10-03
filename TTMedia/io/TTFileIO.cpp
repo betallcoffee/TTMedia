@@ -27,6 +27,10 @@ void FileIO::close() {
     
 }
 
+size_t FileIO::size() {
+    return 0;
+}
+
 size_t FileIO::read(uint8_t *pBuf, size_t size) {
     return 0;
 }

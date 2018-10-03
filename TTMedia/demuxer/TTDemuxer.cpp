@@ -12,8 +12,13 @@
 
 using namespace TT;
 
-Demuxer::Demuxer() : _audioStream(nullptr), _videoStream(nullptr),
-_audioCodecParams(nullptr), _videoCodecParams(nullptr) {
+Demuxer::Demuxer()
+: _audioStream(nullptr)
+, _videoStream(nullptr)
+, _audioCodecParams(nullptr)
+, _videoCodecParams(nullptr)
+, _isOpened(false)
+{
     
 }
 

@@ -58,6 +58,8 @@ namespace TT {
         
         std::shared_ptr<AudioCodec> _audioCodec;
         std::shared_ptr<VideoCodec> _videoCodec;
+        
+        bool _isOpened;
     };
 }
 

@@ -42,7 +42,9 @@ enum {
 	MP4_BITS_FILE_READ,
 	MP4_BITS_FILE_WRITE,
 	/*private mode if we own the buffer */
-	MP4_BITS_WRITE_DYN
+	MP4_BITS_WRITE_DYN,
+    /* custom mode if we set read/seek func */
+    MP4_BITS_READ_CUSTOM,
 };
 
 typedef struct mp4_bits mp4_bits_t;
@@ -50,6 +52,14 @@ typedef struct mp4_bits mp4_bits_t;
 mp4_bits_t *mp4_bs_create(char *buffer, uint64_t size, uint32_t mode);
 mp4_bits_t *mp4_bs_create_from_file(FILE * f, uint32_t mode);
 void mp4_bs_destroy(mp4_bits_t * bs);
+
+void mp4_bs_set_read_opaque(mp4_bits_t *bs, void *opaque);
+void *mp4_bs_get_read_opaque(mp4_bits_t *bs);
+void mp4_bs_set_read_byte_func(mp4_bits_t *bs, uint8_t (*read_byte) (mp4_bits_t *bs));
+void mp4_bs_set_read_data_func(mp4_bits_t *bs, uint32_t (*read_data) (mp4_bits_t *bs, char *data, uint32_t nbBytes));
+void mp4_bs_set_seek_func(mp4_bits_t *bs, int (*read_seek) (mp4_bits_t *bs, uint64_t offset));
+void mp4_bs_set_read_available_func(mp4_bits_t *bs, uint64_t (*read_available) (mp4_bits_t *bs));
+
 uint32_t mp4_bs_read_int(mp4_bits_t * bs, uint32_t nBits);
 uint64_t mp4_bs_read_long_int(mp4_bits_t * bs, uint32_t nBits);
 float mp4_bs_read_float(mp4_bits_t * bs);
@@ -86,6 +96,7 @@ uint32_t mp4_bs_peek_bits(mp4_bits_t * bs, uint32_t numBits,
 uint8_t mp4_bs_bits_available(mp4_bits_t * bs);
 uint64_t mp4_bs_get_position(mp4_bits_t * bs);
 uint64_t mp4_bs_get_size(mp4_bits_t * bs);
+void mp4_bs_set_size(mp4_bits_t *bs, uint64_t size);
 uint64_t mp4_bs_get_refreshed_size(mp4_bits_t * bs);
 
 /* used by sample read */

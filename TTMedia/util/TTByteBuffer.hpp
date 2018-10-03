@@ -12,12 +12,10 @@
 #include <vector>
 #include <thread>
 
-#include "TTCond.hpp"
-
 namespace TT {
     class ByteBuffer {
     public:
-        ByteBuffer(size_t maxSize);
+        ByteBuffer(size_t capacity);
         
         bool lock();
         bool unlock();
@@ -36,19 +34,11 @@ namespace TT {
          */
         void retrieve(size_t n) { readIndex_ += n; }
         
-        /**
-         * 后面的方法都已加锁，线程安全
-         */
-        void clear();
-        size_t append(const char *data, size_t n);
-        size_t appendBuffer(ByteBuffer &buffer);
-        
-        const char *findSubString(const char *sub);
+        const char *find(const char *sub);
         bool beginCRLF();
         const char *findCRLF();
         const char *findCRLF(char *start);
         
-        bool ensureWriteable(size_t n);
         void skipSpace();
         void skipCRLF();
         
@@ -58,23 +48,29 @@ namespace TT {
         bool getLine(std::string &line);
         
         int readInt();
+        /**
+         * 后面的方法都已加锁，线程安全
+         */
+        void clear();
+        size_t append(const char *data, size_t n);
+        size_t appendBuffer(ByteBuffer &buffer);
+        bool ensureWriteable(size_t n);
         
         std::string toString();
         
     private:
         static const char kCRLF[];
-        const char *find(const char *sub);
         char *begin() { return &*buffer_.begin(); }
+        bool expendWriteable(size_t n);
         void expend(size_t size);
         bool canExpand(size_t size);
         
-        size_t maxSize_;
+        pthread_mutex_t _mutex;
         std::vector<char> buffer_;
+        size_t capacity_;
         size_t readIndex_ = 0;
         size_t writeIndex_ = 0;
         
-        pthread_mutex_t _mutex;
-        Cond _cond;
     };
 }
 

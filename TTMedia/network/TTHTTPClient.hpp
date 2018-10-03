@@ -12,7 +12,9 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <pthread.h>
 
+#include "TTCond.hpp"
 #include "TTByteBuffer.hpp"
 #include "TTURL.hpp"
 #include "TTTCPSocket.hpp"
@@ -30,14 +32,21 @@ namespace TT {
         void cancel();
         
         int statusCode() { return _statusCode; }
+        int64_t contentLength() { return _contentLength; }
         
     private:
         void skipToNext();
         
+        void resetResponse();
+        bool process(const char *data, size_t size, DataRecivedCallback dataCallback, ErrorCallback errorCallback);
         bool parserFirstLine();
         bool parserHeaders();
         
         std::shared_ptr<TCPSocket> _socket;
+        
+        pthread_mutex_t _mutex;
+        Cond _cond;
+        bool _isCanceled;
         
         enum {
             kMaxBufferSize = 1024 * 1024,
@@ -63,8 +72,6 @@ namespace TT {
         bool _isChunked;
         std::string _contentType;
         int64_t _contentLength;
-        
-        
     };
 }
 

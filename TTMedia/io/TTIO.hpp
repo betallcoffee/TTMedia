@@ -14,6 +14,8 @@
 #include <pthread.h>
 
 #include "TTURL.hpp"
+#include "TTCond.hpp"
+#include "TTByteBuffer.hpp"
 
 namespace TT {
     class IO {
@@ -26,15 +28,20 @@ namespace TT {
         
         virtual bool open(std::shared_ptr<URL> url, uint64_t offset, int flag) = 0;
         virtual void close() = 0;
-        
-        virtual size_t read(uint8_t *pBuf, size_t size) = 0;
+        virtual size_t size() = 0;
+        /**
+         * 保证读到的数据大小为 size
+         * 否则返回 0
+         */
+        virtual size_t read(uint8_t *pBuf, size_t size);
         virtual size_t readAt(uint8_t *pBuf, size_t size, uint64_t pos) = 0;
         virtual size_t write(const uint8_t *pBuf, size_t size) = 0;
         virtual bool seek(uint64_t pos) = 0;
         
-        virtual int64_t length() = 0;
-        virtual int64_t readPos() = 0;
-        virtual int64_t downPos() = 0;
+        virtual int64_t length() { return _length; };
+        virtual int64_t readPos() { return _readPos; };
+        virtual int64_t downPos() { return _downPos; };
+        virtual int64_t readAvailable() { return _downPos - _readPos; };
         virtual int64_t speed() = 0;
         
     protected:
@@ -46,6 +53,9 @@ namespace TT {
         uint64_t _length;
         uint64_t _readPos;
         uint64_t _downPos;
+        
+        Cond _cond;
+        ByteBuffer _buffer;
     
     };
 }
