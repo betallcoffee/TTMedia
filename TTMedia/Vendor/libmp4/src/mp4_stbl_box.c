@@ -154,7 +154,7 @@ static int stbl_box_destroy(struct mp4_box *box)
 	return 0;
 }
 
-static uint32_t stbl_get_max_sample_size(struct mp4_box *box)
+static uint32_t stbl_get_max_sample_size(struct mp4_stbl_box *box)
 {
 	struct mp4_stbl_box *stbl;
 	struct mp4_stsz_box *stsz;
@@ -181,7 +181,7 @@ static uint32_t stbl_get_max_sample_size(struct mp4_box *box)
 	return max_sample_size;
 }
 
-static uint32_t stbl_get_sample_size(struct mp4_box *box, uint32_t sample_id)
+static uint32_t stbl_get_sample_size(struct mp4_stbl_box *box, uint32_t sample_id)
 {
 	struct mp4_stbl_box *stbl;
 	struct mp4_stsz_box *stsz;
@@ -204,7 +204,7 @@ static uint32_t stbl_get_sample_size(struct mp4_box *box, uint32_t sample_id)
 	return stsz->entry_size[sample_id];
 }
 
-static int stbl_get_sample_times(struct mp4_box *box, uint32_t sample_id,
+static int stbl_get_sample_times(struct mp4_stbl_box *box, uint32_t sample_id,
 								 uint64_t * duration, uint64_t * dts)
 {
 	struct mp4_stbl_box *stbl = (struct mp4_stbl_box *) box;
@@ -248,7 +248,7 @@ static int stbl_get_sample_times(struct mp4_box *box, uint32_t sample_id,
 	return 0;
 }
 
-static int stbl_get_sample_cts_offset(struct mp4_box *box, uint32_t sample_id,
+static int stbl_get_sample_cts_offset(struct mp4_stbl_box *box, uint32_t sample_id,
 									  uint32_t * cts_offset)
 {
 	struct mp4_stbl_box *stbl = (struct mp4_stbl_box *) box;
@@ -288,7 +288,7 @@ static int stbl_get_sample_cts_offset(struct mp4_box *box, uint32_t sample_id,
 	return 0;
 }
 
-static int stbl_get_sample_file_offset(struct mp4_box *box, uint32_t sample_id,
+static int stbl_get_sample_file_offset(struct mp4_stbl_box *box, uint32_t sample_id,
 									   uint64_t * offset)
 {
 	struct mp4_stbl_box *stbl = (struct mp4_stbl_box *) box;
@@ -339,7 +339,7 @@ static int stbl_get_sample_file_offset(struct mp4_box *box, uint32_t sample_id,
 	return 0;
 }
 
-static int stbl_get_sample_sync_flag(struct mp4_box *box, uint32_t sample_id,
+static int stbl_get_sample_sync_flag(struct mp4_stbl_box *box, uint32_t sample_id,
 									 uint8_t * is_sync)
 {
 	struct mp4_stbl_box *stbl = (struct mp4_stbl_box *) box;
@@ -372,7 +372,7 @@ static int stbl_get_sample_sync_flag(struct mp4_box *box, uint32_t sample_id,
 	return 0;
 }
 
-static int stbl_get_visual_info(struct mp4_box *box, uint32_t * width,
+static int stbl_get_visual_info(struct mp4_stbl_box *box, uint32_t * width,
 								uint32_t * height)
 {
 	struct mp4_stbl_box *stbl = (struct mp4_stbl_box *) box;
@@ -409,7 +409,7 @@ static int stbl_get_visual_info(struct mp4_box *box, uint32_t * width,
 	return 0;
 }
 
-static int stbl_get_audio_info(struct mp4_box *box, uint32_t * sample_rate,
+static int stbl_get_audio_info(struct mp4_stbl_box *box, uint32_t * sample_rate,
 							   uint32_t * channels, uint8_t * bits_per_sample,
 							   uint8_t * version)
 {
@@ -450,7 +450,7 @@ static int stbl_get_audio_info(struct mp4_box *box, uint32_t * sample_rate,
 	return 0;
 }
 
-int stbl_get_h264_seq_pic_hdrs(struct mp4_box *box,
+int stbl_get_h264_seq_pic_hdrs(struct mp4_stbl_box *box,
 							   uint8_t * nr_of_seq_hdr,
 							   char ***seq_hdr,
 							   uint16_t ** seq_hdr_size,
@@ -532,7 +532,7 @@ int stbl_get_h264_seq_pic_hdrs(struct mp4_box *box,
 	return 0;
 }
 
-int stbl_get_h264_dec_config_info(struct mp4_box *box,
+int stbl_get_h264_dec_config_info(struct mp4_stbl_box *box,
 								  uint8_t * nalu_size, uint8_t * cfg_ver,
 								  uint8_t * profile_ind, uint8_t * profile_comp,
 								  uint8_t * level_ind)
@@ -589,7 +589,7 @@ int stbl_get_h264_dec_config_info(struct mp4_box *box,
 	return 0;
 }
 
-int stbl_find_sample_from_time(struct mp4_box *box, uint64_t when,
+int stbl_find_sample_from_time(struct mp4_stbl_box *box, uint64_t when,
 							   uint32_t * sample_id, uint32_t * prev_sample_id)
 {
 	struct mp4_stbl_box *stbl = (struct mp4_stbl_box *) box;

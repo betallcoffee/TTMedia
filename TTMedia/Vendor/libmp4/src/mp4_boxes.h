@@ -616,32 +616,32 @@ struct mp4_stbl_box {
 	struct mp4_box *stdp;
 	struct mp4_box *sdtp;
 
-	 uint32_t(*get_sample_size) (struct mp4_box * stbl, uint32_t sample_id);
-	 uint32_t(*get_max_sample_size) (struct mp4_box * stbl);
-	int (*get_sample_times) (struct mp4_box * stbl, uint32_t sample_id,
+	 uint32_t(*get_sample_size) (struct mp4_stbl_box * stbl, uint32_t sample_id);
+	 uint32_t(*get_max_sample_size) (struct mp4_stbl_box * stbl);
+	int (*get_sample_times) (struct mp4_stbl_box * stbl, uint32_t sample_id,
 							 uint64_t * duration, uint64_t * dts);
-	int (*get_sample_cts_offset) (struct mp4_box * stbl, uint32_t sample_id,
+	int (*get_sample_cts_offset) (struct mp4_stbl_box * stbl, uint32_t sample_id,
 								  uint32_t * cts);
-	int (*get_sample_sync_flag) (struct mp4_box * stbl, uint32_t sample_id,
+	int (*get_sample_sync_flag) (struct mp4_stbl_box * stbl, uint32_t sample_id,
 								 uint8_t * is_sync);
-	int (*get_sample_file_offset) (struct mp4_box * stbl, uint32_t sample_id,
+	int (*get_sample_file_offset) (struct mp4_stbl_box * stbl, uint32_t sample_id,
 								   uint64_t * offset);
-	int (*get_visual_info) (struct mp4_box * box, uint32_t * width,
+	int (*get_visual_info) (struct mp4_stbl_box * box, uint32_t * width,
 							uint32_t * height);
-	int (*get_audio_info) (struct mp4_box * box, uint32_t * sample_rate,
+	int (*get_audio_info) (struct mp4_stbl_box * box, uint32_t * sample_rate,
 						   uint32_t * channels, uint8_t * bits_per_sample,
 						   uint8_t * version);
-	int (*get_h264_seq_pic_hdrs) (struct mp4_box * box,
+	int (*get_h264_seq_pic_hdrs) (struct mp4_stbl_box * box,
 								  uint8_t * nr_of_seq_hdr, char ***seq_hdr,
 								  uint16_t ** seq_hdr_size,
 								  uint8_t * nr_of_pic_hdr, char ***pic_hdr,
 								  uint16_t ** pic_hdr_size);
-	int (*get_h264_dec_config_info) (struct mp4_box * box, uint8_t * nalu_size,
+	int (*get_h264_dec_config_info) (struct mp4_stbl_box * box, uint8_t * nalu_size,
 									 uint8_t * cfg_ver,
 									 uint8_t * profile_ind,
 									 uint8_t * profile_comp,
 									 uint8_t * level_ind);
-	int (*find_sample_from_time) (struct mp4_box * box, uint64_t when,
+	int (*find_sample_from_time) (struct mp4_stbl_box * box, uint64_t when,
 								  uint32_t * sample_id,
 								  uint32_t * prev_sample_id);
 
@@ -699,6 +699,8 @@ struct mp4_moov_box {
 	 uint32_t(*get_nr_of_tracks) (struct mp4_moov_box * moov);
 	 uint32_t(*get_track_id) (struct mp4_moov_box * moov, uint32_t index);
 	 uint32_t(*get_track_idx) (struct mp4_moov_box * moov, uint32_t track_id);
+     struct mp4_stbl_box * (*get_track_of_idx) (struct mp4_moov_box *moov, uint32_t index);
+    
 	 uint32_t(*is_track_enable) (struct mp4_moov_box * moov, uint32_t track_id);
 	 uint64_t(*get_track_duration) (struct mp4_moov_box * moov,
 									uint32_t track_id);

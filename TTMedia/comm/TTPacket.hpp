@@ -24,16 +24,21 @@ extern "C" {
 namespace TT {
     class Packet {
     public:
+        Packet();
         Packet(AVPacket *avpacket);
         ~Packet();
         
-        const uint8_t *data() { return _avpacket->data; }
-        size_t size() { return _avpacket->size; }
+        bool allocData(size_t capacity);
+        
+        TT_PROPERTY_DECL_READONLY(uint8_t *, data);
+        TT_PROPERTY_DECL_READONLY(size_t, capacity);
+        TT_PROPERTY_DECL(size_t, size);
         
         PacketType type;
         int64_t dts;
         int64_t pts;
         int64_t pos;
+        int64_t duration;
         
         AVPacket *avpacket() { return _avpacket; }
         

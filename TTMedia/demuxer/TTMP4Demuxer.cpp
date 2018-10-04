@@ -20,7 +20,14 @@ MP4Demuxer::MP4Demuxer() : _url(nullptr)
 , _newBox(nullptr)
 , _moov(nullptr)
 , _mdat(nullptr)
-, _brand(nullptr) {
+, _brand(nullptr)
+, _audioTrackIdx(-1)
+, _audioNextSampleIdx(-1)
+, _audioNextOffset(0)
+, _videoTrackIdx(-1)
+, _videoNextSampleIdx(-1)
+, _videoNextOffset(0)
+{
     _rootBoxes = mp4_list_create();
 }
 
@@ -63,6 +70,9 @@ bool MP4Demuxer::open(std::shared_ptr<URL> url) {
                 }
             } while (_moov == nullptr || _mdat == nullptr);
             
+            dumpStreamInfo();
+            _isOpened = true;
+            
             return true;
         }
     }
@@ -86,7 +96,90 @@ std::shared_ptr<Packet> MP4Demuxer::read() {
         return nullptr;
     }
     
-    return nullptr;
+    std::shared_ptr<Packet> packet = nullptr;
+    if (_videoTrackIdx >= 0 && _audioTrackIdx < 0) {
+        packet = readVideo();
+    } else if (_videoTrackIdx < 0 && _audioTrackIdx >= 0) {
+        packet = readAudio();
+    } else if (_videoTrackIdx >= 0 && _audioTrackIdx >= 0) {
+        if (_videoNextOffset < _audioNextOffset) {
+            packet = readVideo();
+        } else if (_videoNextOffset > _audioNextOffset) {
+            packet = readAudio();
+        } else {
+            LOG(ERROR) << "videoNextOffset is equal audioNextOffset: " << _audioNextOffset;
+        }
+    } else {
+        LOG(ERROR) << "There is none track";
+    }
+    
+    return packet;
+}
+
+std::shared_ptr<Packet> MP4Demuxer::readAudio() {
+    if (_audioTrackIdx < 0) {
+        return nullptr;
+    }
+    
+    std::shared_ptr<Packet> packet = std::make_shared<Packet>();
+    packet->type = kPacketTypeAudio;
+    packet->pos = _audioNextOffset;
+    packet->dts = _moov->get_sample_dts(_moov, _audioTrackIdx, _audioNextSampleIdx);
+    packet->duration = _moov->get_sample_duration(_moov, _audioTrackIdx, _audioNextSampleIdx);
+    struct mp4_stbl_box *audioStbl = _moov->get_track_of_idx(_moov, _audioTrackIdx);
+    uint32_t sampleCts = 0;
+    audioStbl->get_sample_cts_offset(audioStbl, _audioNextSampleIdx, &sampleCts);
+    packet->pts = packet->dts + sampleCts;
+    
+    uint32_t sampleSize = _moov->get_sample_size(_moov, _audioTrackIdx, _audioNextSampleIdx);
+    if (readPacketData(packet, sampleSize)) {
+        _audioNextSampleIdx++;
+        audioStbl->get_sample_file_offset(audioStbl, _audioNextSampleIdx, &_audioNextOffset);
+        return packet;
+    } else {
+        return nullptr;
+    }
+}
+
+std::shared_ptr<Packet> MP4Demuxer::readVideo() {
+    if (_videoTrackIdx < 0) {
+        return nullptr;
+    }
+    
+    std::shared_ptr<Packet> packet = std::make_shared<Packet>();
+    packet->type = kPacketTypeVideo;
+    packet->pos = _videoNextOffset;
+    packet->dts = _moov->get_sample_dts(_moov, _videoTrackIdx, _videoNextSampleIdx);
+    packet->duration = _moov->get_sample_duration(_moov, _videoTrackIdx, _videoNextSampleIdx);
+    struct mp4_stbl_box *videoStbl = _moov->get_track_of_idx(_moov, _videoTrackIdx);
+    uint32_t sampleCts = 0;
+    videoStbl->get_sample_cts_offset(videoStbl, _videoNextSampleIdx, &sampleCts);
+    packet->pts = packet->dts + sampleCts;
+    
+    uint32_t sampleSize = _moov->get_sample_size(_moov, _videoTrackIdx, _videoNextSampleIdx);
+    if (readPacketData(packet, sampleSize)) {
+        _videoNextSampleIdx++;
+        videoStbl->get_sample_file_offset(videoStbl, _videoNextSampleIdx, &_videoNextOffset);
+        return packet;
+    } else {
+        return nullptr;
+    }
+}
+
+bool MP4Demuxer::readPacketData(std::shared_ptr<Packet> packet, size_t size) {
+    if (packet == nullptr || size <= 0) {
+        return false;
+    }
+    
+    packet->allocData(size);
+    uint8_t *data = packet->data();
+    size_t readSize = _io->read(data, size);
+    if (readSize == size) {
+        packet->setsize(size);
+        return true;
+    } else {
+        return false;
+    }
 }
 
 bool MP4Demuxer::seek(uint64_t pos) {
@@ -163,7 +256,7 @@ uint64_t MP4Demuxer::readAvailable() {
 }
 
 bool MP4Demuxer::parseBox() {
-    size_t readSize = _io->readAvailable();
+    int64_t readSize = _io->readAvailable();
     if (readSize < 8) {
         LOG(ERROR) << "can not read box header, so close";
         return false;
@@ -297,4 +390,121 @@ bool MP4Demuxer::parseBoxBody() {
     }
     _newBox->size = _newBoxSize;
     return true;
+}
+
+void MP4Demuxer::dumpStreamInfo() {
+    if (nullptr == _moov) {
+        return;
+    }
+    
+    uint32_t trackCount = _moov->get_nr_of_tracks(_moov);
+    LOG(INFO) << "track count: " << trackCount;
+    for (int i = 0; i < trackCount; i++) {
+        std::shared_ptr<Stream> stream = std::make_shared<Stream>();
+        
+        uint32_t trackId = _moov->get_track_id(_moov, i);
+        uint64_t trackDuration = _moov->get_track_duration(_moov, trackId);
+        
+        uint32_t mediaType = _moov->get_media_type(_moov, trackId);
+        uint64_t mediaDuration = _moov->get_media_duration(_moov, trackId);
+        uint32_t mediaTimescale = _moov->get_media_timescale(_moov, trackId);
+        
+        uint32_t sampleCount = _moov->get_nr_of_samples(_moov, trackId);
+        
+        stream->setindex(i);
+        stream->settimeScale(mediaTimescale);
+        stream->setduration(mediaDuration);
+        
+        LOG(INFO) << "trackId: " << trackId << " trankDuration: " << trackDuration;
+        char typeFourcc[5];
+        mp4_fourcc_to_str(mediaType, typeFourcc, sizeof(typeFourcc));
+        LOG(INFO) << "mediaType: " << typeFourcc;
+        LOG(INFO) << "mediaDuration: " << mediaDuration << " mediaTimescale: " << mediaTimescale;
+        
+        LOG(INFO) << "sampleCount: " << sampleCount;
+        
+        switch (mediaType) {
+            case MP4_FOURCC('v', 'i', 'd', 'e'): {
+                _videoTrackIdx = i;
+                _videoTrackId = trackId;
+                stream->settype(kStreamTypeVideo);
+                _videoStream = stream;
+                
+                dumpStreamVideoInfo();
+            }
+                break;
+            case MP4_FOURCC('s', 'o', 'u', 'n'): {
+                _audioTrackIdx = i;
+                _audioTrackId = trackId;
+                stream->settype(kStreamTypeAudio);
+                _audioStream = stream;
+                
+                dumpStreamAudioInfo();
+            }
+                break;
+            default:
+                break;
+        }
+    }
+}
+
+void MP4Demuxer::dumpStreamAudioInfo() {
+    _audioNextSampleIdx = 0;
+    _audioNextOffset = 0;
+    struct mp4_stbl_box *audioStbl = _moov->get_track_of_idx(_moov, _audioTrackIdx);
+    audioStbl->get_sample_file_offset(audioStbl, _audioNextSampleIdx, &_audioNextOffset);
+    
+    _audioCodecParams = std::make_shared<CodecParams>();
+    _audioCodecParams->codecType = kMediaTypeAudio;
+    uint32_t sampleRate = 0;
+    uint32_t channels = 0;
+    uint8_t bitsPerSample = 0;
+    uint8_t version = 0;
+    _moov->get_audio_info(_moov, _audioTrackId, &sampleRate, &channels, &bitsPerSample, &version);
+    _audioCodecParams->sampleRate = sampleRate;
+    _audioCodecParams->channels = channels;
+    _audioCodecParams->bits_per_raw_sample = bitsPerSample;
+}
+
+void MP4Demuxer::dumpStreamVideoInfo() {
+    _videoNextSampleIdx = 0;
+    _videoNextOffset = 0;
+    struct mp4_stbl_box *videoStbl = _moov->get_track_of_idx(_moov, _videoTrackIdx);
+    videoStbl->get_sample_file_offset(videoStbl, _videoNextSampleIdx, &_videoNextOffset);
+    
+    _videoCodecParams = std::make_shared<CodecParams>();
+    _videoCodecParams->codecType = kMediaTypeVideo;
+    uint32_t width = 0, height = 0;
+    _moov->get_visual_info(_moov, _videoTrackId, &width, &height);
+    _videoCodecParams->width = width;
+    _videoCodecParams->height = height;
+    
+    uint8_t seqHdrNum = 0;
+    char **seqHdr = nullptr;
+    uint16_t *seqHdrSize = nullptr;
+    
+    uint8_t picHdrNum = 0;
+    char **picHdr = nullptr;
+    uint16_t *picHdrSize = nullptr;
+    _moov->get_h264_seq_pic_hdrs(_moov, _videoTrackId,
+                                 &seqHdrNum, &seqHdr, &seqHdrSize,
+                                 &picHdrNum, &picHdr, &picHdrSize);
+    if (seqHdrNum <= 0 || picHdrNum <= 0) {
+        LOG(ERROR) << "Did not find sps/pps";
+    }
+    
+    size_t extraSize = seqHdrSize[0] + picHdrSize[0] + 8;
+    _videoStream->allocExtraData(extraSize);
+    uint8_t *extraData = _videoStream->extraData();
+    if (extraData) {
+        uint8_t startCode[4] = {0, 0, 0, 1};
+        int offset = 0;
+        memcpy(extraData + offset, startCode, 4);
+        offset += 4;
+        memcpy(extraData + offset, seqHdr[0], seqHdrSize[0]);
+        offset += seqHdrSize[0];
+        memcpy(extraData + offset, startCode, 4);
+        offset += 4;
+        memcpy(extraData + offset, picHdr[0], picHdrSize[0]);
+    }
 }

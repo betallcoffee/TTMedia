@@ -165,6 +165,35 @@ static uint32_t moov_get_track_idx(struct mp4_moov_box *moov, uint32_t track_id)
 	return 0;
 }
 
+static struct mp4_stbl_box *moov_get_track_of_idx(struct mp4_moov_box *moov, uint32_t index)
+{
+    struct mp4_trak_box *trak;
+    struct mp4_mdia_box *mdia;
+    struct mp4_minf_box *minf;
+    struct mp4_stbl_box *stbl;
+    
+    if (!moov)
+        return NULL;
+    
+    trak = (struct mp4_trak_box *) mp4_list_get(moov->trak_boxes, index);
+    if (!trak)
+        return NULL;
+    
+    mdia = (struct mp4_mdia_box *) trak->mdia;
+    if (!mdia)
+        return NULL;
+    
+    minf = (struct mp4_minf_box *) mdia->minf;
+    if (!minf)
+        return NULL;
+    
+    stbl = (struct mp4_stbl_box *) minf->stbl;
+    if (!stbl)
+        return NULL;
+    
+    return stbl;
+}
+
 static uint32_t moov_is_track_enable(struct mp4_moov_box *moov,
 									 uint32_t track_id)
 {
@@ -694,6 +723,7 @@ struct mp4_box *moov_box_create()
 	self->get_nr_of_tracks = moov_get_nr_of_tracks;
 	self->get_track_id = moov_get_track_id;
 	self->get_track_idx = moov_get_track_idx;
+    self->get_track_of_idx = moov_get_track_of_idx;
 	self->is_track_enable = moov_is_track_enable;
 	self->get_track_duration = moov_get_track_duration;
 	self->get_media_timescale = moov_get_media_timescale;

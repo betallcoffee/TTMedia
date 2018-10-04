@@ -61,6 +61,15 @@ namespace TT {
         int64_t parseBoxHeader(struct mp4_box **box, mp4_bits_t *bs);
         bool parseBoxBody();
         
+        void dumpStreamInfo();
+        void dumpStreamAudioInfo();
+        void dumpStreamVideoInfo();
+        
+        std::shared_ptr<Packet> readAudio();
+        std::shared_ptr<Packet> readVideo();
+        
+        bool readPacketData(std::shared_ptr<Packet> packet, size_t size);
+        
         std::shared_ptr<URL> _url;
         std::shared_ptr<IO> _io;
         
@@ -70,11 +79,6 @@ namespace TT {
         mp4_bits_t *_bitStream;
         struct mp4_box *_newBox;
         int64_t _newBoxSize;
-        enum ParseStatus {
-            kParseBoxHeader,
-            kParseBoxBody,
-        };
-        ParseStatus _parseStatus;
         
         /* moov box */
         struct mp4_moov_box *_moov;
@@ -85,6 +89,16 @@ namespace TT {
         
         /* link all the root boxes */
         mp4_list_t *_rootBoxes;
+        
+        int _audioTrackIdx;
+        uint32_t _audioTrackId;
+        uint32_t _audioNextSampleIdx;
+        uint64_t _audioNextOffset;
+        int _videoTrackIdx;
+        uint32_t _videoTrackId;
+        uint32_t _videoNextSampleIdx;
+        uint64_t _videoNextOffset;
+        
     };
 }
 
