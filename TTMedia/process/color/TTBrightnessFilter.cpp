@@ -26,7 +26,7 @@ static const GLchar *const kBrightnessFragmentShader = STRINGIZE
  );
 
 
-BrightnessFilter::BrightnessFilter() : _brightness(0.0), _brightnessUniform(kInvalid) {
+BrightnessFilter::BrightnessFilter() : _brightness(0.0), _brightnessUniform(kGLInvalid) {
     
 }
 

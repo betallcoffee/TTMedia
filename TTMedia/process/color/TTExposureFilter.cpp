@@ -24,7 +24,7 @@ static const GLchar *const kExposureFragmentShader = STRINGIZE
  }
  );
 
-ExposureFilter::ExposureFilter() : _exposure(0.0), _exposureUniform(kInvalid) {
+ExposureFilter::ExposureFilter() : _exposure(0.0), _exposureUniform(kGLInvalid) {
     
 }
 

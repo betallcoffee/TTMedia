@@ -12,9 +12,9 @@
 
 using namespace TT;
 
-const static GLint kInvalid = 0;
+const static GLint kGLInvalid = 0;
 
-Program::Program() : _prog(kInvalid), _vertShader(kInvalid), _fragShader(kInvalid) {
+Program::Program() : _prog(kGLInvalid), _vertShader(kGLInvalid), _fragShader(kGLInvalid) {
     
 }
 
@@ -25,21 +25,21 @@ Program::~Program() {
 void Program::reset() {
     if (_vertShader) {
         glDeleteShader(_vertShader);
-        _vertShader = kInvalid;
+        _vertShader = kGLInvalid;
     }
     if (_fragShader) {
         glDeleteShader(_fragShader);
-        _fragShader = kInvalid;
+        _fragShader = kGLInvalid;
     }
     
     if (_prog) {
         glDeleteProgram(_prog);
-        _prog = kInvalid;
+        _prog = kGLInvalid;
     }
 }
 
 bool Program::isCompiled() {
-    if (_prog != kInvalid) {
+    if (_prog != kGLInvalid) {
         return true;
     }
     return false;
@@ -49,7 +49,7 @@ bool Program::compile(const GLchar *vertShader, const GLchar *fragShader) {
     reset();
     
     _prog = glCreateProgram();
-    if (_prog == kInvalid) {
+    if (_prog == kGLInvalid) {
         reset();
         return false;
     }
@@ -57,7 +57,7 @@ bool Program::compile(const GLchar *vertShader, const GLchar *fragShader) {
     _vertShader = compileShader(GL_VERTEX_SHADER, vertShader);
     _fragShader = compileShader(GL_FRAGMENT_SHADER, fragShader);
     
-    if (_vertShader == kInvalid ||  _fragShader == kInvalid) {
+    if (_vertShader == kGLInvalid ||  _fragShader == kGLInvalid) {
         reset();
         return false;
     }
@@ -96,7 +96,7 @@ GLuint Program::compileShader(GLenum type, const GLchar *source) {
         }
         
         glDeleteShader(shader);
-        return kInvalid;
+        return kGLInvalid;
     }
 
     return shader;

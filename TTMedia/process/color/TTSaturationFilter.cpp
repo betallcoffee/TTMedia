@@ -30,7 +30,7 @@ static const GLchar *const kSaturationFragmentShader = STRINGIZE
  }
  );
 
-SaturationFilter::SaturationFilter() : _saturation(1.0), _saturationUniform(kInvalid) {
+SaturationFilter::SaturationFilter() : _saturation(1.0), _saturationUniform(kGLInvalid) {
     
 }
 
