@@ -11,18 +11,23 @@
 
 #include <string>
 #include <pthread.h>
+#include <map>
+
+#include "TTdef.h"
+
 #include "TTQueue.hpp"
 
 namespace TT {
     
     class Message {
     public:
-        Message(int code) { _code = code; }
+        typedef std::function<void(std::shared_ptr<Message> msg)> MessageHandle;
+        
+        Message(int code, MessageHandle handle = nullptr);
         ~Message() {}
         
         int code() { return _code; }
         
-        typedef std::function<void(std::shared_ptr<Message> msg)> MessageHandle;
         void setMessageHandle(MessageHandle handle) { _handle = handle; }
         MessageHandle handle() { return _handle; }
         
@@ -40,10 +45,14 @@ namespace TT {
         typedef std::function<void(std::shared_ptr<Message> msg)> MessageHandle;
         void setMessageHandle(MessageHandle handle);
         
+        bool start();
         void stop();
         
-        void postMessage(int msgCode);
+        void postMessage(int code);
         void postMessage(std::shared_ptr<Message> message);
+        
+        void emitMessage(int code);
+        void signalMessage(std::shared_ptr<Message> message);
         
     private:
         static void *messageThreadEntry(void *opaque);
@@ -51,6 +60,7 @@ namespace TT {
         
         Queue<std::shared_ptr<Message>> _msgQueue;
         MessageHandle _handle;
+        std::map<int, std::shared_ptr<Message>> _handleMap;
         
         bool _isRunning;
         std::string _threadName;

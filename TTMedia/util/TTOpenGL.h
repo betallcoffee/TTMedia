@@ -9,5 +9,6 @@
 #ifndef TTOpenGL_h
 #define TTOpenGL_h
 
+static const GLint kGLInvalid = 0;
 
 #endif /* TTOpenGL_h */

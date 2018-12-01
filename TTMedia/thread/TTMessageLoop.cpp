@@ -10,6 +10,13 @@
 
 using namespace TT;
 
+Message::Message(int code, MessageHandle handle)
+: _code(code)
+, _handle(handle)
+{
+    
+}
+
 MessageLoop::MessageLoop() :
 _isRunning(true),
 _msgMutex(PTHREAD_MUTEX_INITIALIZER),
@@ -33,17 +40,33 @@ void MessageLoop::setMessageHandle(MessageLoop::MessageHandle handle) {
     _handle = handle;
 }
 
+bool MessageLoop::start() {
+    Mutex m(&_msgMutex);
+    _isRunning = true;
+    return true;
+}
+
 void MessageLoop::stop() {
     Mutex m(&_msgMutex);
     _isRunning = false;
 }
 
-void MessageLoop::postMessage(int msgCode) {
-    std::shared_ptr<Message> message = std::make_shared<Message>(msgCode);
+void MessageLoop::postMessage(int code) {
+    std::shared_ptr<Message> message = std::make_shared<Message>(code);
     postMessage(message);
 }
+
 void MessageLoop::postMessage(std::shared_ptr<Message> message) {
     _msgQueue.push(message);
+}
+
+void MessageLoop::emitMessage(int code) {
+    std::shared_ptr<Message> message = _handleMap[code];
+    postMessage(message);
+}
+
+void MessageLoop::signalMessage(std::shared_ptr<Message> message) {
+    _handleMap[message->code()] = message;
 }
 
 void *MessageLoop::messageThreadEntry(void *opaque) {

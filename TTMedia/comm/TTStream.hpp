@@ -28,6 +28,7 @@ namespace TT {
         
         TT_PROPERTY_DECL(int, index);
         TT_PROPERTY_DECL(StreamType, type);
+        TT_PROPERTY_DECL(CodecID, codecID);
         TT_PROPERTY_DECL(uint32_t, timeScale);
         TT_PROPERTY_DECL(uint64_t, duration);
         TT_PROPERTY_DECL_READONLY(uint8_t *, extraData);

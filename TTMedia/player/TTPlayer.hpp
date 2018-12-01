@@ -11,10 +11,13 @@
 
 #include <pthread.h>
 
+#include "TTdef.h"
 #include "TTQueue.hpp"
 #include "TTURL.hpp"
 #include "TTCond.hpp"
 #include "TTClock.hpp"
+
+#include "TTDemuxerControl.hpp"
 
 #include "TTAudioQueue.hpp"
 #include "TTRender.hpp"
@@ -28,6 +31,9 @@ namespace TT {
     class AudioCodec;
     class VideoCodec;
     
+    class DemuxerControl;
+    class PlayerDemuxerObserver;
+    
     typedef enum {
         kPlayerNone,
         kPlayerError,
@@ -39,7 +45,7 @@ namespace TT {
         kPlayerQuit,
     }ePlayerStatus;
     
-    class Player {
+    class Player : public std::enable_shared_from_this<Player> {
     public:
         Player();
         ~Player();
@@ -57,10 +63,14 @@ namespace TT {
         
         void bindFilter(std::shared_ptr<Filter> filter);
         
+        friend PlayerDemuxerObserver;
+        
     private:
         void setStatus(ePlayerStatus status);
         void waitStatusChange();
         bool open();
+        bool openAudio();
+        bool openVideo();
         bool close();
         
         void quit();
@@ -68,9 +78,6 @@ namespace TT {
         
         static void *inputThreadEntry(void *arg);
         void inputLoop();
-        
-        static void *demuxThreadEntry(void *arg);
-        void demuxLoop();
         
         static void *videoThreadEntry(void *arg);
         void videoLoop();
@@ -94,7 +101,8 @@ namespace TT {
         pthread_cond_t _statusCond;
         pthread_mutex_t _statusMutex;
         
-        std::shared_ptr<Demuxer> _demuxer;
+        std::shared_ptr<DemuxerControl> _demuxerControl;
+        std::shared_ptr<PlayerDemuxerObserver> _demuxerObserver;
         Queue<std::shared_ptr<Packet>> _vPacketQueue;
         Queue<std::shared_ptr<Packet>> _aPacketQueue;
         
@@ -107,11 +115,6 @@ namespace TT {
         pthread_t _inputThread;
         pthread_cond_t _inputCond;
         pthread_mutex_t _inputMutex;
-        
-        pthread_t _demuxThread;
-        pthread_cond_t _demuxCond;
-        pthread_mutex_t _demuxMutex;
-        bool _demuxing;
         
         pthread_t _audioThread;
         pthread_cond_t _audioCond;
@@ -137,6 +140,18 @@ namespace TT {
         Clock _vClock;
         Clock _eClock;
         int64_t _vPTS;
+    };
+    
+    class PlayerDemuxerObserver : public DemuxerObserver {
+    public:
+        PlayerDemuxerObserver() {};
+        ~PlayerDemuxerObserver() {};
+        
+        virtual void opened() override;
+        virtual void closed() override;
+        virtual void error() override;
+        
+        TT_PROPERTY_DECL(std::weak_ptr<Player>, player);
     };
 }
 

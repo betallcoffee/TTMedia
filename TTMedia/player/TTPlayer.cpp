@@ -21,6 +21,8 @@
 #include "TTAudioCodec.hpp"
 #include "TTVideoCodec.hpp"
 
+#include "TTDemuxerControl.hpp"
+
 #include "TTFilter.hpp"
 
 using namespace TT;
@@ -44,7 +46,6 @@ Player::Player() : _status(kPlayerNone),
  _vPacketQueue("video_packet_queue", kMaxPacketCount), _aPacketQueue("audio_packet_queue", kMaxPacketCount),
  _vFrameQueue("video_frame_queue", kMaxFrameCount), _aFrameQueue("audio_frame_queue", kMaxFrameCount),
  _inputCond(PTHREAD_COND_INITIALIZER), _inputMutex(PTHREAD_MUTEX_INITIALIZER),
- _demuxCond(PTHREAD_COND_INITIALIZER), _demuxMutex(PTHREAD_MUTEX_INITIALIZER),
  _audioCond(PTHREAD_COND_INITIALIZER), _audioMutex(PTHREAD_MUTEX_INITIALIZER), _audioDecoding(false),
  _videoCond(PTHREAD_COND_INITIALIZER), _videoMutex(PTHREAD_MUTEX_INITIALIZER), _videoDecoding(false),
  _renderCond(PTHREAD_COND_INITIALIZER), _renderMutex(PTHREAD_MUTEX_INITIALIZER), _renderring(false),
@@ -54,7 +55,6 @@ Player::Player() : _status(kPlayerNone),
      el::Loggers::setLoggingLevel(el::Level::Info);
      LOG(DEBUG) << "ffmpeg build configure: " << avcodec_configuration();
      pthread_create(&_inputThread, nullptr, Player::inputThreadEntry, this);
-     pthread_create(&_demuxThread, nullptr, Player::demuxThreadEntry, this);
      pthread_create(&_audioThread, nullptr, Player::audioThreadEntry, this);
      pthread_create(&_videoThread, nullptr, Player::videoThreadEntry, this);
      pthread_create(&_renderThread, nullptr, Player::renderThreadEntry, this);
@@ -170,25 +170,31 @@ bool Player::open() {
         _vClock.reset();
         _eClock.reset();
         
-        _demuxer = Demuxer::createDemuxer(_url);
-        _demuxer->open(_url);
-        
-        if (_demuxer->hasAudio()) {
-            _audioCodec = _demuxer->audioCodec();
-            _audioCodec->setCodecCallback(std::bind(&Player::audioCodecCB, this, std::placeholders::_1));
-            _audioCodec->open();
-        }
-        
-        if (_demuxer->hasVideo()) {
-            _videoCodec = _demuxer->videoCodec();
-            _videoCodec->open();
-        }
-        
-        setMasterSyncType(AV_SYNC_AUDIO_MASTER);
-        setStatus(kPlayerPlaying);
+        _demuxerControl = std::make_shared<DemuxerControl>(_url);
+        _demuxerObserver = std::make_shared<PlayerDemuxerObserver>();
+        _demuxerObserver->setplayer(shared_from_this());
+        _demuxerControl->setobserver(_demuxerObserver);
+        _demuxerControl->start();
     }
     
     return true;;
+}
+
+bool Player::openAudio() {
+    if (_demuxerControl->demuxer()->hasAudio()) {
+        _audioCodec = _demuxerControl->demuxer()->audioCodec();
+        _audioCodec->setCodecCallback(std::bind(&Player::audioCodecCB, this, std::placeholders::_1));
+        return _audioCodec->open();
+    }
+    return false;
+}
+
+bool Player::openVideo() {
+    if (_demuxerControl->demuxer()->hasVideo()) {
+        _videoCodec = _demuxerControl->demuxer()->videoCodec();
+        return _videoCodec->open();
+    }
+    return false;
 }
 
 bool Player::close() {
@@ -199,11 +205,6 @@ bool Player::close() {
         _vPacketQueue.clear();
         _aFrameQueue.clear();
         _vFrameQueue.clear();
-        
-        Mutex d(&_demuxMutex);
-        while (_demuxing) {
-            pthread_cond_wait(&_demuxCond, &_demuxMutex);
-        }
         
         Mutex a(&_audioMutex);
         while (_audioDecoding) {
@@ -248,10 +249,7 @@ bool Player::close() {
             _videoCodec.reset();
         }
         
-        if (_demuxer) {
-            _demuxer->close();
-            _demuxer.reset();
-        }
+        _demuxerControl->stop();
         
         setStatus(kPlayerStoped);
     }
@@ -299,49 +297,6 @@ void Player::inputLoop() {
             default:
             {
                 usleep(1000);
-                break;
-            }
-        }
-    }
-}
-
-void *Player::demuxThreadEntry(void *arg) {
-    Player *self = (Player *)arg;
-    self->demuxLoop();
-    return nullptr;
-}
-
-void Player::demuxLoop() {
-    while (!isQuit()) {
-        switch (_status) {
-            case kPlayerPlaying:
-            {
-                Mutex m(&_demuxMutex);
-                _demuxing = true;
-                std::shared_ptr<Packet> packet = _demuxer->read();
-                if (packet) {
-                    switch (packet->type) {
-                        case kPacketTypeAudio:
-                            _aPacketQueue.push(packet);
-                            break;
-                        case kPacketTypeVideo:
-                            _vPacketQueue.push(packet);
-                            break;
-                        default:
-                            break;
-                    }
-                } else {
-                    usleep(1000);
-                }
-                
-                _demuxing = false;
-                pthread_cond_broadcast(&_demuxCond);
-                
-                break;
-            }
-            default:
-            {
-                waitStatusChange();
                 break;
             }
         }
@@ -509,12 +464,12 @@ std::shared_ptr<Frame> Player::audioQueueCB() {
 
 void Player::setMasterSyncType(AVSyncClock clock) {
     if (clock == AV_SYNC_VIDEO_MASTER) {
-        if (_demuxer->hasVideo())
+        if (_demuxerControl->demuxer()->hasVideo())
             _clock = AV_SYNC_VIDEO_MASTER;
         else
             _clock = AV_SYNC_AUDIO_MASTER;
     } else if (clock == AV_SYNC_AUDIO_MASTER) {
-        if (_demuxer->hasAudio())
+        if (_demuxerControl->demuxer()->hasAudio())
             _clock = AV_SYNC_AUDIO_MASTER;
         else
             _clock = AV_SYNC_EXTERNAL_CLOCK;
@@ -537,5 +492,26 @@ double Player::getMasterClock() {
             break;
     }
     return val;
+}
+
+#pragma mark PlayerDemuxerObserver
+TT_PROPERTY_IMPL(PlayerDemuxerObserver, std::weak_ptr<Player>, player)
+
+void PlayerDemuxerObserver::opened() {
+    std::shared_ptr<Player> player = _player.lock();
+    if (player) {
+        player->setMasterSyncType(AV_SYNC_AUDIO_MASTER);
+        player->openAudio();
+        player->openVideo();
+        player->setStatus(kPlayerPlaying);
+    }
+}
+
+void PlayerDemuxerObserver::closed() {
+    
+}
+
+void PlayerDemuxerObserver::error() {
+    
 }
 

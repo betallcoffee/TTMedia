@@ -8,7 +8,7 @@
 
 #include "TTShaderYUV420p.hpp"
 
-const static GLint kInvalid = 0;
+const static GLint kGLInvalid = 0;
 
 static const GLfloat kColorConversionMatrix709[] = {
     1.164,  1.164,  1.164,
@@ -57,7 +57,7 @@ bool ShaderYUV420p::resolveUniforms(GLuint program) {
         return false;
     }
     
-    if (program != kInvalid) {
+    if (program != kGLInvalid) {
         _uniformSamplers[0] = glGetUniformLocation(program, "s_texture_y");
         _uniformSamplers[1] = glGetUniformLocation(program, "s_texture_u");
         _uniformSamplers[2] = glGetUniformLocation(program, "s_texture_v");

@@ -17,7 +17,7 @@
 
 using namespace TT;
 
-const static GLint kInvalid = 0;
+static const GLint kGLInvalid = 0;
 
 static const GLchar *const vertexShaderString = STRINGIZE
 (
@@ -40,7 +40,7 @@ Shader::Shader() : _type(kTextureTypeRGB),
 }
 
 bool Shader::resolveUniforms(GLuint program) {
-    if (program != kInvalid) {
+    if (program != kGLInvalid) {
         _vertexLocation = glGetAttribLocation(program, "position");
         _texCoordLocation = glGetAttribLocation(program, "texcoord");
         return true;
@@ -48,11 +48,11 @@ bool Shader::resolveUniforms(GLuint program) {
     return false;
 }
 
-Render::Render() : _framebuffer(kInvalid),
- _renderbuffer(kInvalid),
- _backingWidth(kInvalid),
- _backingHeight(kInvalid),
- _program(kInvalid), _shader(nullptr),
+Render::Render() : _framebuffer(kGLInvalid),
+ _renderbuffer(kGLInvalid),
+ _backingWidth(kGLInvalid),
+ _backingHeight(kGLInvalid),
+ _program(kGLInvalid), _shader(nullptr),
  _contentMode(kContentModeScaleAspectFit), _rotationMode(kNoRotation){
     
 }
@@ -106,7 +106,7 @@ bool Render::displayFrame(std::shared_ptr<Frame> frame) {
 }
 
 bool Render::createFrameBuffer() {
-    if (_framebuffer != kInvalid) {
+    if (_framebuffer != kGLInvalid) {
         return true;
     }
     
@@ -116,7 +116,7 @@ bool Render::createFrameBuffer() {
 }
 
 bool Render::bindFrameBuffer() {
-    if (_framebuffer == kInvalid) {
+    if (_framebuffer == kGLInvalid) {
         return false;
     }
     
@@ -126,7 +126,7 @@ bool Render::bindFrameBuffer() {
 }
 
 bool Render::createRenderBuffer() {
-    if (_renderbuffer != kInvalid ) {
+    if (_renderbuffer != kGLInvalid ) {
         return true;
     }
     
@@ -136,7 +136,7 @@ bool Render::createRenderBuffer() {
 }
 
 bool Render::bindRenderBuffer() {
-    if (_renderbuffer == kInvalid) {
+    if (_renderbuffer == kGLInvalid) {
         return false;
     }
     
@@ -182,9 +182,9 @@ bool Render::loadShader() {
     
     GLuint vertShader = 0, fragShader = 0;
     
-    if (_program > kInvalid) {
+    if (_program > kGLInvalid) {
         glDeleteProgram(_program);
-        _program = kInvalid;
+        _program = kGLInvalid;
     }
     
     vertShader = compileShader(GL_VERTEX_SHADER, _shader->vertexShader());
@@ -222,7 +222,7 @@ exit:
     
     if (!result){
         glDeleteProgram(_program);
-        _program = kInvalid;
+        _program = kGLInvalid;
     }
     
     return result;
@@ -231,8 +231,8 @@ exit:
 GLuint Render::compileShader(GLenum type, const GLchar *source) {
     
     GLuint shader = glCreateShader(type);
-    if (shader == kInvalid || shader == GL_INVALID_ENUM) {
-        return kInvalid;
+    if (shader == kGLInvalid || shader == GL_INVALID_ENUM) {
+        return kGLInvalid;
     }
     
     glShaderSource(shader, 1, &source, nullptr);
@@ -253,7 +253,7 @@ GLuint Render::compileShader(GLenum type, const GLchar *source) {
     glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
     if (status == GL_FALSE) {
         glDeleteShader(shader);
-        return kInvalid;
+        return kGLInvalid;
     }
     
     return shader;
