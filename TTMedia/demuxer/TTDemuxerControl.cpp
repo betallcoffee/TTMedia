@@ -16,10 +16,12 @@ using namespace TT;
 const static int kMaxPacketCount = 300;
 
 DemuxerControl::DemuxerControl(std::shared_ptr<URL> url)
-: _isDemuxing(false)
-, _demuxer(nullptr)
+: _demuxer(nullptr)
 {
     _url = url;
+    _vPacketQueue = std::make_shared<PacketQueue>("video_packet_queue", kMaxPacketCount);
+    _aPacketQueue = std::make_shared<PacketQueue>("audio_packet_queue", kMaxPacketCount);
+    
     _loop = std::make_shared<MessageLoop>("DemuxerControl");
     _loop->setMessageHandle(std::bind(&DemuxerControl::handleMessage, this, std::placeholders::_1));
     initMessages();
@@ -50,11 +52,10 @@ bool DemuxerControl::seek(int64_t millisecond) {
 
 void DemuxerControl::initMessages() {
     _loop->signalMessage(std::make_shared<Message>(kDemuxerOpen, [&](std::shared_ptr<Message> message) {
-        _vPacketQueue = std::make_shared<PacketQueue>("video_packet_queue", kMaxPacketCount);
-        _aPacketQueue = std::make_shared<PacketQueue>("audio_packet_queue", kMaxPacketCount);
+        _vPacketQueue->clear();
+        _aPacketQueue->clear();
         _demuxer = Demuxer::createDemuxer(_url);
         _demuxer->open(_url);
-        _isDemuxing = true;
         _loop->postMessage(kDemuxerRead);
         std::shared_ptr<DemuxerObserver> ob = _observer.lock();
         if (ob) {
@@ -64,7 +65,11 @@ void DemuxerControl::initMessages() {
     
     _loop->signalMessage(std::make_shared<Message>(kDemuxerClose, [&](std::shared_ptr<Message> message) {
         _demuxer->close();
-        _isDemuxing = false;
+        _demuxer = nullptr;
+        std::shared_ptr<DemuxerObserver> ob = _observer.lock();
+        if (ob) {
+            ob->closed();
+        }
     }));
     
     _loop->signalMessage(std::make_shared<Message>(kDemuxerRead, [&](std::shared_ptr<Message> message) {
@@ -80,6 +85,10 @@ void DemuxerControl::handleMessage(std::shared_ptr<Message> message) {
 }
 
 void DemuxerControl::readPacket() {
+    if (_demuxer == nullptr) {
+        return;
+    }
+    
     std::shared_ptr<Packet> packet = _demuxer->read();
     if (packet) {
         switch (packet->type) {
@@ -96,9 +105,7 @@ void DemuxerControl::readPacket() {
         usleep(1000);
     }
     
-    if (_isDemuxing) {
-        _loop->postMessage(kDemuxerRead);
-    }
+    _loop->postMessage(kDemuxerRead);
 }
 
 

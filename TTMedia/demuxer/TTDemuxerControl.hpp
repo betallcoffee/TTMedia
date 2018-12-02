@@ -62,7 +62,6 @@ namespace TT {
         void readPacket();
         
         std::shared_ptr<URL> _url;
-        bool _isDemuxing;
     };
 }
 

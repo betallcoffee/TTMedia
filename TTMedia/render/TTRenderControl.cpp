@@ -29,6 +29,7 @@ using namespace TT;
 #define AV_NOSYNC_THRESHOLD 10000.0
 
 RenderControl::RenderControl() {
+    _running = false;
     _vPTS = 0;
     _aClock.reset();
     _vClock.reset();
@@ -45,12 +46,13 @@ RenderControl::~RenderControl() {
 }
 
 bool RenderControl::start() {
-    _loop->emitMessage(kRenderRender);
+    _loop->emitMessage(kRenderOpen);
     return true;
 }
 
 bool RenderControl::stop() {
-    return false;
+    _loop->emitMessage(kRenderClose);
+    return true;
 }
 
 void RenderControl::updateAudioClock(int64_t pts) {
@@ -58,8 +60,17 @@ void RenderControl::updateAudioClock(int64_t pts) {
 }
 
 void RenderControl::initMessages() {
+    _loop->signalMessage(std::make_shared<Message>(kRenderOpen, [&](std::shared_ptr<Message> message) {
+        _running = true;
+        _loop->emitMessage(kRenderRender);
+    }));
+    
+    _loop->signalMessage(std::make_shared<Message>(kRenderClose, [&](std::shared_ptr<Message> message) {
+        _running = false;
+    }));
+    
     _loop->signalMessage(std::make_shared<Message>(kRenderRender, [&](std::shared_ptr<Message> message) {
-        this->render();
+        render();
     }));
 }
 
@@ -68,6 +79,10 @@ void RenderControl::handleMessage(std::shared_ptr<Message> message) {
 }
 
 void RenderControl::render() {
+    if (!_running) {
+        return;
+    }
+    
     std::shared_ptr<Frame> frame = _frameQueue->pop();
     if (frame) {
         int64_t delay = frame->pts - _vPTS;

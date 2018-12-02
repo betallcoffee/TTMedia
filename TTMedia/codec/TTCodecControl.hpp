@@ -59,9 +59,11 @@ namespace TT {
         TT_PROPERTY_DEF_READONLY(std::shared_ptr<FrameQueue>, frameQueue);
         
     private:
-        void initMessages();
+        virtual void initMessages();
         void handleMessage(std::shared_ptr<Message> message);
         
+    protected:
+        virtual bool open(std::shared_ptr<Stream> stream);
         virtual void decodePacket() {};
     };
     
@@ -70,8 +72,8 @@ namespace TT {
         VideoCodecControl();
         ~VideoCodecControl();
         
-        bool start(std::shared_ptr<Stream> stream) override;
     private:
+        bool open(std::shared_ptr<Stream> stream) override;
         void decodePacket() override;
     };
     
@@ -79,9 +81,9 @@ namespace TT {
     public:
         AudioCodecControl();
         ~AudioCodecControl();
-        
-        bool start(std::shared_ptr<Stream> stream) override;        
+              
     private:
+        bool open(std::shared_ptr<Stream> stream) override;
         void decodePacket() override;
     };
 }

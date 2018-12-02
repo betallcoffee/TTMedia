@@ -26,7 +26,7 @@ namespace TT {
     class FFDemuxer : public Demuxer {
     public:
         FFDemuxer();
-        ~FFDemuxer() {};
+        ~FFDemuxer();
         
         static int probe(std::shared_ptr<URL> url);
         

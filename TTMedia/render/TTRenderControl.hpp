@@ -57,6 +57,8 @@ namespace TT {
         void setMasterSyncType(AVSyncClock clock);
         double getMasterClock();
         
+        bool _running;
+        
         Render _render;
         
         Clock _aClock;

@@ -11,10 +11,18 @@
 
 using namespace TT;
 
-FFDemuxer::FFDemuxer() : _url(nullptr), _mutex(PTHREAD_MUTEX_INITIALIZER)
+FFDemuxer::FFDemuxer()
+: _url(nullptr)
+, _mutex(PTHREAD_MUTEX_INITIALIZER)
 , _isEOF(false)
-, _formatContext(nullptr), _option(nullptr) {
+, _formatContext(nullptr)
+, _option(nullptr)
+{
     
+}
+
+FFDemuxer::~FFDemuxer() {
+    close();
 }
 
 int FFDemuxer::probe(std::shared_ptr<URL> url) {
