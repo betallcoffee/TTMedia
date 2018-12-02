@@ -74,7 +74,7 @@ namespace TT {
         explicit Render();
         ~Render();
         
-        void bindContext(const RenderContext &context);
+        void bindContext(std::shared_ptr<RenderContext> context);
         bool displayFrame(std::shared_ptr<Frame> frame);
         
         bool createFrameBuffer();

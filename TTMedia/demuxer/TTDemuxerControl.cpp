@@ -23,11 +23,11 @@ DemuxerControl::DemuxerControl(std::shared_ptr<URL> url)
     _loop = std::make_shared<MessageLoop>("DemuxerControl");
     _loop->setMessageHandle(std::bind(&DemuxerControl::handleMessage, this, std::placeholders::_1));
     initMessages();
+    _loop->start();
 }
 
-DemuxerControl::~DemuxerControl()
-{
-    
+DemuxerControl::~DemuxerControl() {
+    _loop->stop();
 }
 
 bool DemuxerControl::start() {
@@ -56,9 +56,9 @@ void DemuxerControl::initMessages() {
         _demuxer->open(_url);
         _isDemuxing = true;
         _loop->postMessage(kDemuxerRead);
-        std::shared_ptr<DemuxerObserver> observer = _observer.lock();
-        if (observer) {
-            observer->opened();
+        std::shared_ptr<DemuxerObserver> ob = _observer.lock();
+        if (ob) {
+            ob->opened();
         }
     }));
     

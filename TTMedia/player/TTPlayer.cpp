@@ -21,6 +21,7 @@
 #include "TTDemuxer.hpp"
 #include "TTDemuxerControl.hpp"
 #include "TTCodecControl.hpp"
+#include "TTRenderControl.hpp"
 
 #include "TTFilter.hpp"
 
@@ -40,22 +41,20 @@ INITIALIZE_EASYLOGGINGPP
 Player::Player() : _status(kPlayerNone),
  _statusCond(PTHREAD_COND_INITIALIZER), _statusMutex(PTHREAD_MUTEX_INITIALIZER),
  _inputCond(PTHREAD_COND_INITIALIZER), _inputMutex(PTHREAD_MUTEX_INITIALIZER),
- _renderCond(PTHREAD_COND_INITIALIZER), _renderMutex(PTHREAD_MUTEX_INITIALIZER), _renderring(false),
  _clock(AV_SYNC_AUDIO_MASTER) {
      av_register_all();
      avformat_network_init();
      el::Loggers::setLoggingLevel(el::Level::Info);
      LOG(DEBUG) << "ffmpeg build configure: " << avcodec_configuration();
      pthread_create(&_inputThread, nullptr, Player::inputThreadEntry, this);
-     pthread_create(&_renderThread, nullptr, Player::renderThreadEntry, this);
 }
 
 Player::~Player() {
     close();
 }
 
-void Player::bindRenderContext(const RenderContext &context) {
-    _render.bindContext(context);
+void Player::bindRenderContext(std::shared_ptr<RenderContext> context) {
+    _renderContext = context;
 }
 
 void Player::bindAudioQueue(std::shared_ptr<AudioQueue> audioQueue) {
@@ -66,7 +65,7 @@ void Player::bindAudioQueue(std::shared_ptr<AudioQueue> audioQueue) {
 }
 
 void Player::bindFilter(std::shared_ptr<Filter> filter) {
-    _filter.addFilter(filter);
+    _bindFilter = filter;
 }
 
 void Player::play(std::shared_ptr<URL> url) {
@@ -152,12 +151,7 @@ void Player::waitStatusChange() {
 }
 
 bool Player::open() {
-    if (_status == kPlayerOpen) {        
-        _vPTS = 0;
-        _aClock.reset();
-        _vClock.reset();
-        _eClock.reset();
-        
+    if (_status == kPlayerOpen) {
         _demuxerControl = std::make_shared<DemuxerControl>(_url);
         _demuxerObserver = std::make_shared<PlayerDemuxerObserver>();
         _demuxerObserver->setplayer(shared_from_this());
@@ -186,19 +180,22 @@ bool Player::openVideo() {
     return false;
 }
 
+bool Player::openRender() {
+    if (_videoControl->frameQueue()) {
+        std::shared_ptr<Y420ToRGBFilter> filter = std::make_shared<Y420ToRGBFilter>();
+        filter->addFilter(_bindFilter);
+        _renderControl = std::shared_ptr<RenderControl>();
+        _renderControl->setfilter(filter);
+        _renderControl->setclock(_clock);
+        _renderControl->setframeQueue(_videoControl->frameQueue());
+        return _renderControl->start();
+    }
+    return false;
+}
+
 bool Player::close() {
     if (_status == kPlayerClose) {
         LOG(DEBUG) << "Waiting audio/video decode stop.";
-        
-        Mutex r(&_renderMutex);
-        while (_renderring) {
-            pthread_cond_wait(&_renderCond, &_renderMutex);
-        }
-        
-        _vPTS = 0;
-        _aClock.reset();
-        _vClock.reset();
-        _eClock.reset();
         
         LOG(DEBUG) << "Audio/Video decode stopped.";
         
@@ -206,6 +203,7 @@ bool Player::close() {
             _audioQueue->teardown();
         }
         
+        _renderControl->stop();
         _videoControl->stop();
         _audioControl->stop();
         _demuxerControl->stop();
@@ -262,71 +260,6 @@ void Player::inputLoop() {
     }
 }
 
-void *Player::renderThreadEntry(void *arg) {
-    Player *self = (Player *)arg;
-    self->renderLoop();
-    return nullptr;
-}
-
-void Player::renderLoop() {
-    while (!isQuit()) {
-        switch (_status) {
-            case kPlayerPlaying:
-            {
-                Mutex m(&_renderMutex);
-                _renderring = true;
-                std::shared_ptr<Frame> frame = nullptr;// _vFrameQueue.pop();
-                if (frame) {
-                    int64_t delay = frame->pts - _vPTS;
-                    LOG(TRACE) << "render delay1 " << delay;
-                    /* update delay to follow master synchronisation source */
-                    if (_clock != AV_SYNC_VIDEO_MASTER) {
-                        /* if video is slave, we try to correct big delays by
-                         duplicating or deleting a frame */
-                        int64_t diff = _vClock.getClock() - getMasterClock();
-                        LOG(TRACE) << "render diff " << diff;
-                        /* skip or repeat frame. We take into account the
-                         delay to compute the threshold. I still don't know
-                         if it is the best guess */
-                        int64_t syncThreshold = FFMAX(AV_SYNC_THRESHOLD_MIN, FFMIN(AV_SYNC_THRESHOLD_MAX, delay));
-                        LOG(TRACE) << "sync threshold " << syncThreshold;
-                        if (!isnan(diff) && abs(diff) < AV_NOSYNC_THRESHOLD) {
-                            if (diff <= -syncThreshold)
-                                delay = FFMAX(0, delay + diff);
-                            else if (diff >= syncThreshold && delay > AV_SYNC_FRAMEDUP_THRESHOLD)
-                                delay = delay + diff;
-                            else if (diff >= syncThreshold)
-                                delay = 2 * delay;
-                        } else {
-                            LOG(WARNING) << "diff is lager " << diff;
-                        }
-                    }
-                    
-                    LOG(TRACE) << "render video frame " << frame->pts;
-//                    _render.displayFrame(frame);
-                    _filter.processFrame(frame);
-                    _vPTS = frame->pts;
-                    _vClock.setClock(frame->pts);
-                    LOG(TRACE) << "render delay2 " << delay;
-                    if (delay < 0) {
-                        LOG(WARNING) << "delay is negative " << delay;
-                        delay = 0;
-                    }
-                    usleep(delay * 1000);
-                }
-                _renderring = false;
-                pthread_cond_broadcast(&_renderCond);
-                break;
-            }
-            default:
-            {
-                waitStatusChange();
-                break;
-            }
-        }
-    }
-}
-
 void Player::audioCodecCB(TT::AudioDesc &desc) {
     if (_audioQueue) {
         _audioQueue->setup(desc);
@@ -334,18 +267,26 @@ void Player::audioCodecCB(TT::AudioDesc &desc) {
 }
 
 std::shared_ptr<Frame> Player::audioQueueCB() {
-    return nullptr;
-//    if (_aFrameQueue.empty()) {
-//        return nullptr;
-//    } else {
-//        std::shared_ptr<Frame> frame = _aFrameQueue.pop();
-//        if (frame) {
-//            _aClock.setClock(frame->pts);
-//            LOG(TRACE) << "render audio frame " << frame->pts;
-//        }
-//
-//        return frame;
-//    }
+    if (_audioControl == nullptr) {
+        return nullptr;
+    }
+    
+    std::shared_ptr<CodecControl::FrameQueue> frameQueue = _audioControl->frameQueue();
+    if (frameQueue == nullptr) {
+        return nullptr;
+    }
+    
+    if (frameQueue->empty()) {
+        return nullptr;
+    } else {
+        std::shared_ptr<Frame> frame = frameQueue->pop();
+        if (frame) {
+            _renderControl->updateAudioClock(frame->pts);
+            LOG(TRACE) << "render audio frame " << frame->pts;
+        }
+
+        return frame;
+    }
 }
 
 void Player::setMasterSyncType(AVSyncClock clock) {
@@ -364,21 +305,6 @@ void Player::setMasterSyncType(AVSyncClock clock) {
     }
 }
 
-double Player::getMasterClock() {
-    double val;
-    switch (_clock) {
-        case AV_SYNC_VIDEO_MASTER:
-            val = _vClock.getClock();
-            break;
-        case AV_SYNC_AUDIO_MASTER:
-            val = _aClock.getClock();
-            break;
-        default:
-            val = _eClock.getClock();
-            break;
-    }
-    return val;
-}
 
 #pragma mark PlayerDemuxerObserver
 void PlayerDemuxerObserver::opened() {
@@ -396,6 +322,21 @@ void PlayerDemuxerObserver::closed() {
 }
 
 void PlayerDemuxerObserver::error() {
+    
+}
+
+#pragma mark VideoCodecObserver
+void VideoCodecObserver::opened() {
+    std::shared_ptr<Player> player = _player.lock();
+    if (player) {
+    }
+}
+
+void VideoCodecObserver::closed() {
+    
+}
+
+void VideoCodecObserver::error() {
     
 }
 

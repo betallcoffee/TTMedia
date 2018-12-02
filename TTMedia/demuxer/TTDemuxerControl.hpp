@@ -46,9 +46,9 @@ namespace TT {
         bool start();
         bool stop();
         
-//        const std::shared_ptr<MessageLoop> loop() const { return _loop; }
-        
         bool seek(int64_t millisecond);
+        
+        TT_PROPERTY_DEF_READONLY(std::shared_ptr<MessageLoop>, loop);
         
         TT_PROPERTY_DEF(std::weak_ptr<DemuxerObserver>, observer);
         TT_PROPERTY_DEF_READONLY(std::shared_ptr<Demuxer>, demuxer);
@@ -61,7 +61,6 @@ namespace TT {
         void handleMessage(std::shared_ptr<Message> message);
         void readPacket();
         
-        std::shared_ptr<MessageLoop> _loop;
         std::shared_ptr<URL> _url;
         bool _isDemuxing;
     };

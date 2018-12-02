@@ -18,6 +18,8 @@
 #include "TTClock.hpp"
 
 #include "TTDemuxerControl.hpp"
+#include "TTCodecControl.hpp"
+#include "TTRenderControl.hpp"
 
 #include "TTAudioQueue.hpp"
 #include "TTRender.hpp"
@@ -27,10 +29,10 @@ namespace TT {
     class Packet;
     class Frame;
     
-    class DemuxerControl;
-    class PlayerDemuxerObserver;
+    class RenderContext;
     
-    class CodecControl;
+    class PlayerDemuxerObserver;
+    class VideoCodecObserver;
     
     typedef enum {
         kPlayerNone,
@@ -56,19 +58,23 @@ namespace TT {
         
         void seek();
         
-        void bindRenderContext(const RenderContext &context);
+        void bindRenderContext(std::shared_ptr<RenderContext> context);
         void bindAudioQueue(std::shared_ptr<AudioQueue> audioQueue);
         
         void bindFilter(std::shared_ptr<Filter> filter);
         
         friend PlayerDemuxerObserver;
+        friend VideoCodecObserver;
         
     private:
         void setStatus(ePlayerStatus status);
         void waitStatusChange();
+        
         bool open();
         bool openAudio();
         bool openVideo();
+        bool openRender();
+        
         bool close();
         
         void quit();
@@ -77,20 +83,10 @@ namespace TT {
         static void *inputThreadEntry(void *arg);
         void inputLoop();
         
-        static void *videoThreadEntry(void *arg);
-        void videoLoop();
-        
-        static void *audioThreadEntry(void *arg);
-        void audioLoop();
-        
-        static void *renderThreadEntry(void *arg);
-        void renderLoop();
-        
         void audioCodecCB(AudioDesc &desc);
         std::shared_ptr<Frame> audioQueueCB();
         
         void setMasterSyncType(AVSyncClock clock);
-        double getMasterClock();
         
     private:
         std::shared_ptr<URL> _url;
@@ -103,33 +99,40 @@ namespace TT {
         std::shared_ptr<PlayerDemuxerObserver> _demuxerObserver;
         
         std::shared_ptr<CodecControl> _videoControl;
-        std::shared_ptr<CodecControl> _audioControl;
+        std::shared_ptr<CodecObserver> _videoObserver;
         
+        std::shared_ptr<CodecControl> _audioControl;
+        std::shared_ptr<CodecObserver> _audioObserver;
+        
+        std::shared_ptr<RenderControl> _renderControl;
+        std::shared_ptr<RenderContext> _renderContext;
+        
+        std::shared_ptr<AudioQueue> _audioQueue;
+        std::shared_ptr<Filter> _bindFilter;
+        
+        AVSyncClock _clock;
         
         pthread_t _inputThread;
         pthread_cond_t _inputCond;
         pthread_mutex_t _inputMutex;
-        
-        pthread_t _renderThread;
-        pthread_cond_t _renderCond;
-        pthread_mutex_t _renderMutex;
-        bool _renderring;
-        
-        std::shared_ptr<AudioQueue> _audioQueue;
-        Render _render;
-        Y420ToRGBFilter _filter;
-        
-        AVSyncClock _clock;
-        Clock _aClock;
-        Clock _vClock;
-        Clock _eClock;
-        int64_t _vPTS;
     };
     
     class PlayerDemuxerObserver : public DemuxerObserver {
     public:
         PlayerDemuxerObserver() {};
         ~PlayerDemuxerObserver() {};
+        
+        virtual void opened() override;
+        virtual void closed() override;
+        virtual void error() override;
+        
+        TT_PROPERTY_DEF(std::weak_ptr<Player>, player);
+    };
+    
+    class VideoCodecObserver : public CodecObserver {
+    public:
+        VideoCodecObserver() {};
+        ~VideoCodecObserver() {};
         
         virtual void opened() override;
         virtual void closed() override;

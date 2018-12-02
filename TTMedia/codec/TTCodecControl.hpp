@@ -29,6 +29,16 @@ namespace TT {
         kCodecClose,
     } CodecMessage;
     
+    class CodecObserver {
+    public:
+        CodecObserver() {};
+        virtual ~CodecObserver() {};
+        
+        virtual void opened() = 0;
+        virtual void closed() = 0;
+        virtual void error() = 0;
+    };
+    
     class CodecControl {
     public:
         CodecControl();
@@ -38,6 +48,7 @@ namespace TT {
         virtual bool stop();
         
         TT_PROPERTY_DEF_READONLY(std::shared_ptr<MessageLoop>, loop);
+        TT_PROPERTY_DEF(std::weak_ptr<CodecObserver>, observer);
         
         TT_PROPERTY_DEF(std::shared_ptr<Codec>, codec);
         TT_PROPERTY_DEF_READONLY(std::shared_ptr<Stream>, stream);

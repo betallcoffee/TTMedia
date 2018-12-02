@@ -84,11 +84,11 @@ Render::~Render() {
     }
 }
 
-void Render::bindContext(const RenderContext &context) {
-    _renderCtx.opaque = context.opaque;
-    _renderCtx.setup = context.setup;
-    _renderCtx.teardown = context.teardown;
-    _renderCtx.display = context.display;
+void Render::bindContext(std::shared_ptr<RenderContext> context) {
+    _renderCtx.opaque = context->opaque;
+    _renderCtx.setup = context->setup;
+    _renderCtx.teardown = context->teardown;
+    _renderCtx.display = context->display;
 }
 
 bool Render::displayFrame(std::shared_ptr<Frame> frame) {

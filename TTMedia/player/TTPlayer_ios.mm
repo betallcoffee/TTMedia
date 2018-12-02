@@ -46,11 +46,11 @@ BOOL bindGLView_ios(TT::Player *player, TTOpenGLView *view) {
         return NO;
     }
     
-    TT::RenderContext ctx;
-    ctx.opaque = (__bridge void *)view;
-    ctx.setup = renderSetup;
-    ctx.teardown = renderTeardown;
-    ctx.display = renderDisplay;
+    std::shared_ptr<TT::RenderContext> ctx = std::make_shared<TT::RenderContext>();
+    ctx->opaque = (__bridge void *)view;
+    ctx->setup = renderSetup;
+    ctx->teardown = renderTeardown;
+    ctx->display = renderDisplay;
     
     player->bindRenderContext(ctx);
     
