@@ -15,15 +15,9 @@ using namespace TT;
 
 const static int kMaxPacketCount = 300;
 
-TT_PROPERTY_IMPL(DemuxerControl, std::shared_ptr<Demuxer>, demuxer)
-TT_PROPERTY_IMPL(DemuxerControl, Queue<std::shared_ptr<Packet>>, vPacketQueue)
-TT_PROPERTY_IMPL(DemuxerControl, Queue<std::shared_ptr<Packet>>, aPacketQueue)
-TT_PROPERTY_IMPL(DemuxerControl, std::weak_ptr<DemuxerObserver>, observer)
-
 DemuxerControl::DemuxerControl(std::shared_ptr<URL> url)
-: _isDemuxing(false), _demuxer(nullptr)
-, _vPacketQueue("demuxer video queue", kMaxPacketCount)
-, _aPacketQueue("demuxer audio queue", kMaxPacketCount)
+: _isDemuxing(false)
+, _demuxer(nullptr)
 {
     _url = url;
     _loop = std::make_shared<MessageLoop>("DemuxerControl");
@@ -37,17 +31,17 @@ DemuxerControl::~DemuxerControl()
 }
 
 bool DemuxerControl::start() {
-    _loop->emitMessage(kOpen);
+    _loop->emitMessage(kDemuxerOpen);
     return true;
 }
 
 bool DemuxerControl::stop() {
-    _loop->emitMessage(kClose);
+    _loop->emitMessage(kDemuxerClose);
     return true;
 }
 
 bool DemuxerControl::seek(int64_t millisecond) {
-    _loop->postMessage(std::make_shared<Message>(kSeek, [&](std::shared_ptr<Message> message) {
+    _loop->postMessage(std::make_shared<Message>(kDemuxerSeek, [&](std::shared_ptr<Message> message) {
         _demuxer->seek(millisecond);
     }));
     
@@ -55,23 +49,25 @@ bool DemuxerControl::seek(int64_t millisecond) {
 }
 
 void DemuxerControl::initMessages() {
-    _loop->signalMessage(std::make_shared<Message>(kOpen, [&](std::shared_ptr<Message> message) {
+    _loop->signalMessage(std::make_shared<Message>(kDemuxerOpen, [&](std::shared_ptr<Message> message) {
+        _vPacketQueue = std::make_shared<PacketQueue>("video_packet_queue", kMaxPacketCount);
+        _aPacketQueue = std::make_shared<PacketQueue>("audio_packet_queue", kMaxPacketCount);
         _demuxer = Demuxer::createDemuxer(_url);
         _demuxer->open(_url);
         _isDemuxing = true;
-        _loop->postMessage(kRead);
+        _loop->postMessage(kDemuxerRead);
         std::shared_ptr<DemuxerObserver> observer = _observer.lock();
         if (observer) {
             observer->opened();
         }
     }));
     
-    _loop->signalMessage(std::make_shared<Message>(kClose, [&](std::shared_ptr<Message> message) {
+    _loop->signalMessage(std::make_shared<Message>(kDemuxerClose, [&](std::shared_ptr<Message> message) {
         _demuxer->close();
         _isDemuxing = false;
     }));
     
-    _loop->signalMessage(std::make_shared<Message>(kRead, [&](std::shared_ptr<Message> message) {
+    _loop->signalMessage(std::make_shared<Message>(kDemuxerRead, [&](std::shared_ptr<Message> message) {
         readPacket();
     }));
 }
@@ -88,10 +84,10 @@ void DemuxerControl::readPacket() {
     if (packet) {
         switch (packet->type) {
             case kPacketTypeAudio:
-                _aPacketQueue.push(packet);
+                _aPacketQueue->push(packet);
                 break;
             case kPacketTypeVideo:
-                _vPacketQueue.push(packet);
+                _vPacketQueue->push(packet);
                 break;
             default:
                 break;
@@ -101,7 +97,7 @@ void DemuxerControl::readPacket() {
     }
     
     if (_isDemuxing) {
-        _loop->postMessage(kRead);
+        _loop->postMessage(kDemuxerRead);
     }
 }
 

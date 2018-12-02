@@ -10,14 +10,6 @@
 
 using namespace TT;
 
-TT_PROPERTY_IMPL(Stream, int, index)
-TT_PROPERTY_IMPL(Stream, StreamType, type)
-TT_PROPERTY_IMPL(Stream, CodecID, codecID)
-TT_PROPERTY_IMPL(Stream, uint32_t, timeScale)
-TT_PROPERTY_IMPL(Stream, uint64_t, duration)
-TT_PROPERTY_IMPL(Stream, uint8_t *, extraData);
-TT_PROPERTY_IMPL(Stream, size_t, extraSize);
-
 Stream::Stream()
 : _extraData(nullptr)
 , _extraSize(0)

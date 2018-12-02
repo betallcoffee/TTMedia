@@ -10,6 +10,8 @@
 #include "easylogging++.h"
 
 #include "TTVideoCodec.hpp"
+#include "TTFrame.hpp"
+#include "TTPacket.hpp"
 
 using namespace TT;
 

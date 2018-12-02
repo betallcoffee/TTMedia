@@ -10,7 +10,6 @@
 #define TTDemuxerControl_hpp
 
 #include <memory>
-#include <pthread.h>
 
 #include "TTdef.h"
 #include "TTQueue.hpp"
@@ -23,10 +22,10 @@ namespace TT {
     class Packet;
     
     typedef enum DemuxerMessage {
-        kOpen,
-        kRead,
-        kSeek,
-        kClose,
+        kDemuxerOpen,
+        kDemuxerRead,
+        kDemuxerSeek,
+        kDemuxerClose,
     } DemuxerMessage;
     
     class DemuxerObserver {
@@ -51,10 +50,11 @@ namespace TT {
         
         bool seek(int64_t millisecond);
         
-        TT_PROPERTY_DECL_READONLY(std::shared_ptr<Demuxer>, demuxer);
-        TT_PROPERTY_DECL(Queue<std::shared_ptr<Packet>>, vPacketQueue);
-        TT_PROPERTY_DECL(Queue<std::shared_ptr<Packet>>, aPacketQueue);
-        TT_PROPERTY_DECL(std::weak_ptr<DemuxerObserver>, observer);
+        TT_PROPERTY_DEF(std::weak_ptr<DemuxerObserver>, observer);
+        TT_PROPERTY_DEF_READONLY(std::shared_ptr<Demuxer>, demuxer);
+        typedef Queue<std::shared_ptr<Packet>> PacketQueue;
+        TT_PROPERTY_DEF_READONLY(std::shared_ptr<PacketQueue>, vPacketQueue);
+        TT_PROPERTY_DEF_READONLY(std::shared_ptr<PacketQueue>, aPacketQueue);
         
     private:
         void initMessages();

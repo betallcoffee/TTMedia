@@ -13,8 +13,6 @@
 
 using namespace TT;
 
-TT_PROPERTY_IMPL(Packet, size_t, capacity);
-
 Packet::Packet()
 : _avpacket(nullptr)
 , _data(nullptr)

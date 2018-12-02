@@ -23,21 +23,22 @@ extern "C" {
 };
 #endif
 
-#include "TTFrame.hpp"
-#include "TTPacket.hpp"
+#include "TTCodec.hpp"
 
 namespace TT {
     
+    class AudioDesc;
+    
     typedef void (AudioCodecCB)(AudioDesc &desc);
     
-    class AudioCodec {
+    class AudioCodec : public Codec {
     public:
         AudioCodec(const AVStream *avStream);
         ~AudioCodec();
         
-        bool open();
-        void close();
-        std::shared_ptr<Frame> decode(std::shared_ptr<Packet> packet);
+        bool open() override;
+        void close() override;
+        std::shared_ptr<Frame> decode(std::shared_ptr<Packet> packet) override;
         
         void setCodecCallback(std::function<AudioCodecCB> cb) { _cb = cb; }
         

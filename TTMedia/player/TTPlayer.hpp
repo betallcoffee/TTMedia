@@ -26,13 +26,11 @@
 namespace TT {
     class Packet;
     class Frame;
-    class Demuxer;
-    class FFDemuxer;
-    class AudioCodec;
-    class VideoCodec;
     
     class DemuxerControl;
     class PlayerDemuxerObserver;
+    
+    class CodecControl;
     
     typedef enum {
         kPlayerNone,
@@ -103,28 +101,14 @@ namespace TT {
         
         std::shared_ptr<DemuxerControl> _demuxerControl;
         std::shared_ptr<PlayerDemuxerObserver> _demuxerObserver;
-        Queue<std::shared_ptr<Packet>> _vPacketQueue;
-        Queue<std::shared_ptr<Packet>> _aPacketQueue;
         
-        std::shared_ptr<AudioCodec> _audioCodec;
-        Queue<std::shared_ptr<Frame>> _aFrameQueue;
+        std::shared_ptr<CodecControl> _videoControl;
+        std::shared_ptr<CodecControl> _audioControl;
         
-        std::shared_ptr<VideoCodec> _videoCodec;
-        Queue<std::shared_ptr<Frame>> _vFrameQueue;
         
         pthread_t _inputThread;
         pthread_cond_t _inputCond;
         pthread_mutex_t _inputMutex;
-        
-        pthread_t _audioThread;
-        pthread_cond_t _audioCond;
-        pthread_mutex_t _audioMutex;
-        bool _audioDecoding;
-        
-        pthread_t _videoThread;
-        pthread_cond_t _videoCond;
-        pthread_mutex_t _videoMutex;
-        bool _videoDecoding;
         
         pthread_t _renderThread;
         pthread_cond_t _renderCond;
@@ -151,7 +135,7 @@ namespace TT {
         virtual void closed() override;
         virtual void error() override;
         
-        TT_PROPERTY_DECL(std::weak_ptr<Player>, player);
+        TT_PROPERTY_DEF(std::weak_ptr<Player>, player);
     };
 }
 

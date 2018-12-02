@@ -9,6 +9,8 @@
 #include <algorithm>
 
 #include "TTAudioCodec.hpp"
+#include "TTFrame.hpp"
+#include "TTPacket.hpp"
 
 using namespace TT;
 

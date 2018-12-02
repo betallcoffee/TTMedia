@@ -21,8 +21,7 @@ extern "C" {
 };
 #endif
 
-#include "TTFrame.hpp"
-#include "TTPacket.hpp"
+#include "TTCodec.hpp"
 
 namespace TT {
     typedef enum {
@@ -31,16 +30,16 @@ namespace TT {
         kVideoCodecEncode
     } VideoCodecType;
     
-    class VideoCodec {
+    class VideoCodec : public Codec {
     public:
         VideoCodec(const AVStream *avStream, VideoCodecType type = kVideoCodecDecode);
         ~VideoCodec();
         
-        bool open();
-        void close();
+        bool open() override;
+        void close() override;
         void flush();
-        std::shared_ptr<Frame> decode(std::shared_ptr<Packet> packet);
-        void encode(std::shared_ptr<Frame> frame);
+        std::shared_ptr<Frame> decode(std::shared_ptr<Packet> packet) override;
+        void encode(std::shared_ptr<Frame> frame) override;
         
         typedef std::function<void (std::shared_ptr<Packet>)> EncodeFrameCallback;
         void setEncodeFrameCallback(EncodeFrameCallback cb) { _encodeFrameCallback = cb; }

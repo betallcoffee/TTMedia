@@ -16,21 +16,17 @@
 #include "TTURL.hpp"
 
 #include "TTHTTPIO.hpp"
-#include "TTDemuxer.hpp"
-#include "TTFFDemuxer.hpp"
 #include "TTAudioCodec.hpp"
-#include "TTVideoCodec.hpp"
 
+#include "TTDemuxer.hpp"
 #include "TTDemuxerControl.hpp"
+#include "TTCodecControl.hpp"
 
 #include "TTFilter.hpp"
 
 using namespace TT;
 
 INITIALIZE_EASYLOGGINGPP
-
-const static int kMaxPacketCount = 300;
-const static int kMaxFrameCount = 3;
 
 /* no AV sync correction is done if below the minimum AV sync threshold */
 #define AV_SYNC_THRESHOLD_MIN 40
@@ -43,11 +39,7 @@ const static int kMaxFrameCount = 3;
 
 Player::Player() : _status(kPlayerNone),
  _statusCond(PTHREAD_COND_INITIALIZER), _statusMutex(PTHREAD_MUTEX_INITIALIZER),
- _vPacketQueue("video_packet_queue", kMaxPacketCount), _aPacketQueue("audio_packet_queue", kMaxPacketCount),
- _vFrameQueue("video_frame_queue", kMaxFrameCount), _aFrameQueue("audio_frame_queue", kMaxFrameCount),
  _inputCond(PTHREAD_COND_INITIALIZER), _inputMutex(PTHREAD_MUTEX_INITIALIZER),
- _audioCond(PTHREAD_COND_INITIALIZER), _audioMutex(PTHREAD_MUTEX_INITIALIZER), _audioDecoding(false),
- _videoCond(PTHREAD_COND_INITIALIZER), _videoMutex(PTHREAD_MUTEX_INITIALIZER), _videoDecoding(false),
  _renderCond(PTHREAD_COND_INITIALIZER), _renderMutex(PTHREAD_MUTEX_INITIALIZER), _renderring(false),
  _clock(AV_SYNC_AUDIO_MASTER) {
      av_register_all();
@@ -55,8 +47,6 @@ Player::Player() : _status(kPlayerNone),
      el::Loggers::setLoggingLevel(el::Level::Info);
      LOG(DEBUG) << "ffmpeg build configure: " << avcodec_configuration();
      pthread_create(&_inputThread, nullptr, Player::inputThreadEntry, this);
-     pthread_create(&_audioThread, nullptr, Player::audioThreadEntry, this);
-     pthread_create(&_videoThread, nullptr, Player::videoThreadEntry, this);
      pthread_create(&_renderThread, nullptr, Player::renderThreadEntry, this);
 }
 
@@ -89,8 +79,6 @@ void Player::play(std::shared_ptr<URL> url) {
 
 void Player::stop() {
     setStatus(kPlayerClose);
-    _aPacketQueue.clear();
-    _vPacketQueue.clear();
 }
 
 void Player::pause() {
@@ -182,17 +170,18 @@ bool Player::open() {
 
 bool Player::openAudio() {
     if (_demuxerControl->demuxer()->hasAudio()) {
-        _audioCodec = _demuxerControl->demuxer()->audioCodec();
-        _audioCodec->setCodecCallback(std::bind(&Player::audioCodecCB, this, std::placeholders::_1));
-        return _audioCodec->open();
+        _audioControl = std::shared_ptr<AudioCodecControl>();
+        _audioControl->setpacketQueue(_demuxerControl->aPacketQueue());
+        return _audioControl->start(_demuxerControl->demuxer()->audioStream());
     }
     return false;
 }
 
 bool Player::openVideo() {
     if (_demuxerControl->demuxer()->hasVideo()) {
-        _videoCodec = _demuxerControl->demuxer()->videoCodec();
-        return _videoCodec->open();
+        _videoControl = std::shared_ptr<VideoCodecControl>();
+        _videoControl->setpacketQueue(_demuxerControl->vPacketQueue());
+        return _videoControl->start(_demuxerControl->demuxer()->videoStream());
     }
     return false;
 }
@@ -201,30 +190,10 @@ bool Player::close() {
     if (_status == kPlayerClose) {
         LOG(DEBUG) << "Waiting audio/video decode stop.";
         
-        _aPacketQueue.clear();
-        _vPacketQueue.clear();
-        _aFrameQueue.clear();
-        _vFrameQueue.clear();
-        
-        Mutex a(&_audioMutex);
-        while (_audioDecoding) {
-            pthread_cond_wait(&_audioCond, &_audioMutex);
-        }
-        
-        Mutex v(&_videoMutex);
-        while (_videoDecoding) {
-            pthread_cond_wait(&_videoCond, &_videoMutex);
-        }
-        
         Mutex r(&_renderMutex);
         while (_renderring) {
             pthread_cond_wait(&_renderCond, &_renderMutex);
         }
-        
-        _aPacketQueue.clear();
-        _vPacketQueue.clear();
-        _aFrameQueue.clear();
-        _vFrameQueue.clear();
         
         _vPTS = 0;
         _aClock.reset();
@@ -237,18 +206,8 @@ bool Player::close() {
             _audioQueue->teardown();
         }
         
-        _aPacketQueue.close();
-        if (_audioCodec) {
-            _audioCodec->close();
-            _audioCodec.reset();
-        }
-        
-        _vPacketQueue.close();
-        if (_videoCodec) {
-            _videoCodec->close();
-            _videoCodec.reset();
-        }
-        
+        _videoControl->stop();
+        _audioControl->stop();
         _demuxerControl->stop();
         
         setStatus(kPlayerStoped);
@@ -303,80 +262,6 @@ void Player::inputLoop() {
     }
 }
 
-void *Player::audioThreadEntry(void *arg) {
-    Player *self = (Player *)arg;
-    self->audioLoop();
-    return nullptr;
-}
-
-void Player::audioLoop() {
-    while (!isQuit()) {
-        switch (_status) {
-            case kPlayerPlaying:
-            {
-                Mutex m(&_audioMutex);
-                _audioDecoding = true;
-                std::shared_ptr<Packet> packet = _aPacketQueue.pop();
-                if (packet && _audioCodec) {
-                    std::shared_ptr<Frame> frame;
-                    frame = _audioCodec->decode(packet);
-                    if (frame) {
-                        _aFrameQueue.push(frame);
-                    }
-                }
-                _audioDecoding = false;
-                pthread_cond_broadcast(&_audioCond);
-                break;
-            }
-            default:
-            {
-                waitStatusChange();
-                break;
-            }
-        }
-    }
-}
-
-void *Player::videoThreadEntry(void *arg) {
-    Player *self = (Player *)arg;
-    self->videoLoop();
-    return nullptr;
-}
-
-void Player::videoLoop() {
-    while (!isQuit()) {
-        switch (_status) {
-            case kPlayerPlaying:
-            {
-                Mutex m(&_videoMutex);
-                _videoDecoding = true;
-                std::shared_ptr<Packet> packet = _vPacketQueue.pop();
-                if (packet && _videoCodec) {
-                    std::shared_ptr<Frame> frame;
-                    frame = _videoCodec->decode(packet);
-                    if (frame) {
-                        // Reorder with pts for B frame.
-                        LOG(TRACE) << "Reorder begin " << frame->pts;
-                        _vFrameQueue.insert(frame, [&](std::shared_ptr<Frame> l, std::shared_ptr<Frame> r) -> bool {
-                            LOG(TRACE) << "Reorder " << l->pts << " " << r->pts;
-                            return l->pts <= r->pts;
-                        });
-                        LOG(TRACE) << "Reorder end " << frame->pts;
-                    }
-                }
-                _videoDecoding = false;
-                pthread_cond_broadcast(&_videoCond);
-                break;
-            }
-            default:
-            {
-                waitStatusChange();
-                break;
-            }
-        }
-    }
-}
-
 void *Player::renderThreadEntry(void *arg) {
     Player *self = (Player *)arg;
     self->renderLoop();
@@ -390,7 +275,7 @@ void Player::renderLoop() {
             {
                 Mutex m(&_renderMutex);
                 _renderring = true;
-                std::shared_ptr<Frame> frame = _vFrameQueue.pop();
+                std::shared_ptr<Frame> frame = nullptr;// _vFrameQueue.pop();
                 if (frame) {
                     int64_t delay = frame->pts - _vPTS;
                     LOG(TRACE) << "render delay1 " << delay;
@@ -449,17 +334,18 @@ void Player::audioCodecCB(TT::AudioDesc &desc) {
 }
 
 std::shared_ptr<Frame> Player::audioQueueCB() {
-    if (_aFrameQueue.empty()) {
-        return nullptr;
-    } else {
-        std::shared_ptr<Frame> frame = _aFrameQueue.pop();
-        if (frame) {
-            _aClock.setClock(frame->pts);
-            LOG(TRACE) << "render audio frame " << frame->pts;
-        }
-        
-        return frame;
-    }
+    return nullptr;
+//    if (_aFrameQueue.empty()) {
+//        return nullptr;
+//    } else {
+//        std::shared_ptr<Frame> frame = _aFrameQueue.pop();
+//        if (frame) {
+//            _aClock.setClock(frame->pts);
+//            LOG(TRACE) << "render audio frame " << frame->pts;
+//        }
+//
+//        return frame;
+//    }
 }
 
 void Player::setMasterSyncType(AVSyncClock clock) {
@@ -495,14 +381,12 @@ double Player::getMasterClock() {
 }
 
 #pragma mark PlayerDemuxerObserver
-TT_PROPERTY_IMPL(PlayerDemuxerObserver, std::weak_ptr<Player>, player)
-
 void PlayerDemuxerObserver::opened() {
     std::shared_ptr<Player> player = _player.lock();
     if (player) {
         player->setMasterSyncType(AV_SYNC_AUDIO_MASTER);
-        player->openAudio();
         player->openVideo();
+        player->openAudio();
         player->setStatus(kPlayerPlaying);
     }
 }
