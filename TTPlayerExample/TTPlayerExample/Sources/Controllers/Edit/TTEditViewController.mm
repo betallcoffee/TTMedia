@@ -33,22 +33,10 @@ static NSString *kPreviewCellIdentifier = @"previewCell";
 @property (nonatomic, strong) UICollectionView *previewBar;
 @property (nonatomic, strong) TTImageView *imageView;
 
-- (void)video:(TT::Video *)video statusCallback:(TT::VideoStatus)status;
 - (void)video:(TT::Video *)video eventCallback:(TT::VideoEvent)event;
 - (void)video:(TT::Video *)video readFrameCallback:(size_t)size;
 
 @end
-
-void VideoStatusCallback(void *opaque, TT::Video *video, TT::VideoStatus status) {
-    if (opaque == nullptr) {
-        return;
-    }
-    
-    LOG(DEBUG) << "Edit status change:" << (int)status;
-
-    TTEditViewController *vc = (__bridge TTEditViewController *)opaque;
-    [vc video:video statusCallback:status];
-}
 
 void VideoEventCallback(void *opaque, TT::Video *video, TT::VideoEvent event) {
     if (opaque == nullptr) {
@@ -171,7 +159,7 @@ void VideoReadFrameCallback(void *opaque, TT::Video *video, size_t size) {
     }
     NSURL *url = [self.urls objectAtIndex:0];
     url = [url URLByDeletingLastPathComponent];
-    url = [url URLByAppendingPathComponent:@"liangliang1.mp4"];
+    url = [url URLByAppendingPathComponent:@"liangliang3.mp4"];
     const char *str = [url.absoluteString cStringUsingEncoding:NSUTF8StringEncoding];
     std::shared_ptr<TT::URL> _saveUrl = std::make_shared<TT::URL>(str);
     _editGroup->exportFile(_saveUrl);
@@ -180,7 +168,7 @@ void VideoReadFrameCallback(void *opaque, TT::Video *video, size_t size) {
 #pragma mark Edit Material
 - (void)addMaterial:(NSURL *)url {
     std::shared_ptr<TT::Video> video = std::make_shared<TT::Video>();
-    video->setStatusCallback(std::bind(VideoStatusCallback, (__bridge void *)self, std::placeholders::_1, std::placeholders::_2));
+    video->init();
     video->setEventCallback(std::bind(VideoEventCallback, (__bridge void *)self, std::placeholders::_1, std::placeholders::_2));
     video->setReadFrameCallback(std::bind(VideoReadFrameCallback, (__bridge void *)self, std::placeholders::_1, std::placeholders::_2));
     _editGroup->addMaterial(video);
@@ -189,9 +177,6 @@ void VideoReadFrameCallback(void *opaque, TT::Video *video, size_t size) {
 }
 
 #pragma mark Edit callback
-- (void)video:(TT::Video *)video statusCallback:(TT::eEditStatus)status {
-}
-
 - (void)video:(TT::Video *)video eventCallback:(TT::VideoEvent)event {
     if (event == TT::VideoEvent::kReadEnd) {
         dispatch_async(dispatch_get_main_queue(), ^{

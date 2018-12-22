@@ -19,7 +19,16 @@ namespace TT {
     template<class T>
     class Queue {
     public:
-        Queue(const char *name, int capacity = 0) : _name(name), _capacity(capacity), _isClosed(false), _mutex(PTHREAD_MUTEX_INITIALIZER), _cond(PTHREAD_COND_INITIALIZER){}
+        Queue(const char *name, int capacity = 0)
+        : _name(name)
+        , _capacity(capacity)
+        , _isClosed(false)
+        , _wakeup(false)
+        , _mutex(PTHREAD_MUTEX_INITIALIZER)
+        , _cond(PTHREAD_COND_INITIALIZER)
+        {
+        }
+        
         ~Queue() {}
         
         bool empty() {
@@ -41,9 +50,11 @@ namespace TT {
         
         T pop() {
             Mutex m(&_mutex);
-            if (_list.empty() && !_isClosed) {
+            if (_list.empty() && !_isClosed && !_wakeup) {
                 pthread_cond_wait(&_cond, &_mutex);
             }
+            
+            _wakeup = false;
             
             if (_full()) {
                 pthread_cond_broadcast(&_cond);
@@ -59,6 +70,12 @@ namespace TT {
             }
 
             return elm;
+        }
+        
+        void wakeup() {
+            Mutex m(&_mutex);
+            _wakeup = true;
+            pthread_cond_broadcast(&_cond);
         }
         
         void insert(T elm, std::function<bool(T, T)> cmp) {
@@ -127,6 +144,7 @@ namespace TT {
         const char *_name;
         int _capacity;
         bool _isClosed;
+        bool _wakeup;
         std::list<T> _list;
         
         pthread_mutex_t _mutex;

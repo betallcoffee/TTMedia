@@ -36,17 +36,20 @@ MessageLoop::~MessageLoop() {
 }
 
 void MessageLoop::setMessageHandle(MessageLoop::MessageHandle handle) {
+    _msgQueue.wakeup();
     Mutex m(&_msgMutex);
     _handle = handle;
 }
 
 bool MessageLoop::start() {
+    _msgQueue.wakeup();
     Mutex m(&_msgMutex);
     _isRunning = true;
     return true;
 }
 
 void MessageLoop::stop() {
+    _msgQueue.wakeup();
     Mutex m(&_msgMutex);
     _isRunning = false;
 }
@@ -70,21 +73,28 @@ void MessageLoop::signalMessage(std::shared_ptr<Message> message) {
 }
 
 void *MessageLoop::messageThreadEntry(void *opaque) {
-    pthread_setname_np("message loop thread");
     MessageLoop *self = static_cast<MessageLoop *>(opaque);
     self->messageThreadLoop();
     return nullptr;
 }
 
 void MessageLoop::messageThreadLoop() {
+    if (_threadName.c_str()) {
+        pthread_setname_np(_threadName.c_str());
+    } else {
+        pthread_setname_np("message loop thread");
+    }
+    
     while (_isRunning) {
         Mutex m(&_msgMutex);
         std::shared_ptr<Message> message = _msgQueue.pop();
-        MessageHandle handle = message->handle();
-        if (handle) {
-            handle(message);
-        } else if (_handle) {
-            _handle(message);
+        if (message) {
+            MessageHandle handle = message->handle();
+            if (handle) {
+                handle(message);
+            } else if (_handle) {
+                _handle(message);
+            }
         }
     }
 }

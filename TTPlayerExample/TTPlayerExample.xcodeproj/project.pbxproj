@@ -42,7 +42,7 @@
 		EC4DD37020A7251C00CFBF60 /* TTWhiteBalanceFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC4DD36E20A7251C00CFBF60 /* TTWhiteBalanceFilter.cpp */; };
 		EC4DD37B20E8996900CFBF60 /* TTEditListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EC4DD37A20E8996900CFBF60 /* TTEditListViewController.m */; };
 		EC4DD37E20E89FEA00CFBF60 /* TTSlideSelectView.m in Sources */ = {isa = PBXBuildFile; fileRef = EC4DD37D20E89FE900CFBF60 /* TTSlideSelectView.m */; };
-		EC4DD38120F97DBF00CFBF60 /* TTStatusM.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC4DD37F20F97DBE00CFBF60 /* TTStatusM.cpp */; };
+		EC4DD38120F97DBF00CFBF60 /* TTStateM.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC4DD37F20F97DBE00CFBF60 /* TTStateM.cpp */; };
 		EC4E9C6A1F1A6400005C8E36 /* TTMutex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC4E9C681F1A6400005C8E36 /* TTMutex.cpp */; };
 		EC4E9C6D1F1A6572005C8E36 /* TTCond.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC4E9C6B1F1A6572005C8E36 /* TTCond.cpp */; };
 		EC4E9C701F1A7AA6005C8E36 /* TTQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC4E9C6E1F1A7AA6005C8E36 /* TTQueue.cpp */; };
@@ -145,6 +145,7 @@
 		EC89E7AA21B2F44C00E3808E /* TTCodecControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC89E7A821B2F44C00E3808E /* TTCodecControl.cpp */; };
 		EC89E7AD21B3BF1200E3808E /* TTCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC89E7AB21B3BF1200E3808E /* TTCodec.cpp */; };
 		EC89E7B021B3EE3600E3808E /* TTRenderControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC89E7AE21B3EE3600E3808E /* TTRenderControl.cpp */; };
+		EC89E7B321C669EE00E3808E /* TTVideoStateM.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC89E7B121C669EE00E3808E /* TTVideoStateM.cpp */; };
 		EC8D83EC1D846E7B00C25D03 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC8D83EB1D846E7B00C25D03 /* CoreVideo.framework */; };
 		ECB053DA1F3C13AB00A49FA5 /* TTAudioCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECB053D81F3C13AB00A49FA5 /* TTAudioCodec.cpp */; };
 		ECB053E01F3C629100A49FA5 /* TTAudioQueue_ios.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECB053DE1F3C629100A49FA5 /* TTAudioQueue_ios.cpp */; };
@@ -278,8 +279,8 @@
 		EC4DD37A20E8996900CFBF60 /* TTEditListViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TTEditListViewController.m; sourceTree = "<group>"; };
 		EC4DD37C20E89FE900CFBF60 /* TTSlideSelectView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TTSlideSelectView.h; sourceTree = "<group>"; };
 		EC4DD37D20E89FE900CFBF60 /* TTSlideSelectView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TTSlideSelectView.m; sourceTree = "<group>"; };
-		EC4DD37F20F97DBE00CFBF60 /* TTStatusM.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTStatusM.cpp; sourceTree = "<group>"; };
-		EC4DD38020F97DBE00CFBF60 /* TTStatusM.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTStatusM.hpp; sourceTree = "<group>"; };
+		EC4DD37F20F97DBE00CFBF60 /* TTStateM.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTStateM.cpp; sourceTree = "<group>"; };
+		EC4DD38020F97DBE00CFBF60 /* TTStateM.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTStateM.hpp; sourceTree = "<group>"; };
 		EC4E9C681F1A6400005C8E36 /* TTMutex.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TTMutex.cpp; sourceTree = "<group>"; };
 		EC4E9C691F1A6400005C8E36 /* TTMutex.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TTMutex.hpp; sourceTree = "<group>"; };
 		EC4E9C6B1F1A6572005C8E36 /* TTCond.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TTCond.cpp; sourceTree = "<group>"; };
@@ -433,6 +434,8 @@
 		EC89E7AC21B3BF1200E3808E /* TTCodec.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTCodec.hpp; sourceTree = "<group>"; };
 		EC89E7AE21B3EE3600E3808E /* TTRenderControl.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTRenderControl.cpp; sourceTree = "<group>"; };
 		EC89E7AF21B3EE3600E3808E /* TTRenderControl.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTRenderControl.hpp; sourceTree = "<group>"; };
+		EC89E7B121C669EE00E3808E /* TTVideoStateM.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTVideoStateM.cpp; sourceTree = "<group>"; };
+		EC89E7B221C669EE00E3808E /* TTVideoStateM.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTVideoStateM.hpp; sourceTree = "<group>"; };
 		EC8D83EB1D846E7B00C25D03 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		ECB053D81F3C13AB00A49FA5 /* TTAudioCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TTAudioCodec.cpp; sourceTree = "<group>"; };
 		ECB053D91F3C13AB00A49FA5 /* TTAudioCodec.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TTAudioCodec.hpp; sourceTree = "<group>"; };
@@ -864,8 +867,8 @@
 				EC1A20821F42FAE000632C0D /* TTClass.hpp */,
 				EC5508921FE6A3E500C115A8 /* TTByteBuffer.cpp */,
 				EC5508931FE6A3E500C115A8 /* TTByteBuffer.hpp */,
-				EC4DD37F20F97DBE00CFBF60 /* TTStatusM.cpp */,
-				EC4DD38020F97DBE00CFBF60 /* TTStatusM.hpp */,
+				EC4DD37F20F97DBE00CFBF60 /* TTStateM.cpp */,
+				EC4DD38020F97DBE00CFBF60 /* TTStateM.hpp */,
 				EC321826213BC1B500A54DB9 /* TTRingBuffer.cpp */,
 				EC321827213BC1B500A54DB9 /* TTRingBuffer.hpp */,
 				EC89E7A721876A9D00E3808E /* TTOpenGL.h */,
@@ -1086,6 +1089,8 @@
 				EC48ACF8205451320009C0C2 /* TTMaterial.hpp */,
 				EC6600661F95C19B00042B2A /* TTVideo.cpp */,
 				EC6600671F95C19B00042B2A /* TTVideo.hpp */,
+				EC89E7B121C669EE00E3808E /* TTVideoStateM.cpp */,
+				EC89E7B221C669EE00E3808E /* TTVideoStateM.hpp */,
 				EC48ACF4205427E00009C0C2 /* TTEditGroup.cpp */,
 				EC48ACF5205427E00009C0C2 /* TTEditGroup.hpp */,
 			);
@@ -1678,6 +1683,7 @@
 				EC4E9C9D1F1A7DE5005C8E36 /* TTOpenGLLayer.m in Sources */,
 				EC1A20951F43FB0200632C0D /* TTFilter.cpp in Sources */,
 				EC4E9CA21F1A7DE5005C8E36 /* TTVideoLayer.m in Sources */,
+				EC89E7B321C669EE00E3808E /* TTVideoStateM.cpp in Sources */,
 				EC11654D1F52B9B100AF56ED /* TTFilterGroup.cpp in Sources */,
 				EC56E76C2139A3440009D8DC /* mp4_dref_box.c in Sources */,
 				EC4E9CA11F1A7DE5005C8E36 /* TTQueue.m in Sources */,
@@ -1777,7 +1783,7 @@
 				EC6600681F95C19B00042B2A /* TTVideo.cpp in Sources */,
 				EC56E563211FFB850009D8DC /* TTFileIO.cpp in Sources */,
 				EC56E565211FFB850009D8DC /* TTIO.cpp in Sources */,
-				EC4DD38120F97DBF00CFBF60 /* TTStatusM.cpp in Sources */,
+				EC4DD38120F97DBF00CFBF60 /* TTStateM.cpp in Sources */,
 				EC56E7932139A3440009D8DC /* mp4_mvhd_box.c in Sources */,
 				EC3AB2E51F7F377200614CFB /* TTSaturationFilter.cpp in Sources */,
 				EC56E78A2139A3440009D8DC /* mp4_tims_box.c in Sources */,

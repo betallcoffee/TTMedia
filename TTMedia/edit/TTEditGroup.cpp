@@ -18,7 +18,7 @@ using namespace TT;
 
 EditGroup::EditGroup() :
 _editMutex(PTHREAD_MUTEX_INITIALIZER) {
-    _messageLoop = std::make_shared<MessageLoop>();
+    _messageLoop = std::make_shared<MessageLoop>("Edit Group");
     _messageLoop->setMessageHandle(std::bind(&EditGroup::handleMessage, this, std::placeholders::_1));
 }
 
