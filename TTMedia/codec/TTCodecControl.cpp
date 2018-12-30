@@ -21,13 +21,13 @@ using namespace TT;
 
 const static int kMaxFrameCount = 3;
 
-CodecControl::CodecControl()
+CodecControl::CodecControl(const char *name)
 : _codec(nullptr)
 , _stream(nullptr)
 , _frameQueue(nullptr)
 , _packetQueue(nullptr)
 {
-    _loop = std::make_shared<MessageLoop>();
+    _loop = std::make_shared<MessageLoop>(name);
     _loop->setMessageHandle(std::bind(&CodecControl::handleMessage, this, std::placeholders::_1));
     initMessages();
     _loop->start();
@@ -42,9 +42,10 @@ bool CodecControl::start(std::shared_ptr<Stream> stream) {
         return false;
     }
     
-    loop()->postMessage(std::make_shared<Message>(kCodecOpen, [&](std::shared_ptr<Message>) {
+    loop()->postMessage(std::make_shared<Message>(kCodecOpen, [&, stream](std::shared_ptr<Message>) {
         // TODO check return value wether fail, notify observer.
         if (open(stream)) {
+            loop()->emitMessage(kCodecDecode);
             std::shared_ptr<CodecObserver> ob = _observer.lock();
             if (ob) {
                 ob->opened();
@@ -92,7 +93,9 @@ bool CodecControl::open(std::shared_ptr<Stream> stream) {
 
 
 #pragma mark - VideoCodecControl
-VideoCodecControl::VideoCodecControl() {
+VideoCodecControl::VideoCodecControl()
+: CodecControl("VideoCodecControl")
+{
     setframeQueue(std::make_shared<FrameQueue>("video_frame_queue", kMaxFrameCount));
 }
 
@@ -107,10 +110,6 @@ bool VideoCodecControl::open(std::shared_ptr<Stream> stream) {
 }
 
 void VideoCodecControl::decodePacket() {
-    if (codec() == nullptr) {
-        return;
-    }
-    
     std::shared_ptr<Packet> packet = packetQueue()->pop();
     if (packet && codec()) {
         std::shared_ptr<Frame> frame;
@@ -130,7 +129,9 @@ void VideoCodecControl::decodePacket() {
 }
 
 #pragma mark - AudioCodecControl
-AudioCodecControl::AudioCodecControl() {
+AudioCodecControl::AudioCodecControl()
+: CodecControl("AudioCodecControl")
+{
     setframeQueue(std::make_shared<FrameQueue>("audio_frame_queue", kMaxFrameCount));
 }
 
@@ -141,14 +142,10 @@ AudioCodecControl::~AudioCodecControl() {
 bool AudioCodecControl::open(std::shared_ptr<Stream> stream) {
     std::shared_ptr<AudioCodec> codec = std::make_shared<AudioCodec>(stream->internalStream());
     setcodec(codec);
-    return CodecControl::start(stream);
+    return CodecControl::open(stream);
 }
 
 void AudioCodecControl::decodePacket() {
-    if (codec() == nullptr) {
-        return;
-    }
-    
     std::shared_ptr<Packet> packet = packetQueue()->pop();
     if (packet && codec()) {
         std::shared_ptr<Frame> frame;

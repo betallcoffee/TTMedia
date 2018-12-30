@@ -55,11 +55,17 @@ void DemuxerControl::initMessages() {
         _vPacketQueue->clear();
         _aPacketQueue->clear();
         _demuxer = Demuxer::createDemuxer(_url);
-        _demuxer->open(_url);
-        _loop->postMessage(kDemuxerRead);
-        std::shared_ptr<DemuxerObserver> ob = _observer.lock();
-        if (ob) {
-            ob->opened();
+        if (_demuxer->open(_url)) {
+            _loop->emitMessage(kDemuxerRead);
+            std::shared_ptr<DemuxerObserver> ob = _observer.lock();
+            if (ob) {
+                ob->opened();
+            }
+        } else {
+            std::shared_ptr<DemuxerObserver> ob = _observer.lock();
+            if (ob) {
+                ob->error();
+            }
         }
     }));
     
@@ -93,7 +99,7 @@ void DemuxerControl::readPacket() {
     if (packet) {
         switch (packet->type) {
             case kPacketTypeAudio:
-                _aPacketQueue->push(packet);
+//                _aPacketQueue->push(packet);
                 break;
             case kPacketTypeVideo:
                 _vPacketQueue->push(packet);
@@ -105,7 +111,7 @@ void DemuxerControl::readPacket() {
         usleep(1000);
     }
     
-    _loop->postMessage(kDemuxerRead);
+    _loop->emitMessage(kDemuxerRead);
 }
 
 

@@ -14,9 +14,9 @@
 
 #import "TTOpenGLView.h"
 
-TT::Player *createPlayer_ios();
+std::shared_ptr<TT::Player> createPlayer_ios();
 
-BOOL bindGLView_ios(TT::Player *player, TTOpenGLView *view);
+BOOL bindGLView_ios(std::shared_ptr<TT::Player> player, TTOpenGLView *view);
 
 
 #endif /* TTPlayer_ios_h */

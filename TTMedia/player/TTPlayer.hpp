@@ -34,21 +34,17 @@ namespace TT {
     class PlayerDemuxerObserver;
     class VideoCodecObserver;
     
-    typedef enum {
-        kPlayerNone,
-        kPlayerError,
-        kPlayerOpen,
-        kPlayerClose,
-        kPlayerPlaying,
-        kPlayerPaused,
-        kPlayerStoped,
-        kPlayerQuit,
-    }ePlayerStatus;
+    class PlayerStateM;
+    class PlayerStateStopped;
+    class PlayerStateReady;
     
     class Player : public std::enable_shared_from_this<Player> {
     public:
         Player();
         ~Player();
+        
+        bool init();
+        bool destroy();
         
         void play(std::shared_ptr<URL> url);
         void stop();
@@ -65,11 +61,10 @@ namespace TT {
         
         friend PlayerDemuxerObserver;
         friend VideoCodecObserver;
+        friend PlayerStateStopped;
+        friend PlayerStateReady;
         
-    private:
-        void setStatus(ePlayerStatus status);
-        void waitStatusChange();
-        
+    private:        
         bool open();
         bool openAudio();
         bool openVideo();
@@ -77,29 +72,21 @@ namespace TT {
         
         bool close();
         
-        void quit();
-        bool isQuit();
-        
-        static void *inputThreadEntry(void *arg);
-        void inputLoop();
-        
         void audioCodecCB(AudioDesc &desc);
         std::shared_ptr<Frame> audioQueueCB();
         
         void setMasterSyncType(AVSyncClock clock);
         
     private:
-        std::shared_ptr<URL> _url;
+        std::shared_ptr<PlayerStateM> _stateM;
         
-        ePlayerStatus _status;
-        pthread_cond_t _statusCond;
-        pthread_mutex_t _statusMutex;
+        std::shared_ptr<URL> _url;
         
         std::shared_ptr<DemuxerControl> _demuxerControl;
         std::shared_ptr<PlayerDemuxerObserver> _demuxerObserver;
         
         std::shared_ptr<CodecControl> _videoControl;
-        std::shared_ptr<CodecObserver> _videoObserver;
+        std::shared_ptr<VideoCodecObserver> _videoObserver;
         
         std::shared_ptr<CodecControl> _audioControl;
         std::shared_ptr<CodecObserver> _audioObserver;
@@ -111,10 +98,6 @@ namespace TT {
         std::shared_ptr<Filter> _bindFilter;
         
         AVSyncClock _clock;
-        
-        pthread_t _inputThread;
-        pthread_cond_t _inputCond;
-        pthread_mutex_t _inputMutex;
     };
     
     class PlayerDemuxerObserver : public DemuxerObserver {

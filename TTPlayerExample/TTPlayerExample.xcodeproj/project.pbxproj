@@ -146,6 +146,7 @@
 		EC89E7AD21B3BF1200E3808E /* TTCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC89E7AB21B3BF1200E3808E /* TTCodec.cpp */; };
 		EC89E7B021B3EE3600E3808E /* TTRenderControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC89E7AE21B3EE3600E3808E /* TTRenderControl.cpp */; };
 		EC89E7B321C669EE00E3808E /* TTVideoStateM.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC89E7B121C669EE00E3808E /* TTVideoStateM.cpp */; };
+		EC89E7BB21CEAD8C00E3808E /* TTPlayerStateM.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC89E7B921CEAD8800E3808E /* TTPlayerStateM.cpp */; };
 		EC8D83EC1D846E7B00C25D03 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC8D83EB1D846E7B00C25D03 /* CoreVideo.framework */; };
 		ECB053DA1F3C13AB00A49FA5 /* TTAudioCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECB053D81F3C13AB00A49FA5 /* TTAudioCodec.cpp */; };
 		ECB053E01F3C629100A49FA5 /* TTAudioQueue_ios.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECB053DE1F3C629100A49FA5 /* TTAudioQueue_ios.cpp */; };
@@ -436,6 +437,8 @@
 		EC89E7AF21B3EE3600E3808E /* TTRenderControl.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTRenderControl.hpp; sourceTree = "<group>"; };
 		EC89E7B121C669EE00E3808E /* TTVideoStateM.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTVideoStateM.cpp; sourceTree = "<group>"; };
 		EC89E7B221C669EE00E3808E /* TTVideoStateM.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTVideoStateM.hpp; sourceTree = "<group>"; };
+		EC89E7B921CEAD8800E3808E /* TTPlayerStateM.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TTPlayerStateM.cpp; sourceTree = "<group>"; };
+		EC89E7BA21CEAD8B00E3808E /* TTPlayerStateM.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TTPlayerStateM.hpp; sourceTree = "<group>"; };
 		EC8D83EB1D846E7B00C25D03 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		ECB053D81F3C13AB00A49FA5 /* TTAudioCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TTAudioCodec.cpp; sourceTree = "<group>"; };
 		ECB053D91F3C13AB00A49FA5 /* TTAudioCodec.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TTAudioCodec.hpp; sourceTree = "<group>"; };
@@ -1062,6 +1065,8 @@
 			children = (
 				EC66004D1F95A8C100042B2A /* TTPlayer.cpp */,
 				EC66004E1F95A8C100042B2A /* TTPlayer.hpp */,
+				EC89E7B921CEAD8800E3808E /* TTPlayerStateM.cpp */,
+				EC89E7BA21CEAD8B00E3808E /* TTPlayerStateM.hpp */,
 				EC66004F1F95A8C100042B2A /* TTPlayer_ios.h */,
 				EC6600501F95A8C100042B2A /* TTPlayer_ios.mm */,
 			);
@@ -1715,6 +1720,7 @@
 				ECC66E461F60E2D1003F2076 /* TTBaseViewModel.m in Sources */,
 				EC55089E2014DA9900C115A8 /* TTEditViewController.mm in Sources */,
 				EC56E7962139A3440009D8DC /* mp4_elst_box.c in Sources */,
+				EC89E7BB21CEAD8C00E3808E /* TTPlayerStateM.cpp in Sources */,
 				EC89E7AD21B3BF1200E3808E /* TTCodec.cpp in Sources */,
 				EC56E7872139A3440009D8DC /* mp4_dec_config_descr.c in Sources */,
 				EC56E79C2139A3440009D8DC /* mp4_object_descriptor.c in Sources */,

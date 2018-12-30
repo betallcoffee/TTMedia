@@ -44,8 +44,8 @@ std::shared_ptr<State> VideoStateInit::slot(int signal) {
     return nullptr;
 }
 
-int VideoStateInit::run() {
-    return static_cast<int>(VideoStateEvent::kNone);
+bool VideoStateInit::run() {
+    return false;
 }
 
 VideoStateRead::VideoStateRead(std::shared_ptr<Video> video)
@@ -77,12 +77,12 @@ std::shared_ptr<State> VideoStateRead::slot(int signal) {
     return nullptr;
 }
 
-int VideoStateRead::run() {
+bool VideoStateRead::run() {
     std::shared_ptr<Video> v = video().lock();
     if (v) {
         return v->readData();
     }
-    return static_cast<int>(VideoStateEvent::kNone);
+    return false;
 }
 
 VideoStateEdit::VideoStateEdit(std::shared_ptr<Video> video)
@@ -110,8 +110,8 @@ std::shared_ptr<State> VideoStateEdit::slot(int signal) {
     return nullptr;
 }
 
-int VideoStateEdit::run() {
-    return static_cast<int>(VideoStateEvent::kNone);
+bool VideoStateEdit::run() {
+    return false;
 }
 
 VideoStateWrite::VideoStateWrite(std::shared_ptr<Video> video)
@@ -139,12 +139,12 @@ std::shared_ptr<State> VideoStateWrite::slot(int signal) {
     return nullptr;
 }
 
-int VideoStateWrite::run() {
+bool VideoStateWrite::run() {
     std::shared_ptr<Video> v = video().lock();
     if (v) {
         return v->writeData();
     }
-    return static_cast<int>(VideoStateEvent::kNone);
+    return false;
 }
 
 VideoStateM::VideoStateM(std::shared_ptr<Video> video)

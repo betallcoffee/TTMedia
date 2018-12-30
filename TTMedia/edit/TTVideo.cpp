@@ -48,11 +48,7 @@ bool Video::init() {
 }
 
 bool Video::process() {
-    int signal = _stateM->run();
-    if (signal == static_cast<int>(VideoStateEvent::kNone)) {
-        return false;
-    }
-    return true;
+    return _stateM->run();
 }
 
 bool Video::open(std::shared_ptr<URL> url) {
@@ -151,7 +147,7 @@ bool Video::closeMedia() {
     return true;
 }
 
-int Video::readData() {
+bool Video::readData() {
     std::shared_ptr<Packet> packet = _demuxer->read();
     if (packet) {
         switch (packet->type) {
@@ -168,10 +164,10 @@ int Video::readData() {
         if (_eventCallback) {
             _eventCallback(this, VideoEvent::kReadEnd);
         }
-        return static_cast<int>(VideoStateEvent::kReady);
+        _stateM->emit(static_cast<int>(VideoStateEvent::kReady));
+        return false;
     }
-    
-    return static_cast<int>(VideoStateEvent::kNone);
+    return true;
 }
 
 void Video::videoDecode(std::shared_ptr<Packet> packet) {
@@ -204,14 +200,14 @@ void Video::videoDecode(std::shared_ptr<Packet> packet) {
     }
 }
 
-int Video::writeData() {
+bool Video::writeData() {
     if (_demuxer && _writer == nullptr) {
         _writer = std::make_shared<FFWriter>();
         if (!_writer->open(_saveUrl, _demuxer->audioCodecParams(), _demuxer->videoCodecParams())) {
             LOG(ERROR) << "Edit muxer open failed:" << _saveUrl;
             _writer->cancel();
             _writer = nullptr;
-            return static_cast<int>(VideoStateEvent::kReady);
+            _stateM->emit(static_cast<int>(VideoStateEvent::kReady));
         }
     }
     
@@ -224,7 +220,7 @@ int Video::writeData() {
         close();
     }
     
-    return static_cast<int>(VideoStateEvent::kNone);
+    return false;
 }
 
 bool Video::encode() {

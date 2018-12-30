@@ -31,7 +31,7 @@ namespace TT {
         virtual bool leave() = 0;
         virtual std::shared_ptr<State> slot(int signal) = 0;
         
-        virtual int run() = 0;
+        virtual bool run() = 0;
     };
     
     class StateM {
@@ -39,10 +39,10 @@ namespace TT {
         StateM();
         virtual ~StateM();
         
-        void init(std::shared_ptr<State> state);
+        bool init(std::shared_ptr<State> state);
         void emit(int signal);
         
-        int run();
+        bool run();
         
         TT_PROPERTY_DEF_READONLY(std::shared_ptr<State>, state);
     private:

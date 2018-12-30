@@ -19,7 +19,6 @@ namespace TT {
     
     enum class VideoStateEvent {
         kNone,
-        kRun,
         kOpen,
         kClose,
         kReady,
@@ -43,7 +42,7 @@ namespace TT {
         bool leave() override;
         std::shared_ptr<State> slot(int signal) override;
         
-        int run() override;
+        bool run() override;
     };
     
     class VideoStateRead : public VideoState {
@@ -56,7 +55,7 @@ namespace TT {
         bool leave() override;
         std::shared_ptr<State> slot(int signal) override;
         
-        int run() override;
+        bool run() override;
     };
     
     class VideoStateEdit : public VideoState {
@@ -69,7 +68,7 @@ namespace TT {
         bool leave() override;
         std::shared_ptr<State> slot(int signal) override;
         
-        int run() override;
+        bool run() override;
     };
     
     class VideoStateWrite : public VideoState {
@@ -82,7 +81,7 @@ namespace TT {
         bool leave() override;
         std::shared_ptr<State> slot(int signal) override;
         
-        int run() override;
+        bool run() override;
     };
     
     class VideoStateM : public StateM {

@@ -41,7 +41,7 @@ namespace TT {
     
     class CodecControl {
     public:
-        CodecControl();
+        CodecControl(const char *name);
         virtual ~CodecControl();
         
         virtual bool start(std::shared_ptr<Stream> stream);

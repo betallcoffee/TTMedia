@@ -20,7 +20,7 @@ using namespace TT;
 
 @interface ViewController ()
 {
-    Player *_player;
+    std::shared_ptr<Player> _player;
     
     std::shared_ptr<FilterGroup> _filterGroup;
     std::shared_ptr<ContrastFilter> _contrast;
@@ -133,9 +133,8 @@ using namespace TT;
 //        const char *cFilePath = [filePath cStringUsingEncoding:NSUTF8StringEncoding];
 //        const char *cFilePath = "http://1251845595.vod2.myqcloud.com/9d67116cvodgzp1251845595/eb800eaf9031868223333695199/playlist.m3u8";
         const char *cFilePath = "http://down.ttdtweb.com/test/MTV.mp4";
-        std::shared_ptr<URL> url = std::make_shared<URL>(cFilePath);
-//        std::shared_ptr<URL> url = std::make_shared<URL>("rtmp://live.hkstv.hk.lxdns.com/live/hks");
-        
+//        std::shared_ptr<URL> url = std::make_shared<URL>(cFilePath);
+        std::shared_ptr<URL> url = std::make_shared<URL>("rtmp://live.hkstv.hk.lxdns.com/live/hks1");
         _player->play(url);
     }
 }

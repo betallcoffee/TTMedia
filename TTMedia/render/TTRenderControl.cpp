@@ -35,7 +35,7 @@ RenderControl::RenderControl() {
     _vClock.reset();
     _eClock.reset();
     
-    _loop = std::make_shared<MessageLoop>();
+    _loop = std::make_shared<MessageLoop>("RenderControl");
     _loop->setMessageHandle(std::bind(&RenderControl::handleMessage, this, std::placeholders::_1));
     initMessages();
     _loop->start();

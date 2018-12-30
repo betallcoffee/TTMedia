@@ -33,15 +33,16 @@ static bool renderDisplay(void *opaque, std::shared_ptr<TT::Frame> frame) {
     return [view render:frame];
 }
 
-TT::Player *createPlayer_ios() {
-    TT::Player *player = new(std::nothrow) TT::Player;
+std::shared_ptr<TT::Player> createPlayer_ios() {
+    std::shared_ptr<TT::Player> player = std::make_shared<TT::Player>();
     if (player != nullptr) {
+        player->init();
         player->bindAudioQueue(std::make_shared<TT::AudioQueue_ios>());
     }
     return player;
 }
 
-BOOL bindGLView_ios(TT::Player *player, TTOpenGLView *view) {
+BOOL bindGLView_ios(std::shared_ptr<TT::Player> player, TTOpenGLView *view) {
     if (player == nullptr || view == nil) {
         return NO;
     }

@@ -70,8 +70,8 @@ namespace TT {
         
         bool openDemuxer();
         bool closeMedia();
-        int readData();
-        int writeData();
+        bool readData();
+        bool writeData();
         
     private:
         void videoDecode(std::shared_ptr<Packet> packet);
