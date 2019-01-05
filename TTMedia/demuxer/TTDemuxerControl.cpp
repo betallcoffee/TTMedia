@@ -51,7 +51,7 @@ bool DemuxerControl::seek(int64_t millisecond) {
 }
 
 void DemuxerControl::initMessages() {
-    _loop->signalMessage(std::make_shared<Message>(kDemuxerOpen, [&](std::shared_ptr<Message> message) {
+    _loop->slotMessage(std::make_shared<Message>(kDemuxerOpen, [&](std::shared_ptr<Message> message) {
         _vPacketQueue->clear();
         _aPacketQueue->clear();
         _demuxer = Demuxer::createDemuxer(_url);
@@ -69,7 +69,7 @@ void DemuxerControl::initMessages() {
         }
     }));
     
-    _loop->signalMessage(std::make_shared<Message>(kDemuxerClose, [&](std::shared_ptr<Message> message) {
+    _loop->slotMessage(std::make_shared<Message>(kDemuxerClose, [&](std::shared_ptr<Message> message) {
         _demuxer->close();
         _demuxer = nullptr;
         std::shared_ptr<DemuxerObserver> ob = _observer.lock();
@@ -78,7 +78,7 @@ void DemuxerControl::initMessages() {
         }
     }));
     
-    _loop->signalMessage(std::make_shared<Message>(kDemuxerRead, [&](std::shared_ptr<Message> message) {
+    _loop->slotMessage(std::make_shared<Message>(kDemuxerRead, [&](std::shared_ptr<Message> message) {
         readPacket();
     }));
 }

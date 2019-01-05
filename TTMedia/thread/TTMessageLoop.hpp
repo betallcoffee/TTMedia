@@ -52,7 +52,7 @@ namespace TT {
         void postMessage(std::shared_ptr<Message> message);
         
         void emitMessage(int code);
-        void signalMessage(std::shared_ptr<Message> message);
+        void slotMessage(std::shared_ptr<Message> message);
         
     private:
         static void *messageThreadEntry(void *opaque);

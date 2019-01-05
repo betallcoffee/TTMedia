@@ -61,11 +61,11 @@ bool CodecControl::stop() {
 }
 
 void CodecControl::initMessages() {
-    _loop->signalMessage(std::make_shared<Message>(kCodecDecode, [&](std::shared_ptr<Message>) {
+    _loop->slotMessage(std::make_shared<Message>(kCodecDecode, [&](std::shared_ptr<Message>) {
         decodePacket();
     }));
     
-    _loop->signalMessage(std::make_shared<Message>(kCodecClose, [&](std::shared_ptr<Message>) {
+    _loop->slotMessage(std::make_shared<Message>(kCodecClose, [&](std::shared_ptr<Message>) {
         _codec->close();
         _codec = nullptr;
         _frameQueue->close();

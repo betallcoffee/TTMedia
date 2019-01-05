@@ -60,16 +60,16 @@ void RenderControl::updateAudioClock(int64_t pts) {
 }
 
 void RenderControl::initMessages() {
-    _loop->signalMessage(std::make_shared<Message>(kRenderOpen, [&](std::shared_ptr<Message> message) {
+    _loop->slotMessage(std::make_shared<Message>(kRenderOpen, [&](std::shared_ptr<Message> message) {
         _running = true;
         _loop->emitMessage(kRenderRender);
     }));
     
-    _loop->signalMessage(std::make_shared<Message>(kRenderClose, [&](std::shared_ptr<Message> message) {
+    _loop->slotMessage(std::make_shared<Message>(kRenderClose, [&](std::shared_ptr<Message> message) {
         _running = false;
     }));
     
-    _loop->signalMessage(std::make_shared<Message>(kRenderRender, [&](std::shared_ptr<Message> message) {
+    _loop->slotMessage(std::make_shared<Message>(kRenderRender, [&](std::shared_ptr<Message> message) {
         render();
     }));
 }

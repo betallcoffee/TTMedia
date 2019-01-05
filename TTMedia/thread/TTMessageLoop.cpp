@@ -68,7 +68,7 @@ void MessageLoop::emitMessage(int code) {
     postMessage(message);
 }
 
-void MessageLoop::signalMessage(std::shared_ptr<Message> message) {
+void MessageLoop::slotMessage(std::shared_ptr<Message> message) {
     _handleMap[message->code()] = message;
 }
 
