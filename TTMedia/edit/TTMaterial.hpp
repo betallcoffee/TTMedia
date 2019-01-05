@@ -37,6 +37,7 @@ namespace TT {
         virtual void save(std::shared_ptr<URL> url) = 0;
         virtual int frameCount() = 0;
         virtual std::shared_ptr<Frame> frame(int index) = 0;
+        virtual bool loadMore() = 0;
         
         int startIndex;
         int endIndex;

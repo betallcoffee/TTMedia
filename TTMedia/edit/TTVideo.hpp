@@ -32,15 +32,13 @@ namespace TT {
     class AudioCodec;
     class VideoCodec;
     
-    class VideoStateM;
-    
     typedef enum class VideoEvent {
         kNone,
         kReadEnd,
         kWriteEnd,
     } eEditEvent;
     
-    class Video : public Material, public std::enable_shared_from_this<Video> {
+    class Video : public Material {
     public:
         Video();
         ~Video();
@@ -52,6 +50,7 @@ namespace TT {
         bool open(std::shared_ptr<URL> url) override;
         bool close() override;
         void save(std::shared_ptr<URL> url) override;
+        bool loadMore() override;
         
         int frameCount() override;
         std::shared_ptr<Frame> frame(int index) override;
@@ -74,29 +73,25 @@ namespace TT {
         bool writeData();
         
     private:
-        void videoDecode(std::shared_ptr<Packet> packet);
+        bool videoDecode(std::shared_ptr<Packet> packet);
         bool encode();
         
     private:
-        std::shared_ptr<VideoStateM> _stateM;
-        
         std::shared_ptr<URL> _saveUrl;
         size_t _width;
         size_t _height;
         
         pthread_mutex_t _mutex;
-        EventCallback _eventCallback;
         
         std::shared_ptr<Stream> _stream;
         std::shared_ptr<FFDemuxer> _demuxer;
         std::shared_ptr<FFWriter> _writer;
         
         std::shared_ptr<AudioCodec> _audioCodec;
-        
         std::shared_ptr<VideoCodec> _videoCodec;
+        
         Array<std::shared_ptr<Frame>> _vFrameArray;
         Array<std::shared_ptr<Frame>> _previews;
-        ReadFrameCallback _readFrameCallback;
     };
 }
 
