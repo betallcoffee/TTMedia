@@ -22,8 +22,8 @@ using namespace TT;
 
 const static int kMaxFrameCount = 0;
 
-Video::Video() :
-Material(MaterialType::kVideo),
+Video::Video(std::shared_ptr<URL> url) :
+Material(MaterialType::kVideo, url),
 _mutex(PTHREAD_MUTEX_INITIALIZER),
 _stream(nullptr), _demuxer(nullptr), _writer(nullptr),
 _videoCodec(nullptr), _audioCodec(nullptr),
@@ -38,19 +38,14 @@ _previews("video_preview_frame", kMaxFrameCount) {
 Video::~Video() {
 }
 
-bool Video::init() {
-    return true;
-}
-
-bool Video::process() {
-    return false;
-}
-
-bool Video::open(std::shared_ptr<URL> url) {
+bool Video::open() {
     Mutex m(&_mutex);
-    _url = url;
+    if (isOpen()) {
+        return true;
+    }
+    
     _demuxer = std::make_shared<FFDemuxer>();
-    _demuxer->open(_url);
+    _demuxer->open(url());
     
     if (_demuxer->hasAudio()) {
         _audioCodec = std::make_shared<AudioCodec>(_demuxer->audioStream()->internalStream());
@@ -62,6 +57,8 @@ bool Video::open(std::shared_ptr<URL> url) {
         _videoCodec->open();
     }
     
+    setisOpen(true);
+    setisEnd(false);
     return true;
 }
 
@@ -89,6 +86,8 @@ bool Video::close() {
         _writer->close();
         _writer = nullptr;
     }
+    
+    setisOpen(false);
     return true;
 }
 
@@ -116,14 +115,25 @@ void Video::save(std::shared_ptr<URL> url) {
 
 bool Video::loadMore() {
     Mutex m(&_mutex);
+    if (!isOpen()) {
+        return false;
+    }
+    
     size_t oldSize = _previews.size();
     while (readData()) {
         size_t newSize = _previews.size();
         if (newSize > oldSize) {
+            setisEnd(false);
             return true;
         }
     }
-    return false;
+    
+    if (_demuxer->isEOF()) {
+        setisEnd(true);
+        return false;
+    } else {
+        return true;
+    }
 }
 
 int Video::frameCount() {
@@ -150,56 +160,6 @@ std::shared_ptr<Frame> Video::preview(int index) {
         return _previews[index];
     }
     return nullptr;
-}
-
-void Video::setEventCallback(EventCallback cb) {
-}
-
-void Video::setReadFrameCallback(ReadFrameCallback cb) {
-}
-
-bool Video::openDemuxer() {
-    _demuxer = std::make_shared<FFDemuxer>();
-    _demuxer->open(_url);
-    
-    if (_demuxer->hasAudio()) {
-        _audioCodec = std::make_shared<AudioCodec>(_demuxer->audioStream()->internalStream());
-        _audioCodec->open();
-    }
-    
-    if (_demuxer->hasVideo()) {
-        _videoCodec = std::make_shared<VideoCodec>(_demuxer->videoStream()->internalStream());
-        _videoCodec->open();
-    }
-    
-    return true;
-}
-
-bool Video::closeMedia() {
-    _vFrameArray.clear();
-    _previews.clear();
-    
-    if (_audioCodec) {
-        _audioCodec->close();
-        _audioCodec = nullptr;
-    }
-    
-    if (_videoCodec) {
-        _videoCodec->close();
-        _videoCodec = nullptr;
-    }
-    
-    if (_demuxer) {
-        _demuxer->close();
-        _demuxer = nullptr;
-    }
-    
-    if (_writer) {
-        _writer->close();
-        _writer = nullptr;
-    }
-    
-    return true;
 }
 
 bool Video::readData() {

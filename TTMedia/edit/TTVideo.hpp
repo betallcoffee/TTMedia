@@ -40,14 +40,10 @@ namespace TT {
     
     class Video : public Material {
     public:
-        Video();
+        Video(std::shared_ptr<URL> url);
         ~Video();
         
-        bool init();
-        
-        bool process() override;
-        
-        bool open(std::shared_ptr<URL> url) override;
+        bool open() override;
         bool close() override;
         void save(std::shared_ptr<URL> url) override;
         bool loadMore() override;
@@ -61,18 +57,9 @@ namespace TT {
         int previewCount();
         std::shared_ptr<Frame> preview(int index);
         
-        typedef std::function<void(Video *, size_t size)> ReadFrameCallback;
-        void setReadFrameCallback(ReadFrameCallback cb);
-        
-        typedef std::function<void(Video *, VideoEvent event)> EventCallback;
-        void setEventCallback(EventCallback cb);
-        
-        bool openDemuxer();
-        bool closeMedia();
+    private:
         bool readData();
         bool writeData();
-        
-    private:
         bool videoDecode(std::shared_ptr<Packet> packet);
         bool encode();
         

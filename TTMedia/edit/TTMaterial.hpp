@@ -9,6 +9,7 @@
 #ifndef TTMaterial_hpp
 #define TTMaterial_hpp
 
+#include "TTdef.h"
 #include "TTURL.hpp"
 #include "TTFrame.hpp"
 
@@ -22,7 +23,7 @@ namespace TT {
     
     class Material {
     public:
-        Material(eMaterialType type);
+        Material(eMaterialType type, std::shared_ptr<URL> url = nullptr);
         ~Material();
         
         int tag() { return _tag; }
@@ -30,9 +31,7 @@ namespace TT {
         
         eMaterialType type() { return _type; }
         
-        virtual bool process() { return false; };
-        
-        virtual bool open(std::shared_ptr<URL> url) = 0;
+        virtual bool open() = 0;
         virtual bool close() = 0;
         virtual void save(std::shared_ptr<URL> url) = 0;
         virtual int frameCount() = 0;
@@ -42,10 +41,12 @@ namespace TT {
         int startIndex;
         int endIndex;
         
+        TT_PROPERTY_DEF_READONLY(bool, isOpen);
+        TT_PROPERTY_DEF_READONLY(bool, isEnd);
+        TT_PROPERTY_DEF_READONLY(std::shared_ptr<URL>, url);
     protected:
         int _tag = 0;
         eMaterialType _type;
-        std::shared_ptr<URL> _url;
     };
 }
 

@@ -10,7 +10,10 @@
 
 using namespace TT;
 
-Material::Material(eMaterialType type) : _type(type), _url(nullptr) {
+Material::Material(eMaterialType type, std::shared_ptr<URL> url)
+: _type(type)
+, _url(url)
+{
     
 }
 

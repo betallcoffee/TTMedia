@@ -18,10 +18,11 @@
 
 static NSString *kPreviewCellIdentifier = @"previewCell";
 
-@interface TTEditViewController () <
-  UICollectionViewDelegate,
-  UICollectionViewDataSource,
-  UICollectionViewDelegateFlowLayout>
+@interface TTEditViewController ()
+< UICollectionViewDelegate
+, UICollectionViewDataSource
+, UICollectionViewDelegateFlowLayout
+>
 {
     std::shared_ptr<TT::EditGroup> _editGroup;
     
@@ -33,32 +34,7 @@ static NSString *kPreviewCellIdentifier = @"previewCell";
 @property (nonatomic, strong) UICollectionView *previewBar;
 @property (nonatomic, strong) TTImageView *imageView;
 
-- (void)video:(TT::Video *)video eventCallback:(TT::VideoEvent)event;
-- (void)video:(TT::Video *)video readFrameCallback:(size_t)size;
-
 @end
-
-void VideoEventCallback(void *opaque, TT::Video *video, TT::VideoEvent event) {
-    if (opaque == nullptr) {
-        return;
-    }
-    
-    LOG(DEBUG) << "Edit event callback:" << (int)event;
-    
-    TTEditViewController *vc = (__bridge TTEditViewController *)opaque;
-    [vc video:video eventCallback:event];
-}
-
-void VideoReadFrameCallback(void *opaque, TT::Video *video, size_t size) {
-    if (opaque == nullptr) {
-        return;
-    }
-    
-//    LOG(DEBUG) << "Edit decode frame size:" << size;
-    
-    TTEditViewController *vc = (__bridge TTEditViewController *)opaque;
-    [vc video:video readFrameCallback:size];
-}
 
 @implementation TTEditViewController
 
@@ -89,19 +65,8 @@ void VideoReadFrameCallback(void *opaque, TT::Video *video, size_t size) {
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
-
 #pragma mark -
 #pragma mark UI
-
 - (void)setupUI {
     self.view.backgroundColor = [UIColor whiteColor];
     
@@ -128,8 +93,6 @@ void VideoReadFrameCallback(void *opaque, TT::Video *video, size_t size) {
     _filterTexture->addFilter(_filterGroup);
 }
 
-#pragma mark getter/setter
-
 #pragma mark target/action
 - (void)onSaveButton:(UIButton *)button {
     NSUInteger startIndex = self.selectView.leftIndex;
@@ -144,7 +107,7 @@ void VideoReadFrameCallback(void *opaque, TT::Video *video, size_t size) {
             if (frameCount > startIndex) {
                 material->startIndex = static_cast<int>(startIndex);
                 if (frameCount > endIndex) {
-                    material->endIndex = endIndex;
+                    material->endIndex = static_cast<int>(endIndex);
                     break;
                 } else {
                     material->endIndex = frameCount;
@@ -167,31 +130,28 @@ void VideoReadFrameCallback(void *opaque, TT::Video *video, size_t size) {
 
 #pragma mark Edit Material
 - (void)addMaterial:(NSURL *)url {
-    std::shared_ptr<TT::Video> video = std::make_shared<TT::Video>();
-    video->init();
-    video->setEventCallback(std::bind(VideoEventCallback, (__bridge void *)self, std::placeholders::_1, std::placeholders::_2));
-    video->setReadFrameCallback(std::bind(VideoReadFrameCallback, (__bridge void *)self, std::placeholders::_1, std::placeholders::_2));
-    _editGroup->addMaterial(video);
     const char *str = [url.absoluteString cStringUsingEncoding:NSUTF8StringEncoding];
-    video->open(std::make_shared<TT::URL>(str));
+    std::shared_ptr<TT::Video> video = std::make_shared<TT::Video>(std::make_shared<TT::URL>(str));
+    _editGroup->addMaterial(video);
+    [self loadMoreForMaterial:video];
 }
 
-#pragma mark Edit callback
-- (void)video:(TT::Video *)video eventCallback:(TT::VideoEvent)event {
-    if (event == TT::VideoEvent::kReadEnd) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.selectView.previewBar reloadData];
-        });
-    }
+- (void)loadMoreForMaterial:(std::shared_ptr<TT::Material>)material {
+    _editGroup->loadMoreForMaterial(material, [=](){
+        [self reloadPreviewBar];
+    });
 }
 
-- (void)video:(TT::Video *)video readFrameCallback:(size_t)size {
+- (void)reloadPreviewBar {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.selectView.previewBar reloadData];
+    });
 }
 
 #pragma mark -- UICollectionViewDataSource
 //定义展示的UICollectionViewCell的个数
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    std::shared_ptr<TT::Material> material = _editGroup->material(section);
+    std::shared_ptr<TT::Material> material = _editGroup->material(static_cast<int>(section));
     if (material) {
         return material->frameCount();
     }
@@ -213,13 +173,22 @@ void VideoReadFrameCallback(void *opaque, TT::Video *video, size_t size) {
                                            green:((20 * indexPath.row)/255.0)
                                             blue:((30 * indexPath.row)/255.0)
                                            alpha:1.0f];
-    cell.label.text = [NSString stringWithFormat:@"%zd", indexPath.row];
+    cell.label.text = [NSString stringWithFormat:@"%d", static_cast<int>(indexPath.row)];
     
-    std::shared_ptr<TT::Material> material = _editGroup->material(indexPath.section);
+    std::shared_ptr<TT::Material> material = _editGroup->material(static_cast<int>(indexPath.section));
     if(material) {
-        std::shared_ptr<TT::Frame> frame = material->frame(indexPath.row);
         [cell setupUI];
-        [cell showFrame:frame];
+        
+        std::shared_ptr<TT::Frame> frame = material->frame(static_cast<int>(indexPath.row));
+        if (frame) {
+            [cell showFrame:frame];
+        }
+        
+        int count = material->frameCount();
+        if (indexPath.row + 1 >= count
+            && !material->isEnd()) {
+            [self loadMoreForMaterial:material];
+        }
     }
     
     return cell;
@@ -246,9 +215,9 @@ void VideoReadFrameCallback(void *opaque, TT::Video *video, size_t size) {
     NSArray<NSIndexPath *> *indexPaths = _previewBar.indexPathsForVisibleItems;
     if (indexPaths.count > 0) {
         NSIndexPath *indexPath = indexPaths.firstObject;
-        std::shared_ptr<TT::Material> material = _editGroup->material(indexPath.section);
+        std::shared_ptr<TT::Material> material = _editGroup->material(static_cast<int>(indexPath.section));
         if(material) {
-            std::shared_ptr<TT::Frame> frame = material->frame(indexPath.row);
+            std::shared_ptr<TT::Frame> frame = material->frame(static_cast<int>(indexPath.row));
             _filterTexture->processFrame(frame);
         }
     }
@@ -259,9 +228,9 @@ void VideoReadFrameCallback(void *opaque, TT::Video *video, size_t size) {
     UICollectionViewCell *cell = (UICollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
     cell.backgroundColor = [UIColor whiteColor];
     
-    std::shared_ptr<TT::Material> material = _editGroup->material(indexPath.section);
+    std::shared_ptr<TT::Material> material = _editGroup->material(static_cast<int>(indexPath.section));
     if(material) {
-        std::shared_ptr<TT::Frame> frame = material->frame(indexPath.row);
+        std::shared_ptr<TT::Frame> frame = material->frame(static_cast<int>(indexPath.row));
         _filterTexture->processFrame(frame);
     }
     [collectionView reloadData];

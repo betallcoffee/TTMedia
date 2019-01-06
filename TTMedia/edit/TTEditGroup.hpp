@@ -20,10 +20,12 @@
 
 namespace TT {
     
-    typedef enum EditMessage {
+    enum class EditMessage {
         kProccess,
+        kOpen,
+        kLoadMore,
         kExportFile,
-    } eEditMessage;
+    };
     
     class EditGroup {
     public:
@@ -36,14 +38,15 @@ namespace TT {
         void addMaterial(std::shared_ptr<Material> material);
         void removeMaterial(int index);
         
+        typedef std::function<void (void)> Callback;
+        void loadMoreForMaterial(std::shared_ptr<Material> material, Callback callback);
+        
         void exportFile(std::shared_ptr<URL> url);
         
     private:
         void quit();
         
-        void handleMessage(std::shared_ptr<Message> message);
-        
-        std::shared_ptr<MessageLoop> _messageLoop;
+        std::shared_ptr<MessageLoop> _loop;
         
         std::vector<std::shared_ptr<Material>> _materials;
         std::vector<std::shared_ptr<Video>> _videos;

@@ -18,12 +18,11 @@ using namespace TT;
 
 EditGroup::EditGroup() :
 _editMutex(PTHREAD_MUTEX_INITIALIZER) {
-    _messageLoop = std::make_shared<MessageLoop>("Edit Group");
-    _messageLoop->setMessageHandle(std::bind(&EditGroup::handleMessage, this, std::placeholders::_1));
+    _loop = std::make_shared<MessageLoop>("Edit Group");
 }
 
 EditGroup::~EditGroup() {
-    _messageLoop->stop();
+    _loop->stop();
 }
 
 int EditGroup::materialCount() {
@@ -39,13 +38,16 @@ std::shared_ptr<Material> EditGroup::material(int index) {
 }
 
 void EditGroup::addMaterial(std::shared_ptr<Material> edit) {
+    _loop->postMessage(std::make_shared<Message>(static_cast<int>(EditMessage::kOpen), [&, edit](std::shared_ptr<Message> message){
+        edit->open();
+    }));
+    
     Mutex m(&_editMutex);
     _materials.push_back(edit);
     if (MaterialType::kVideo == edit->type()) {
         std::shared_ptr<Video> video = std::dynamic_pointer_cast<Video>(edit);
         _videos.push_back(video);
     }
-    _messageLoop->postMessage(std::make_shared<Message>(EditMessage::kProccess));
 }
 
 void EditGroup::removeMaterial(int index) {
@@ -55,32 +57,20 @@ void EditGroup::removeMaterial(int index) {
     }
 }
 
-void EditGroup::exportFile(std::shared_ptr<URL> url) {
-    Mutex m(&_editMutex);
-    _exportUrl = url;
-    _messageLoop->postMessage(std::make_shared<Message>(EditMessage::kExportFile));
-}
-
-void EditGroup::quit() {
-    Mutex m(&_editMutex);
-    _messageLoop->stop();
-}
-
-void EditGroup::handleMessage(std::shared_ptr<Message> message) {
-    Mutex m(&_editMutex);
-    EditMessage code = static_cast<EditMessage>(message->code());
-    if (EditMessage::kProccess == code) {
-        if (!_materials.empty()) {
-            std::for_each(_materials.begin(), _materials.end(), [&](std::shared_ptr<Material> material) {
-                if (material) {
-                    if (!material->process()) {
-                        usleep(1);
-                    }
-                }
-            });
+void EditGroup::loadMoreForMaterial(std::shared_ptr<Material> material, Callback callback) {
+    _loop->postMessage(std::make_shared<Message>(static_cast<int>(EditMessage::kLoadMore), [=](std::shared_ptr<Message> message) {
+        Mutex m(&_editMutex);
+        material->loadMore();
+        if (callback) {
+            callback();
         }
-        _messageLoop->postMessage(std::make_shared<Message>(EditMessage::kProccess));
-    } else if (EditMessage::kExportFile == code) {
+    }));
+}
+
+void EditGroup::exportFile(std::shared_ptr<URL> url) {
+    _loop->postMessage(std::make_shared<Message>(static_cast<int>(EditMessage::kExportFile), [&](std::shared_ptr<Message> message) {
+        Mutex m(&_editMutex);
+        _exportUrl = url;
         if (!_materials.empty()) {
             size_t width = 1024;
             size_t height = 720;
@@ -111,7 +101,12 @@ void EditGroup::handleMessage(std::shared_ptr<Message> message) {
                 _writer->flush();
             }
         }
-    }
+    }));
+}
+
+void EditGroup::quit() {
+    Mutex m(&_editMutex);
+    _loop->stop();
 }
 
 
