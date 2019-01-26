@@ -10,6 +10,6 @@
 #define TTEdit_h
 
 #include "TTEditGroup.hpp"
-#include "TTVideo.hpp"
+#include "TTMedia.hpp"
 
 #endif /* TTEdit_h */

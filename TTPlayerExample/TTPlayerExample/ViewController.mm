@@ -133,8 +133,9 @@ using namespace TT;
 //        const char *cFilePath = [filePath cStringUsingEncoding:NSUTF8StringEncoding];
 //        const char *cFilePath = "http://1251845595.vod2.myqcloud.com/9d67116cvodgzp1251845595/eb800eaf9031868223333695199/playlist.m3u8";
         const char *cFilePath = "http://down.ttdtweb.com/test/MTV.mp4";
-//        std::shared_ptr<URL> url = std::make_shared<URL>(cFilePath);
-        std::shared_ptr<URL> url = std::make_shared<URL>("rtmp://live.hkstv.hk.lxdns.com/live/hks1");
+//        const char *cFilePath = "http://1251316161.vod2.myqcloud.com/918777bavodgzp1251316161/dd2ad6e85285890784107131626/cAAaxsH3F8UA.mp4";
+        std::shared_ptr<URL> url = std::make_shared<URL>(cFilePath);
+//        std::shared_ptr<URL> url = std::make_shared<URL>("rtmp://live.hkstv.hk.lxdns.com/live/hks1");
         _player->play(url);
     }
 }

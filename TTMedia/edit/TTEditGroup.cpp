@@ -12,7 +12,7 @@
 
 #include "TTMutex.hpp"
 #include "TTEditGroup.hpp"
-#include "TTVideo.hpp"
+#include "TTMedia.hpp"
 
 using namespace TT;
 
@@ -45,7 +45,7 @@ void EditGroup::addMaterial(std::shared_ptr<Material> edit) {
     Mutex m(&_editMutex);
     _materials.push_back(edit);
     if (MaterialType::kVideo == edit->type()) {
-        std::shared_ptr<Video> video = std::dynamic_pointer_cast<Video>(edit);
+        std::shared_ptr<Media> video = std::dynamic_pointer_cast<Media>(edit);
         _videos.push_back(video);
     }
 }
@@ -75,7 +75,7 @@ void EditGroup::exportFile(std::shared_ptr<URL> url) {
             size_t width = 1024;
             size_t height = 720;
             if (!_videos.empty()) {
-                std::shared_ptr<Video> video = *_videos.begin();
+                std::shared_ptr<Media> video = *_videos.begin();
                 width = video->width();
                 height = video->height();
             }

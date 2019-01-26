@@ -131,7 +131,7 @@ static NSString *kPreviewCellIdentifier = @"previewCell";
 #pragma mark Edit Material
 - (void)addMaterial:(NSURL *)url {
     const char *str = [url.absoluteString cStringUsingEncoding:NSUTF8StringEncoding];
-    std::shared_ptr<TT::Video> video = std::make_shared<TT::Video>(std::make_shared<TT::URL>(str));
+    std::shared_ptr<TT::Media> video = std::make_shared<TT::Media>(std::make_shared<TT::URL>(str));
     _editGroup->addMaterial(video);
     [self loadMoreForMaterial:video];
 }

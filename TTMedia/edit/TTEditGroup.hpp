@@ -16,7 +16,7 @@
 #include "TTFFWriter.hpp"
 #include "TTFilterFrame.hpp"
 #include "TTMaterial.hpp"
-#include "TTVideo.hpp"
+#include "TTMedia.hpp"
 
 namespace TT {
     
@@ -49,7 +49,7 @@ namespace TT {
         std::shared_ptr<MessageLoop> _loop;
         
         std::vector<std::shared_ptr<Material>> _materials;
-        std::vector<std::shared_ptr<Video>> _videos;
+        std::vector<std::shared_ptr<Media>> _videos;
         
         pthread_mutex_t _editMutex;
         

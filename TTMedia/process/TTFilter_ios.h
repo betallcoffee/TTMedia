@@ -6,6 +6,11 @@
 //  Copyright © 2017年 tina. All rights reserved.
 //
 
+/**
+ * Filter_ios 将 Filter pipe 的调用转发到 oc 对象
+ */
+
+
 #import <Foundation/Foundation.h>
 
 #include "TTFilter.hpp"

@@ -1,5 +1,5 @@
 //
-//  TTVideo.hpp
+//  TTMedia.hpp
 //  TTPlayerExample
 //
 //  Created by liang on 17/10/17.
@@ -38,10 +38,10 @@ namespace TT {
         kWriteEnd,
     } eEditEvent;
     
-    class Video : public Material {
+    class Media : public Material {
     public:
-        Video(std::shared_ptr<URL> url);
-        ~Video();
+        Media(std::shared_ptr<URL> url);
+        ~Media();
         
         bool open() override;
         bool close() override;

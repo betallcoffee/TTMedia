@@ -1,5 +1,5 @@
 //
-//  TTVideoEdit.cpp
+//  TTMedia.cpp
 //  TTPlayerExample
 //
 //  Created by liang on 17/10/17.
@@ -8,7 +8,7 @@
 
 #include "easylogging++.h"
 
-#include "TTVideo.hpp"
+#include "TTMedia.hpp"
 #include "TTMutex.hpp"
 
 #include "TTHTTPIO.hpp"
@@ -22,7 +22,7 @@ using namespace TT;
 
 const static int kMaxFrameCount = 0;
 
-Video::Video(std::shared_ptr<URL> url) :
+Media::Media(std::shared_ptr<URL> url) :
 Material(MaterialType::kVideo, url),
 _mutex(PTHREAD_MUTEX_INITIALIZER),
 _stream(nullptr), _demuxer(nullptr), _writer(nullptr),
@@ -35,10 +35,10 @@ _previews("video_preview_frame", kMaxFrameCount) {
     LOG(DEBUG) << "ffmpeg build configure: " << avcodec_configuration();
 }
 
-Video::~Video() {
+Media::~Media() {
 }
 
-bool Video::open() {
+bool Media::open() {
     Mutex m(&_mutex);
     if (isOpen()) {
         return true;
@@ -62,7 +62,7 @@ bool Video::open() {
     return true;
 }
 
-bool Video::close() {
+bool Media::close() {
     Mutex m(&_mutex);
     _vFrameArray.clear();
     _previews.clear();
@@ -91,7 +91,7 @@ bool Video::close() {
     return true;
 }
 
-void Video::save(std::shared_ptr<URL> url) {
+void Media::save(std::shared_ptr<URL> url) {
     Mutex m(&_mutex);
     _saveUrl = url;
     if (_demuxer && _writer == nullptr) {
@@ -113,7 +113,7 @@ void Video::save(std::shared_ptr<URL> url) {
     }
 }
 
-bool Video::loadMore() {
+bool Media::loadMore() {
     Mutex m(&_mutex);
     if (!isOpen()) {
         return false;
@@ -136,12 +136,12 @@ bool Video::loadMore() {
     }
 }
 
-int Video::frameCount() {
+int Media::frameCount() {
     Mutex m(&_mutex);
     return static_cast<int>(_vFrameArray.size());
 }
 
-std::shared_ptr<Frame> Video::frame(int index) {
+std::shared_ptr<Frame> Media::frame(int index) {
     Mutex m(&_mutex);
     if (0 <= index && index < _vFrameArray.size()) {
         return _vFrameArray[index];
@@ -149,12 +149,12 @@ std::shared_ptr<Frame> Video::frame(int index) {
     return nullptr;
 }
 
-int Video::previewCount() {
+int Media::previewCount() {
     Mutex m(&_mutex);
     return static_cast<int>(_previews.size());
 }
 
-std::shared_ptr<Frame> Video::preview(int index) {
+std::shared_ptr<Frame> Media::preview(int index) {
     Mutex m(&_mutex);
     if (0 <= index && index < _previews.size()) {
         return _previews[index];
@@ -162,7 +162,7 @@ std::shared_ptr<Frame> Video::preview(int index) {
     return nullptr;
 }
 
-bool Video::readData() {
+bool Media::readData() {
     std::shared_ptr<Packet> packet = _demuxer->read();
     if (packet) {
         switch (packet->type) {
@@ -180,7 +180,7 @@ bool Video::readData() {
     return true;
 }
 
-bool Video::videoDecode(std::shared_ptr<Packet> packet) {
+bool Media::videoDecode(std::shared_ptr<Packet> packet) {
     if (packet && _videoCodec) {
         std::shared_ptr<Frame> frame;
         frame = _videoCodec->decode(packet);
@@ -209,7 +209,7 @@ bool Video::videoDecode(std::shared_ptr<Packet> packet) {
     return false;
 }
 
-bool Video::writeData() {
+bool Media::writeData() {
     if (_demuxer && _writer == nullptr) {
         _writer = std::make_shared<FFWriter>();
         if (!_writer->open(_saveUrl, _demuxer->audioCodecParams(), _demuxer->videoCodecParams())) {
@@ -231,6 +231,6 @@ bool Video::writeData() {
     return true;
 }
 
-bool Video::encode() {
+bool Media::encode() {
     return false;
 }

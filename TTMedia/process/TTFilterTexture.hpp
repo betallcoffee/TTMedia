@@ -5,7 +5,7 @@
 //  Created by liang on 2/9/17.
 //  Copyright © 2017年 tina. All rights reserved.
 //
-// 上传图片数据到 gpu 生成纹理
+// 上传 RGB 图片数据到 gpu 生成纹理
 
 #ifndef TTFilterTexture_hpp
 #define TTFilterTexture_hpp
