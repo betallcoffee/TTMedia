@@ -15,6 +15,12 @@ namespace TT {
     class Frame;
     class Packet;
     
+    enum class CodecType{
+        kNone,
+        kDecode,
+        kEncode
+    };
+    
     class Codec {
     public:
         Codec() {};
@@ -25,7 +31,7 @@ namespace TT {
         virtual std::shared_ptr<Frame> decode(std::shared_ptr<Packet> packet) {
             return nullptr;
         };
-        virtual void encode(std::shared_ptr<Frame> frame) {};
+        virtual bool encode(std::shared_ptr<Frame> frame) { return false; };
     };
 }
 

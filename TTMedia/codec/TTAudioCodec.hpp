@@ -23,6 +23,8 @@ extern "C" {
 };
 #endif
 
+#include "TTdef.h"
+#include "TTCodecParams.hpp"
 #include "TTCodec.hpp"
 
 namespace TT {
@@ -33,25 +35,33 @@ namespace TT {
     
     class AudioCodec : public Codec {
     public:
-        AudioCodec(const AVStream *avStream);
+        AudioCodec(const AVStream *avStream, CodecType type = CodecType::kDecode);
+        AudioCodec(std::shared_ptr<CodecParams> codecParams,
+                   const AVStream *avStream,
+                   CodecType type = CodecType::kDecode);
         ~AudioCodec();
         
         bool open() override;
         void close() override;
         std::shared_ptr<Frame> decode(std::shared_ptr<Packet> packet) override;
+        bool encode(std::shared_ptr<Frame> frame) override;
         
         void setCodecCallback(std::function<AudioCodecCB> cb) { _cb = cb; }
+        
+        typedef std::function<void (std::shared_ptr<Packet>)> EncodeFrameCallback;
+        TT_PROPERTY_DEF(EncodeFrameCallback, encodeFrameCallback);
         
     private:
         void createSwrContext();
         
     private:
+        CodecType _type;
+        std::shared_ptr<CodecParams> _codecParams;
+        
         const AVStream *_avStream;
         AVCodecContext *_avCodecContext;
         AVCodec *_avCodec;
-        
         AVFrame *_avFrame;
-        
         SwrContext *_swrContext;
         
         int _sampleRate;

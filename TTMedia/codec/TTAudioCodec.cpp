@@ -8,19 +8,43 @@
 
 #include <algorithm>
 
+#include "easylogging++.h"
+
 #include "TTAudioCodec.hpp"
 #include "TTFrame.hpp"
 #include "TTPacket.hpp"
 
 using namespace TT;
 
-AudioCodec::AudioCodec(const AVStream *avStream) :
- _avStream(avStream),
- _avCodec(nullptr), _avFrame(nullptr), _swrContext(nullptr),
- _sampleRate(0), _channelLayout(0), _fmt(AV_SAMPLE_FMT_NONE), _nbSamples(0), _cb(nullptr) {
-     if (_avStream) {
-         _avCodecContext = _avStream->codec;
-     }
+AudioCodec::AudioCodec(const AVStream *avStream, CodecType type)
+: _type(type)
+, _avStream(avStream)
+, _avCodec(nullptr)
+, _avFrame(nullptr)
+, _swrContext(nullptr)
+, _sampleRate(0)
+, _channelLayout(0)
+, _fmt(AV_SAMPLE_FMT_NONE)
+, _nbSamples(0)
+, _cb(nullptr)
+{
+}
+
+AudioCodec::AudioCodec(std::shared_ptr<CodecParams> codecParams,
+                       const AVStream *avStream,
+                       CodecType type)
+: _type(type)
+, _codecParams(codecParams)
+, _avStream(avStream)
+, _avCodec(nullptr)
+, _avFrame(nullptr)
+, _swrContext(nullptr)
+, _sampleRate(0)
+, _channelLayout(0)
+, _fmt(AV_SAMPLE_FMT_NONE)
+, _nbSamples(0)
+, _cb(nullptr)
+{
 }
 
 AudioCodec::~AudioCodec() {
@@ -28,15 +52,47 @@ AudioCodec::~AudioCodec() {
 }
 
 bool AudioCodec::open() {
-    if (_avCodecContext) {
-        _avCodec = avcodec_find_decoder(_avCodecContext->codec_id);
-        if (_avCodec) {
-            if (avcodec_open2(_avCodecContext, _avCodec, NULL) == 0) {
-                _avFrame = av_frame_alloc();
-                return true;
+    if (_avStream) {
+        if (CodecType::kDecode == _type) {
+            _avCodecContext = _avStream->codec;
+            if (_avCodecContext) {
+                _avCodec = avcodec_find_decoder(_avCodecContext->codec_id);
+                if (_avCodec) {
+                    if (avcodec_open2(_avCodecContext, _avCodec, NULL) == 0) {
+                        _avFrame = av_frame_alloc();
+                        return true;
+                    }
+                }
+            }
+        } else {
+            _avCodec = avcodec_find_encoder(_avStream->codecpar->codec_id);
+            if (_avCodec && _codecParams) {
+                _avCodecContext = avcodec_alloc_context3(_avCodec);
+                _avCodecContext->codec_type = _avCodec->type;
+                _avCodecContext->codec_id = _avStream->codecpar->codec_id;
+                
+                _avCodecContext->channels = _codecParams->channels;
+                _avCodecContext->channel_layout = _avStream->codecpar->channel_layout;
+                _avCodecContext->sample_rate = _codecParams->sampleRate;
+                
+                _avCodecContext->time_base.num = _codecParams->timeBase.num;
+                _avCodecContext->time_base.den = _codecParams->timeBase.den;
+                _avCodecContext->bit_rate = _codecParams->bitRate;
+                _avCodecContext->sample_fmt = AV_SAMPLE_FMT_FLTP;
+                
+                int ret = avcodec_open2(_avCodecContext, _avCodec, NULL);
+                if (ret != 0) {
+                    // TODO destroy
+                    av_log(NULL, AV_LOG_ERROR, "audio avcodec_open2 error: %s", av_err2str(ret));
+                    return false;
+                } else {
+                    avcodec_parameters_from_context(_avStream->codecpar, _avCodecContext);
+                    return true;
+                }
             }
         }
     }
+    
     return false;
 }
 
@@ -138,3 +194,54 @@ std::shared_ptr<Frame> AudioCodec::decode(std::shared_ptr<Packet> packet) {
     
     return nullptr;
 }
+
+bool AudioCodec::encode(std::shared_ptr<Frame> frame) {
+    if (_avCodecContext == nullptr) {
+        LOG(ERROR) << "Codec AudioCodec encode avcodeccontext is null";
+        return false;
+    }
+    
+    int rsend = avcodec_send_frame(_avCodecContext, frame->avFrame());
+    if (rsend < 0 && AVERROR(EAGAIN) != rsend) {
+        LOG(ERROR) << "Codec AudioCodec encode send frame error: " << av_err2str(rsend);
+        return false;
+    }
+    
+    do {
+        AVPacket *avpacket = av_packet_alloc();
+        int rrecv = avcodec_receive_packet(_avCodecContext, avpacket);
+        if (rrecv != 0) {
+            LOG(ERROR) << "Codec AudioCodec encode receive packet error: " << av_err2str(rrecv);
+            av_packet_free(&avpacket);
+            if (AVERROR(EAGAIN) == rrecv) {
+                LOG(WARNING) << "Codec AudioCodec encode need receive after send frame again";
+                if (AVERROR(EAGAIN) == rsend) {
+                    LOG(INFO) << "Codec AudioCodec encode try to send input";
+                    rsend = avcodec_send_frame(_avCodecContext, frame->avFrame());
+                    continue;
+                } else {
+                    break;
+                }
+            } else if (AVERROR_EOF == rrecv) {
+                LOG(INFO) << "Codec AudioCodec encode eof";
+                break;
+            }
+        } else {
+            if (rrecv == 0 && _encodeFrameCallback) {
+                std::shared_ptr<Packet> packet = std::make_shared<Packet>(avpacket);
+                _encodeFrameCallback(packet);
+                continue;
+            } else {
+                if (!_encodeFrameCallback) {
+                    LOG(WARNING) << "Codec AudioCodec encode did not has encodeFrameCallback";
+                }
+                av_packet_free(&avpacket);
+                return false;
+            }
+        }
+    } while (true);
+    
+    return true;
+}
+
+

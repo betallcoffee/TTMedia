@@ -15,13 +15,13 @@
 
 using namespace TT;
 
-VideoCodec::VideoCodec(std::shared_ptr<CodecParams> codecParams, const AVStream *avStream, VideoCodecType type)
-: _codecParams(codecParams)
+VideoCodec::VideoCodec(const AVStream *avStream, CodecType type)
+: _codecParams(nullptr)
 , _avStream(avStream), _type(type) {
 }
 
-VideoCodec::VideoCodec(const AVStream *avStream, VideoCodecType type)
-: _codecParams(nullptr)
+VideoCodec::VideoCodec(std::shared_ptr<CodecParams> codecParams, const AVStream *avStream, CodecType type)
+: _codecParams(codecParams)
 , _avStream(avStream), _type(type) {
 }
 
@@ -31,7 +31,16 @@ VideoCodec::~VideoCodec() {
 
 bool VideoCodec::open() {
     if (_avStream) {
-        if (kVideoCodecEncode == _type) {
+        if (CodecType::kDecode == _type) {
+            _avCodec = avcodec_find_decoder(_avStream->codecpar->codec_id);
+            if (_avCodec) {
+                _avCodecContext = avcodec_alloc_context3(_avCodec);
+                avcodec_parameters_to_context(_avCodecContext, _avStream->codecpar);
+                if (avcodec_open2(_avCodecContext, _avCodec, NULL) == 0) {
+                    return true;
+                }
+            }
+        } else {
             _avCodec = avcodec_find_encoder(_avStream->codecpar->codec_id);
             if (_avCodec && _codecParams != nullptr) {
                 _avCodecContext = avcodec_alloc_context3(_avCodec);
@@ -49,19 +58,12 @@ bool VideoCodec::open() {
                 _avCodecContext->time_base.num = _codecParams->timeBase.num;
                 _avCodecContext->time_base.den = _codecParams->timeBase.den;
                 
-                if (avcodec_open2(_avCodecContext, _avCodec, NULL) != 0) {
+                int ret = avcodec_open2(_avCodecContext, _avCodec, NULL);
+                if (ret != 0) {
+                    av_log(NULL, AV_LOG_ERROR, "video avcodec_open2 error: %s", av_err2str(ret));
                     return false;
                 } else {
                     avcodec_parameters_from_context(_avStream->codecpar, _avCodecContext);
-                    return true;
-                }
-            }
-        } else {
-            _avCodec = avcodec_find_decoder(_avStream->codecpar->codec_id);
-            if (_avCodec) {
-                _avCodecContext = avcodec_alloc_context3(_avCodec);
-                avcodec_parameters_to_context(_avCodecContext, _avStream->codecpar);
-                if (avcodec_open2(_avCodecContext, _avCodec, NULL) == 0) {
                     return true;
                 }
             }
@@ -106,16 +108,16 @@ std::shared_ptr<Frame> VideoCodec::decode(std::shared_ptr<Packet> packet) {
     return nullptr;
 }
 
-void VideoCodec::encode(std::shared_ptr<Frame> frame) {
+bool VideoCodec::encode(std::shared_ptr<Frame> frame) {
     if (_avCodecContext == nullptr) {
         LOG(ERROR) << "Codec VideoCodec encode avcodeccontext is null";
-        return;
+        return false;
     }
     
     int rsend = avcodec_send_frame(_avCodecContext, frame->avFrame());
     if (rsend < 0 && AVERROR(EAGAIN) != rsend) {
         LOG(ERROR) << "Codec VideoCodec encode send frame error: " << av_err2str(rsend);
-        return;
+        return false;
     }
     
     do {
@@ -147,9 +149,12 @@ void VideoCodec::encode(std::shared_ptr<Frame> frame) {
                     LOG(WARNING) << "Codec VideoCodec encode did not has encodeFrameCallback";
                 }
                 av_packet_free(&avpacket);
+                return false;
             }
         }
     } while (true);
+    
+    return true;
 }
 
 

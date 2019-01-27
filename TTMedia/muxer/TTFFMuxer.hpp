@@ -17,8 +17,9 @@ extern "C" {
 };
 #endif
 
-#include "TTVideoCodec.hpp"
 #include "TTMuxer.hpp"
+#include "TTVideoCodec.hpp"
+#include "TTAudioCodec.hpp"
 
 
 namespace TT {
@@ -31,12 +32,17 @@ namespace TT {
                   std::shared_ptr<CodecParams> audioCodecParams,
                   std::shared_ptr<CodecParams> videoCodecParams) override;
         void close() override;
+        
         void flush() override;
         bool write(std::shared_ptr<Packet> packet) override;
         bool write(std::shared_ptr<Frame> frame) override;
         
     private:
-        void encodeFrameCallback(std::shared_ptr<Packet> packet);
+        bool createAudioStream(std::shared_ptr<CodecParams> codecParams);
+        bool createVideoStream(std::shared_ptr<CodecParams> codecParams);
+        
+        void encodeAudioFrameCallback(std::shared_ptr<Packet> packet);
+        void encodeVideoFrameCallback(std::shared_ptr<Packet> packet);
         
         std::shared_ptr<URL> _url = nullptr;
         
@@ -47,11 +53,13 @@ namespace TT {
         
         AVStream *_audioStream = nullptr;
         std::shared_ptr<CodecParams> _audioCodecParams = nullptr;
+        std::shared_ptr<AudioCodec> _audioCodec = nullptr;
+        uint64_t _audioPts = 0;
+        
         AVStream *_videoStream = nullptr;
         std::shared_ptr<CodecParams> _videoCodecParams = nullptr;
+        std::shared_ptr<VideoCodec> _videoCodec = nullptr;
         uint64_t _videoPts = 0;
-        
-        std::shared_ptr<VideoCodec> _videoCodec;
     };
 }
 
