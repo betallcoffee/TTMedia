@@ -98,6 +98,9 @@ bool Player::open() {
 bool Player::openAudio() {
     if (_demuxerControl->demuxer()->hasAudio()) {
         _audioControl = std::make_shared<AudioCodecControl>();
+        _audioObserver = std::make_shared<AudioCodecObserver>();
+        _audioObserver->setplayer(shared_from_this());
+        _audioControl->setobserver(_audioObserver);
         _audioControl->setpacketQueue(_demuxerControl->aPacketQueue());
         return _audioControl->start(_demuxerControl->demuxer()->audioStream());
     }
@@ -116,7 +119,7 @@ bool Player::openVideo() {
     return false;
 }
 
-bool Player::openRender() {
+bool Player::openVideoRender() {
     if (_videoControl->frameQueue()) {
         std::shared_ptr<Y420ToRGBFilter> filter = std::make_shared<Y420ToRGBFilter>();
         filter->addFilter(_bindFilter);
@@ -145,7 +148,7 @@ bool Player::close() {
     return true;
 }
 
-void Player::audioCodecCB(TT::AudioDesc &desc) {
+void Player::openAudioPlay(TT::AudioDesc &desc) {
     if (_audioQueue) {
         _audioQueue->setup(desc);
     }
@@ -213,15 +216,15 @@ void PlayerDemuxerObserver::error() {
 void VideoCodecObserver::opened() {
     std::shared_ptr<Player> player = _player.lock();
     if (player) {
-        player->openRender();
+        player->openVideoRender();
     }
 }
 
-void VideoCodecObserver::closed() {
-    
-}
-
-void VideoCodecObserver::error() {
-    
+#pragma mark AudioCodecObserver
+void AudioCodecObserver::audioDesc(TT::AudioDesc &desc) {
+    std::shared_ptr<Player> player = _player.lock();
+    if (player) {
+        player->openAudioPlay(desc);
+    }
 }
 

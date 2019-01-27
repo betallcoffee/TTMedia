@@ -99,7 +99,7 @@ void DemuxerControl::readPacket() {
     if (packet) {
         switch (packet->type) {
             case kPacketTypeAudio:
-//                _aPacketQueue->push(packet);
+                _aPacketQueue->push(packet);
                 break;
             case kPacketTypeVideo:
                 _vPacketQueue->push(packet);

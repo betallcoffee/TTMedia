@@ -13,6 +13,7 @@
 
 #include "TTdef.h"
 #include "TTQueue.hpp"
+#include "TTFrame.hpp"
 
 namespace TT {
     class MessageLoop;
@@ -20,7 +21,6 @@ namespace TT {
     
     class Codec;
     class Packet;
-    class Frame;
     class Stream;
     
     typedef enum CodecMessage {
@@ -37,6 +37,8 @@ namespace TT {
         virtual void opened() = 0;
         virtual void closed() = 0;
         virtual void error() = 0;
+        
+        virtual void audioDesc(AudioDesc &desc) = 0;
     };
     
     class CodecControl {
@@ -81,10 +83,14 @@ namespace TT {
     public:
         AudioCodecControl();
         ~AudioCodecControl();
+        
+        TT_PROPERTY_DEF_READONLY(AudioDesc, desc);
               
     private:
         bool open(std::shared_ptr<Stream> stream) override;
         void decodePacket() override;
+        
+        void audioCodecCB(AudioDesc &desc);
     };
 }
 

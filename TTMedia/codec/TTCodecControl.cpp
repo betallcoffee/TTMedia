@@ -141,6 +141,7 @@ AudioCodecControl::~AudioCodecControl() {
 
 bool AudioCodecControl::open(std::shared_ptr<Stream> stream) {
     std::shared_ptr<AudioCodec> codec = std::make_shared<AudioCodec>(stream->internalStream());
+    codec->setCodecCallback(std::bind(&AudioCodecControl::audioCodecCB, this, std::placeholders::_1));
     setcodec(codec);
     return CodecControl::open(stream);
 }
@@ -156,4 +157,12 @@ void AudioCodecControl::decodePacket() {
     }
     
     loop()->emitMessage(kCodecDecode);
+}
+
+void AudioCodecControl::audioCodecCB(AudioDesc &desc) {
+    _desc = desc;
+    std::shared_ptr<CodecObserver> ob = observer().lock();
+    if (ob) {
+        ob->audioDesc(_desc);
+    }
 }

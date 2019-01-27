@@ -33,6 +33,7 @@ namespace TT {
     
     class PlayerDemuxerObserver;
     class VideoCodecObserver;
+    class AudioCodecObserver;
     
     class PlayerStateM;
     class PlayerStateStopped;
@@ -61,6 +62,7 @@ namespace TT {
         
         friend PlayerDemuxerObserver;
         friend VideoCodecObserver;
+        friend AudioCodecObserver;
         friend PlayerStateStopped;
         friend PlayerStateReady;
         
@@ -68,11 +70,11 @@ namespace TT {
         bool open();
         bool openAudio();
         bool openVideo();
-        bool openRender();
+        bool openVideoRender();
         
         bool close();
         
-        void audioCodecCB(AudioDesc &desc);
+        void openAudioPlay(AudioDesc &desc);
         std::shared_ptr<Frame> audioQueueCB();
         
         void setMasterSyncType(AVSyncClock clock);
@@ -89,7 +91,7 @@ namespace TT {
         std::shared_ptr<VideoCodecObserver> _videoObserver;
         
         std::shared_ptr<CodecControl> _audioControl;
-        std::shared_ptr<CodecObserver> _audioObserver;
+        std::shared_ptr<AudioCodecObserver> _audioObserver;
         
         std::shared_ptr<RenderControl> _renderControl;
         std::shared_ptr<RenderContext> _renderContext;
@@ -118,8 +120,24 @@ namespace TT {
         ~VideoCodecObserver() {};
         
         virtual void opened() override;
-        virtual void closed() override;
-        virtual void error() override;
+        virtual void closed() override {};
+        virtual void error() override {};
+        
+        virtual void audioDesc(AudioDesc &desc) override {};
+        
+        TT_PROPERTY_DEF(std::weak_ptr<Player>, player);
+    };
+    
+    class AudioCodecObserver : public CodecObserver {
+    public:
+        AudioCodecObserver() {};
+        ~AudioCodecObserver() {};
+        
+        virtual void opened() override {};
+        virtual void closed() override {};
+        virtual void error() override {};
+        
+        virtual void audioDesc(AudioDesc &desc) override;
         
         TT_PROPERTY_DEF(std::weak_ptr<Player>, player);
     };
