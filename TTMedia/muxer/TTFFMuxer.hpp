@@ -46,7 +46,10 @@ namespace TT {
         AVDictionary *_option = nullptr;
         
         AVStream *_audioStream = nullptr;
+        std::shared_ptr<CodecParams> _audioCodecParams = nullptr;
         AVStream *_videoStream = nullptr;
+        std::shared_ptr<CodecParams> _videoCodecParams = nullptr;
+        uint64_t _videoPts = 0;
         
         std::shared_ptr<VideoCodec> _videoCodec;
     };

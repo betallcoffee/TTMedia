@@ -20,6 +20,10 @@ URL::URL(const std::string &&url) {
     parse();
 }
 
+URL::~URL() {
+    
+}
+
 void URL::parse() {
     auto iterBegin = _url.begin();
     auto posScheme = _url.find("://");

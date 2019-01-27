@@ -24,7 +24,7 @@ bool FFMuxer::open(std::shared_ptr<URL> url,
           std::shared_ptr<CodecParams> audioCodecParams,
           std::shared_ptr<CodecParams> videoCodecParams) {
     _url = url;
-    
+    _videoPts = 0;
     int ret = avformat_alloc_output_context2(&_formatContext, nullptr, nullptr, _url->cStr());
     if (ret < 0) {
         LOG(ERROR) << "Muxer FFMuxer open failed:" << av_err2str(ret) << " url:" << url;
@@ -49,6 +49,8 @@ bool FFMuxer::open(std::shared_ptr<URL> url,
         if (videoCodecParams->codecID == CodecID::kCodecIDH264) {
             avVideoCodecParam->codec_id = AV_CODEC_ID_H264;
         }
+        avVideoCodecParam->profile = videoCodecParams->profile;
+        avVideoCodecParam->bit_rate = videoCodecParams->bitRate;
         
         AVCodec *codec = avcodec_find_encoder(avVideoCodecParam->codec_id);
         // https://stackoverflow.com/questions/33981707/ffmpeg-copy-streams-without-transcode
@@ -60,7 +62,11 @@ bool FFMuxer::open(std::shared_ptr<URL> url,
         _videoStream = avformat_new_stream(_formatContext, codec);
         if (_videoStream) {
             avcodec_parameters_copy(_videoStream->codecpar, avVideoCodecParam);
-            _videoCodec = std::make_shared<VideoCodec>(_videoStream, kVideoCodecEncode);
+            _videoStream->start_time = 0;
+            _videoStream->time_base.num = videoCodecParams->timeBase.num;
+            _videoStream->time_base.den = videoCodecParams->timeBase.den;
+            _videoCodecParams = videoCodecParams;
+            _videoCodec = std::make_shared<VideoCodec>(videoCodecParams, _videoStream, kVideoCodecEncode);
             _videoCodec->setEncodeFrameCallback(std::bind(&FFMuxer::encodeFrameCallback, this, std::placeholders::_1));
             _videoCodec->open();
         }
@@ -136,5 +142,11 @@ bool FFMuxer::write(std::shared_ptr<Frame> frame) {
 }
 
 void FFMuxer::encodeFrameCallback(std::shared_ptr<Packet> packet) {
+    packet->pts = _videoPts;
+    int64_t pts = _videoPts * tt_q2d(_videoCodecParams->timeBase) / av_q2d(_videoStream->time_base);
+    packet->avpacket()->pts = pts;
+    packet->avpacket()->dts = pts;
+    packet->avpacket()->stream_index = _videoStream->index;
     write(packet);
+    _videoPts++;
 }

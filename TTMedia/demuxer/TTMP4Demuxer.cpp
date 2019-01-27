@@ -412,7 +412,7 @@ void MP4Demuxer::dumpStreamInfo() {
         uint32_t sampleCount = _moov->get_nr_of_samples(_moov, trackId);
         
         stream->setindex(i);
-        stream->settimeScale(mediaTimescale);
+        stream->settimeScale(TTRational{1, mediaTimescale});
         stream->setduration(mediaDuration);
         
         LOG(INFO) << "trackId: " << trackId << " trankDuration: " << trackDuration;

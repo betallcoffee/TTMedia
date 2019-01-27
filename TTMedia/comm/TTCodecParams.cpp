@@ -24,6 +24,12 @@ std::shared_ptr<CodecParams> CodecParams::H264CodecParams(size_t width, size_t h
     codecParams->width = static_cast<int>(width);
     codecParams->height = static_cast<int>(height);
     codecParams->codecID = CodecID::kCodecIDH264;
+    codecParams->profile = TT_PROFILE_H264_HIGH;
+    codecParams->bitRate = 1000 * 1024;
+    codecParams->gopSize = 5 * 30;
+    codecParams->timeBase.num = 1;
+    codecParams->timeBase.den = 30;
+    
     return codecParams;
 }
 

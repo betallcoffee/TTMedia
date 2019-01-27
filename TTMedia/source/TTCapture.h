@@ -29,6 +29,6 @@
 - (void)addFilter:(std::shared_ptr<TT::Filter>)filter;
 
 - (void)startCaptureVideo:(BOOL)hasVideo andAudio:(BOOL)hasAudio;
-- (void)stopCameraCapture;
+- (void)stopCapture;
 
 @end

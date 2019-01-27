@@ -63,10 +63,8 @@
 
 - (BOOL)setupVideoCapture {
     NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
-    for (AVCaptureDevice *device in devices)
-    {
-        if ([device position] == _cameraPosition)
-        {
+    for (AVCaptureDevice *device in devices) {
+        if ([device position] == _cameraPosition) {
             _inputCamera = device;
         }
     }
@@ -202,7 +200,7 @@
     }
 }
 
-- (void)stopCameraCapture
+- (void)stopCapture
 {
     dispatch_async(_captureSessionQueue, ^{
         if ([_captureSession isRunning]) {

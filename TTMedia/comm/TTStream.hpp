@@ -29,7 +29,7 @@ namespace TT {
         TT_PROPERTY_DEF(int, index);
         TT_PROPERTY_DEF(StreamType, type);
         TT_PROPERTY_DEF(CodecID, codecID);
-        TT_PROPERTY_DEF(uint32_t, timeScale);
+        TT_PROPERTY_DEF(TTRational, timeScale);
         TT_PROPERTY_DEF(uint64_t, duration);
         TT_PROPERTY_DEF_READONLY(uint8_t *, extraData);
         TT_PROPERTY_DEF(size_t, extraSize);

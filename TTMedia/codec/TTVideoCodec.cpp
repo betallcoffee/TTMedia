@@ -15,8 +15,14 @@
 
 using namespace TT;
 
-VideoCodec::VideoCodec(const AVStream *avStream, VideoCodecType type) :
-_avStream(avStream), _type(type) {
+VideoCodec::VideoCodec(std::shared_ptr<CodecParams> codecParams, const AVStream *avStream, VideoCodecType type)
+: _codecParams(codecParams)
+, _avStream(avStream), _type(type) {
+}
+
+VideoCodec::VideoCodec(const AVStream *avStream, VideoCodecType type)
+: _codecParams(nullptr)
+, _avStream(avStream), _type(type) {
 }
 
 VideoCodec::~VideoCodec() {
@@ -27,19 +33,21 @@ bool VideoCodec::open() {
     if (_avStream) {
         if (kVideoCodecEncode == _type) {
             _avCodec = avcodec_find_encoder(_avStream->codecpar->codec_id);
-            if (_avCodec) {
+            if (_avCodec && _codecParams != nullptr) {
                 _avCodecContext = avcodec_alloc_context3(_avCodec);
                 _avCodecContext->codec_type = AVMEDIA_TYPE_VIDEO;
                 _avCodecContext->codec_id = _avStream->codecpar->codec_id;
                 
-                _avCodecContext->width = _avStream->codecpar->width;//你想要的宽度
-                _avCodecContext->height = _avStream->codecpar->height;//你想要的高度
+                _avCodecContext->width = _codecParams->width;//你想要的宽度
+                _avCodecContext->height = _codecParams->height;//你想要的高度
                 _avCodecContext->pix_fmt = AV_PIX_FMT_YUV420P;//受codec->pix_fmts数组限制
                 
-                _avCodecContext->gop_size = 12;
+                _avCodecContext->gop_size = _codecParams->gopSize;
+                _avCodecContext->profile = _avStream->codecpar->profile;
+                _avCodecContext->bit_rate = _codecParams->bitRate;
                 
-                _avCodecContext->time_base = AVRational{1, 25};//应该根据帧率设置
-                _avCodecContext->bit_rate = _avStream->codecpar->bit_rate;
+                _avCodecContext->time_base.num = _codecParams->timeBase.num;
+                _avCodecContext->time_base.den = _codecParams->timeBase.den;
                 
                 if (avcodec_open2(_avCodecContext, _avCodec, NULL) != 0) {
                     return false;

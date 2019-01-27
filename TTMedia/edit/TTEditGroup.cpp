@@ -68,9 +68,9 @@ void EditGroup::loadMoreForMaterial(std::shared_ptr<Material> material, Callback
 }
 
 void EditGroup::exportFile(std::shared_ptr<URL> url) {
+    _exportUrl = url;
     _loop->postMessage(std::make_shared<Message>(static_cast<int>(EditMessage::kExportFile), [&](std::shared_ptr<Message> message) {
         Mutex m(&_editMutex);
-        _exportUrl = url;
         if (!_materials.empty()) {
             size_t width = 1024;
             size_t height = 720;

@@ -21,6 +21,7 @@ extern "C" {
 };
 #endif
 
+#include "TTCodecParams.hpp"
 #include "TTCodec.hpp"
 
 namespace TT {
@@ -32,6 +33,7 @@ namespace TT {
     
     class VideoCodec : public Codec {
     public:
+        VideoCodec(std::shared_ptr<CodecParams> codecParams, const AVStream *avStream, VideoCodecType type = kVideoCodecDecode);
         VideoCodec(const AVStream *avStream, VideoCodecType type = kVideoCodecDecode);
         ~VideoCodec();
         
@@ -47,6 +49,7 @@ namespace TT {
     private:
         VideoCodecType _type;
         
+        std::shared_ptr<CodecParams> _codecParams;
         const AVStream *_avStream;
         AVCodecContext *_avCodecContext;
         AVCodec *_avCodec;

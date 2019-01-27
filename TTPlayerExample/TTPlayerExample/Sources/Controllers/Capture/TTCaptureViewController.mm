@@ -260,7 +260,7 @@
 - (void)onClickCapture:(UIButton *)button {
     if (button.selected) {
         button.selected = NO;
-        [self.capture stopCameraCapture];
+        [self.capture stopCapture];
     } else {
         button.selected = YES;
         [self.capture startCaptureVideo:YES andAudio:YES];
