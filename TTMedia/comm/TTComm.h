@@ -10,6 +10,7 @@
 #define TTComm_h
 
 #include <sys/types.h>
+#include <stdint.h>
 #include "TTdef.h"
 
 namespace TT {

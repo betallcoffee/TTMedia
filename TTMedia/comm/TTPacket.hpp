@@ -40,6 +40,8 @@ namespace TT {
         int64_t pos;
         int64_t duration;
         
+        int64_t audioSamplePerPacket;
+        
         AVPacket *avpacket() { return _avpacket; }
         
     private:

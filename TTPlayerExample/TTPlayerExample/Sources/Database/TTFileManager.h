@@ -10,6 +10,7 @@
 
 @interface TTFileManager : NSObject
 
+@property (nonatomic, strong, readonly) NSURL *movieDir;
 @property (nonatomic, copy) NSArray<NSURL *> *movieURLList;
 
 + (instancetype)sharedInstance;

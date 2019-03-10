@@ -32,12 +32,6 @@ namespace TT {
     class AudioCodec;
     class VideoCodec;
     
-    typedef enum class VideoEvent {
-        kNone,
-        kReadEnd,
-        kWriteEnd,
-    } eEditEvent;
-    
     class Media : public Material {
     public:
         Media(std::shared_ptr<URL> url);
@@ -47,6 +41,9 @@ namespace TT {
         bool close() override;
         void save(std::shared_ptr<URL> url) override;
         bool loadMore() override;
+        
+        int audioFrameCount() override;
+        std::shared_ptr<Frame> audioFrame(int index) override;
         
         int frameCount() override;
         std::shared_ptr<Frame> frame(int index) override;
@@ -60,6 +57,8 @@ namespace TT {
     private:
         bool readData();
         bool writeData();
+        
+        bool audioDecode(std::shared_ptr<Packet> packet);
         bool videoDecode(std::shared_ptr<Packet> packet);
         bool encode();
         
@@ -79,6 +78,8 @@ namespace TT {
         
         Array<std::shared_ptr<Frame>> _vFrameArray;
         Array<std::shared_ptr<Frame>> _previews;
+        
+        Array<std::shared_ptr<Frame>> _aFrameArray;
     };
 }
 

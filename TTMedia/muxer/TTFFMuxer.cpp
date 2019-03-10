@@ -80,6 +80,10 @@ void FFMuxer::flush() {
     if (_videoCodec) {
         _videoCodec->flush();
     }
+    
+    if (_audioCodec) {
+        _audioCodec->flush();
+    }
 }
 
 bool FFMuxer::write(std::shared_ptr<Frame> frame) {
@@ -202,7 +206,7 @@ void FFMuxer::encodeAudioFrameCallback(std::shared_ptr<Packet> packet) {
     packet->avpacket()->dts = pts;
     packet->avpacket()->stream_index = _audioStream->index;
     write(packet);
-    _audioPts++; // TODO 1024
+    _audioPts += packet->audioSamplePerPacket;
 }
 
 void FFMuxer::encodeVideoFrameCallback(std::shared_ptr<Packet> packet) {

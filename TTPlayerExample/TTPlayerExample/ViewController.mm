@@ -40,6 +40,8 @@ using namespace TT;
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     
+    AVAudioSession *audioSession = [AVAudioSession sharedInstance];    
+    
     [self setUpFilter];
     [self setUpPlayer];
     [self setUpUI];
@@ -130,6 +132,9 @@ using namespace TT;
         button.selected = YES;
         NSString *filePath = [[NSBundle mainBundle] pathForResource:@"test" ofType:@"mp4"];
 //        NSString *filePath = [[NSBundle mainBundle] pathForResource:@"audio_HEv2" ofType:@"flv"];
+        NSURL *movieDir = [TTFileManager sharedInstance].movieDir;
+        NSURL *fileURL = [movieDir URLByAppendingPathComponent:@"liangliang3.mp4"];
+        filePath = [fileURL absoluteString];
         const char *cFilePath = [filePath cStringUsingEncoding:NSUTF8StringEncoding];
 //        const char *cFilePath = "http://1251845595.vod2.myqcloud.com/9d67116cvodgzp1251845595/eb800eaf9031868223333695199/playlist.m3u8";
 //        const char *cFilePath = "http://down.ttdtweb.com/test/MTV.mp4";

@@ -32,7 +32,7 @@ namespace TT {
     class Frame {
     public:
         Frame();
-        Frame(AVFrame *avFrame);
+        Frame(AVFrame *avFrame, MediaType mediaType = kMediaTypeVideo, DataType dataType = kTextureTypeY420p);
         ~Frame();
         
         AVFrame *avFrame() { return _avFrame; }

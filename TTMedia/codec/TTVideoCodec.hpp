@@ -35,7 +35,7 @@ namespace TT {
         
         bool open() override;
         void close() override;
-        void flush();
+        void flush() override;
         std::shared_ptr<Frame> decode(std::shared_ptr<Packet> packet) override;
         bool encode(std::shared_ptr<Frame> frame) override;
         

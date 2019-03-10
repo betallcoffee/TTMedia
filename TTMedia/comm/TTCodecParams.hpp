@@ -21,6 +21,7 @@ namespace TT {
         CodecParams();
         ~CodecParams();
         
+        static std::shared_ptr<CodecParams> AACCodecParams(uint32_t channels, uint32_t sampleRate);
         static std::shared_ptr<CodecParams> H264CodecParams(size_t width, size_t heigth);
         
     public:

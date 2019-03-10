@@ -25,9 +25,10 @@ Frame::Frame() : _avFrame(nullptr), _isKeyFrame(false),
     memset(lineSize, 0, sizeof(lineSize));
 }
 
-Frame::Frame(AVFrame *avFrame) : _avFrame(nullptr), _isKeyFrame(false),
-mediaType(kMediaTypeVideo),
-dataType(kTextureTypeY420p),
+Frame::Frame(AVFrame *avFrame, MediaType mediaType, DataType dataType)
+: _avFrame(nullptr), _isKeyFrame(false),
+mediaType(mediaType),
+dataType(dataType),
 numOfPlanars(kNumOfPlanars),
 width(avFrame->width), height(avFrame->height),
 pts(avFrame->pts), pkt_pts(avFrame->pkt_pts), pkt_dts(avFrame->pkt_dts),
@@ -36,17 +37,20 @@ sampleFormat(AV_SAMPLE_FMT_NONE) {
     memset(lineSize, 0, sizeof(lineSize));
     if (avFrame) {
         _avFrame = av_frame_clone(avFrame);
-        for (int i = 0; i < numOfPlanars; i++) {
-            lineSize[i] = _avFrame->linesize[i];
-            size_t dataSize = lineSize[i] * height;
-            if (i) dataSize /= 2;
-            if (reallocData(dataSize, i)) {
-                memcpy(data[i], _avFrame->data[i], dataSize);
-            } else {
-                LOG(ERROR) << "Frame init error linesize:" << lineSize[i] << " datasize:" << dataSize;
+        if (kMediaTypeVideo == mediaType) {
+            for (int i = 0; i < numOfPlanars; i++) {
+                lineSize[i] = _avFrame->linesize[i];
+                size_t dataSize = lineSize[i] * height;
+                if (i) dataSize /= 2;
+                if (reallocData(dataSize, i)) {
+                    memcpy(data[i], _avFrame->data[i], dataSize);
+                } else {
+                    LOG(ERROR) << "Frame init error linesize:" << lineSize[i] << " datasize:" << dataSize;
+                }
             }
+            _isKeyFrame = _avFrame->key_frame;
         }
-        _isKeyFrame = _avFrame->key_frame;
+
     }
 }
 
@@ -58,7 +62,6 @@ Frame::~Frame() {
         }
     }
     if (_avFrame) {
-        av_frame_unref(_avFrame);
         av_frame_free(&_avFrame);
         _avFrame = nullptr;
     }

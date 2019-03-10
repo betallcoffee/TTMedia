@@ -78,7 +78,7 @@ bool AudioCodec::open() {
                 _avCodecContext->time_base.num = _codecParams->timeBase.num;
                 _avCodecContext->time_base.den = _codecParams->timeBase.den;
                 _avCodecContext->bit_rate = _codecParams->bitRate;
-                _avCodecContext->sample_fmt = AV_SAMPLE_FMT_FLTP;
+                _avCodecContext->sample_fmt = AV_SAMPLE_FMT_FLT;
                 
                 int ret = avcodec_open2(_avCodecContext, _avCodec, NULL);
                 if (ret != 0) {
@@ -105,6 +105,11 @@ void AudioCodec::close() {
         avcodec_close(_avCodecContext);
         _avCodec = nullptr;
     }
+}
+
+void AudioCodec::flush() {
+    std::shared_ptr<Frame> frame = std::make_shared<Frame>();
+    encode(frame);
 }
 
 void AudioCodec::createSwrContext() {
@@ -158,24 +163,28 @@ std::shared_ptr<Frame> AudioCodec::decode(std::shared_ptr<Packet> packet) {
             }
         }
         
-        int outLinesize;
-        int outBuffSize = av_samples_get_buffer_size(&outLinesize,
-                                                     _avFrame->channels,
-                                                     _avFrame->nb_samples + 256,
-                                                     AV_SAMPLE_FMT_FLT, 1);
-        // TODO reuse outBuff;
-        std::shared_ptr<Frame> frame = std::make_shared<Frame>();
-        if (frame->reallocData(outBuffSize, 0)) {
-            int nbSamples = swr_convert(_swrContext,
-                                        &frame->data[0],
-                                        outLinesize,
-                                        (const uint8_t **)_avFrame->extended_data,
-                                        _avFrame->nb_samples);
-            
-            int outSize = nbSamples * _avFrame->channels * av_get_bytes_per_sample(AV_SAMPLE_FMT_FLT);
-            outSize = outSize <= outBuffSize ? outSize : outBuffSize;
-            
-            frame->lineSize[0] = outSize;
+        AVFrame *resampleFrame = av_frame_alloc();
+        resampleFrame->channels = _avFrame->channels;
+        resampleFrame->channel_layout = _avFrame->channel_layout;
+        resampleFrame->sample_rate = _avFrame->sample_rate;
+        resampleFrame->nb_samples = _avFrame->nb_samples;
+        resampleFrame->format = AV_SAMPLE_FMT_FLT;
+        av_frame_get_buffer(resampleFrame, 0);
+        
+        int nbSamples = swr_convert(_swrContext,
+                                    resampleFrame->data,
+                                    resampleFrame->linesize[0],
+                                    (const uint8_t **)_avFrame->data,
+                                    _avFrame->nb_samples);
+        if (nbSamples < 0) {
+            av_log(NULL, AV_LOG_ERROR, "swr_convert audio frame error: %s\n", av_err2str(nbSamples));
+            av_frame_free(&resampleFrame);
+            return nullptr;
+        } else {
+            std::shared_ptr<Frame> frame = std::make_shared<Frame>(resampleFrame, kMediaTypeAudio, kAudioPCM);
+            if (frame == nullptr) {
+                av_frame_free(&resampleFrame);
+            }
             frame->pts = packet->pts;
             frame->sampleFormat = _fmt;
             if (_avFrame->pts != AV_NOPTS_VALUE) {
@@ -185,8 +194,6 @@ std::shared_ptr<Frame> AudioCodec::decode(std::shared_ptr<Packet> packet) {
                 AVRational tb = _avStream->time_base;
                 frame->pts = _avFrame->pkt_pts * av_q2d(tb) * 1000;
             }
-            frame->mediaType = kMediaTypeAudio;
-            frame->dataType = kAudioPCM;
             
             return frame;
         }
@@ -229,6 +236,9 @@ bool AudioCodec::encode(std::shared_ptr<Frame> frame) {
         } else {
             if (rrecv == 0 && _encodeFrameCallback) {
                 std::shared_ptr<Packet> packet = std::make_shared<Packet>(avpacket);
+                if (frame->avFrame()) {
+                    packet->audioSamplePerPacket = frame->avFrame()->nb_samples;
+                }
                 _encodeFrameCallback(packet);
                 continue;
             } else {

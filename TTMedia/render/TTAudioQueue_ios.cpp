@@ -130,6 +130,10 @@ void AudioQueue_ios::_queueCallback(void *inUserData, AudioQueueRef inAudioQueue
         if (frame && frame->data[0] && frame->lineSize[0] > 0) {
             memcpy(inBuffer->mAudioData, frame->data[0], frame->lineSize[0]);
             inBuffer->mAudioDataByteSize = frame->lineSize[0];
+        } else if (frame && frame->avFrame()
+                   && frame->avFrame()->data[0] && frame->avFrame()->linesize[0] > 0) {
+            memcpy(inBuffer->mAudioData, frame->avFrame()->data[0], frame->avFrame()->linesize[0]);
+            inBuffer->mAudioDataByteSize = frame->avFrame()->linesize[0];
         } else if (inBuffer->mAudioData) {
             memset(inBuffer->mAudioData, 0, inBuffer->mAudioDataBytesCapacity);
             inBuffer->mAudioDataByteSize = inBuffer->mAudioDataBytesCapacity;

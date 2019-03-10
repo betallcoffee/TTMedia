@@ -81,8 +81,9 @@ void EditGroup::exportFile(std::shared_ptr<URL> url) {
             }
             if (_writer == nullptr) {
                 _writer = std::make_shared<FFWriter>();
+                std::shared_ptr<CodecParams> audioCodecParams = CodecParams::AACCodecParams(1, 44100);
                 std::shared_ptr<CodecParams> videoCodecParams = CodecParams::H264CodecParams(width, height);
-                if (!_writer->open(_exportUrl, nullptr, videoCodecParams)) {
+                if (!_writer->open(_exportUrl, audioCodecParams, videoCodecParams)) {
                     LOG(ERROR) << "Edit muxer open failed:" << _exportUrl;
                     _writer->cancel();
                     _writer = nullptr;
@@ -93,8 +94,13 @@ void EditGroup::exportFile(std::shared_ptr<URL> url) {
             if (_writer) {
                 std::for_each(_materials.begin(), _materials.end(), [&](std::shared_ptr<Material> material) {
                     LOG(INFO) << "Writer index:" << material->startIndex << " to " << material->endIndex;
-                    for (int i = material->startIndex; i < material->endIndex; i++) {
-                        std::shared_ptr<Frame> frame = material->frame(i);
+//                    for (int i = material->startIndex; i < material->endIndex; i++) {
+//                        std::shared_ptr<Frame> frame = material->frame(i);
+//                        _writer->processFrame(frame);
+//                    }
+                    int count = material->audioFrameCount();
+                    for (int i = 0; i < count; i++) {
+                        std::shared_ptr<Frame> frame = material->audioFrame(i);
                         _writer->processFrame(frame);
                     }
                 });

@@ -22,13 +22,14 @@ using namespace TT;
 
 const static int kMaxFrameCount = 0;
 
-Media::Media(std::shared_ptr<URL> url) :
-Material(MaterialType::kVideo, url),
-_mutex(PTHREAD_MUTEX_INITIALIZER),
-_stream(nullptr), _demuxer(nullptr), _writer(nullptr),
-_videoCodec(nullptr), _audioCodec(nullptr),
-_vFrameArray("video_frame_array", kMaxFrameCount),
-_previews("video_preview_frame", kMaxFrameCount) {
+Media::Media(std::shared_ptr<URL> url)
+: Material(MaterialType::kVideo, url)
+, _mutex(PTHREAD_MUTEX_INITIALIZER)
+, _stream(nullptr), _demuxer(nullptr), _writer(nullptr)
+, _videoCodec(nullptr), _audioCodec(nullptr)
+, _vFrameArray("video_frame_array", kMaxFrameCount)
+, _aFrameArray("audio_frame_array", kMaxFrameCount)
+, _previews("video_preview_frame", kMaxFrameCount) {
     av_register_all();
     avformat_network_init();
     el::Loggers::setLoggingLevel(el::Level::Debug);
@@ -136,6 +137,19 @@ bool Media::loadMore() {
     }
 }
 
+int Media::audioFrameCount() {
+    Mutex m(&_mutex);
+    return static_cast<int>(_aFrameArray.size());
+}
+
+std::shared_ptr<Frame> Media::audioFrame(int index) {
+    Mutex m(&_mutex);
+    if (0 <= index && index < _aFrameArray.size()) {
+        return _aFrameArray[index];
+    }
+    return nullptr;
+}
+
 int Media::frameCount() {
     Mutex m(&_mutex);
     return static_cast<int>(_vFrameArray.size());
@@ -167,10 +181,11 @@ bool Media::readData() {
     if (packet) {
         switch (packet->type) {
             case kPacketTypeAudio:
-
+                audioDecode(packet);
                 break;
             case kPacketTypeVideo:
-                return videoDecode(packet);
+                videoDecode(packet);
+                break;
             default:
                 break;
         }
@@ -178,6 +193,19 @@ bool Media::readData() {
         return false;
     }
     return true;
+}
+
+bool Media::audioDecode(std::shared_ptr<Packet> packet) {
+    if (packet && _audioCodec) {
+        std::shared_ptr<Frame> frame;
+        frame = _audioCodec->decode(packet);
+        if (frame) {
+            LOG(TRACE) << "Decode audio frame pts:" << frame->pts;
+            _aFrameArray.pushBack(frame);
+            return true;
+        }
+    }
+    return false;
 }
 
 bool Media::videoDecode(std::shared_ptr<Packet> packet) {

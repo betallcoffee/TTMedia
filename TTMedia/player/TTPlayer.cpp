@@ -168,7 +168,7 @@ std::shared_ptr<Frame> Player::audioQueueCB() {
         return nullptr;
     } else {
         std::shared_ptr<Frame> frame = frameQueue->pop();
-        if (frame) {
+        if (frame && _renderContext) {
             _renderControl->updateAudioClock(frame->pts);
             LOG(TRACE) << "render audio frame " << frame->pts;
         }

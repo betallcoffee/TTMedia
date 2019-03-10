@@ -28,7 +28,11 @@ using namespace TT;
 /* no AV correction is done if too big error */
 #define AV_NOSYNC_THRESHOLD 10000.0
 
-RenderControl::RenderControl() {
+RenderControl::RenderControl()
+: _frameQueue(nullptr)
+, _filter(nullptr)
+, _clock(AV_SYNC_AUDIO_MASTER)
+{
     _running = false;
     _vPTS = 0;
     _aClock.reset();

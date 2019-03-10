@@ -14,8 +14,6 @@
     NSURL *_movieDir;
 }
 
-@property (nonatomic, strong, readonly) NSURL *movieDir;
-
 @end
 
 @implementation TTFileManager

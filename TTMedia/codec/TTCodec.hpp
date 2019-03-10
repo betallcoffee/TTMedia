@@ -28,6 +28,7 @@ namespace TT {
         
         virtual bool open() = 0;
         virtual void close() = 0;
+        virtual void flush() = 0;
         virtual std::shared_ptr<Frame> decode(std::shared_ptr<Packet> packet) {
             return nullptr;
         };
