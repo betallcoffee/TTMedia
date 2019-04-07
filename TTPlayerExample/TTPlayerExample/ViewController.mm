@@ -9,6 +9,7 @@
 #include <memory>
 
 #import "TTPlayer_ios.h"
+#include "TTAudio.h"
 #include "TTProcess.h"
 #import "TTCapture.h"
 
@@ -21,6 +22,7 @@ using namespace TT;
 @interface ViewController ()
 {
     std::shared_ptr<Player> _player;
+    std::shared_ptr<IOAudioUnit_ios> _audio;
     
     std::shared_ptr<FilterGroup> _filterGroup;
     std::shared_ptr<ContrastFilter> _contrast;
@@ -40,11 +42,27 @@ using namespace TT;
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     
-    AVAudioSession *audioSession = [AVAudioSession sharedInstance];    
+    /**
+     Session默认行为
+     
+     可以进行播放，但是不能进行录制。
+     当用户将手机上的静音拨片拨到“静音”状态时，此时如果正在播放音频，那么播放内容会被静音。
+     当用户按了手机的锁屏键或者手机自动锁屏了，此时如果正在播放音频，那么播放会静音并被暂停。
+     如果你的App在开始播放的时候，此时QQ音乐等其他App正在播放，那么其他播放器会被静音并暂停。
+     
+     默认的行为相当于设置了Category为“AVAudioSessionCategorySoloAmbient”
+     AVAudioSessionCategoryPlayAndRecord    否    默认不引起    既可以录音也可以播放
+     AVAudioSessionCategoryPlayback    否    默认引起    只用于播放
+     AVAudioSessionCategoryRecord    否    是    只用于录音
+     */
+    AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+    [audioSession setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
     
-    [self setUpFilter];
-    [self setUpPlayer];
-    [self setUpUI];
+    [self setupFilter];
+    [self setupPlayer];
+    [self setupAudio];
+    
+    [self setupUI];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -55,7 +73,7 @@ using namespace TT;
 #pragma mark -
 #pragma mark setUp
 
-- (void)setUpUI {
+- (void)setupUI {
     self.playButton.bounds = CGRectMake(0, 0, 44, 44);
     self.playButton.backgroundColor = [UIColor blueColor];
     self.playButton.center = self.view.center;
@@ -63,7 +81,7 @@ using namespace TT;
     [self.view addSubview:self.playButton];
 }
 
-- (void)setUpFilter {
+- (void)setupFilter {
     _filterGroup = std::make_shared<FilterGroup>();
     
     _imageView = [TTImageView new];
@@ -74,7 +92,7 @@ using namespace TT;
     _filterGroup->addFilter([_imageView filter]);
 }
 
-- (void)setUpPlayer {
+- (void)setupPlayer {
     _player = createPlayer_ios();
     _player->bindFilter(_filterGroup);
     //    bindGLView_ios(_player, self.glView);
@@ -92,6 +110,12 @@ using namespace TT;
     //        playerView.frame = CGRectMake(0, 100 * (i + 1), 320, 100);
     //        [playerView loadAssetFromFile:fileURL];
     //    }
+}
+
+- (void)setupAudio {
+    _audio = std::make_shared<IOAudioUnit_ios>();
+    _audio->setInputEnable(true);
+    _audio->setup();
 }
 
 #pragma mark -
@@ -122,6 +146,10 @@ using namespace TT;
 #pragma mark button selector
 
 - (void)onClickPlay:(UIButton *)button {
+    if (_audio->start()) {
+        return;
+    }
+
     if (_player == nullptr) {
         return;
     }

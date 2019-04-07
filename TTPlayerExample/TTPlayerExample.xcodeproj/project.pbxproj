@@ -10,6 +10,8 @@
 		EC0189591D81D1E6005E46B9 /* TTQoS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC0189571D81D1E6005E46B9 /* TTQoS.cpp */; };
 		EC01895C1D81D52A005E46B9 /* TTVideoCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC01895A1D81D52A005E46B9 /* TTVideoCodec.cpp */; };
 		EC025A472039AD1A00FC185C /* TTPreviewCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = EC025A462039AD1A00FC185C /* TTPreviewCell.mm */; };
+		EC0FB9BF22351FFA00F9F21F /* TTAudioFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC0FB9BD22351FFA00F9F21F /* TTAudioFilter.cpp */; };
+		EC0FB9C2223E37F800F9F21F /* TTIOAudioUnit_ios.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC0FB9C0223E37F800F9F21F /* TTIOAudioUnit_ios.cpp */; };
 		EC11654D1F52B9B100AF56ED /* TTFilterGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC11654B1F52B9B100AF56ED /* TTFilterGroup.cpp */; };
 		EC12806A1D7BF0A400ACF31A /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EC1280691D7BF0A400ACF31A /* libz.tbd */; };
 		EC12806C1D7BF0AB00ACF31A /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EC12806B1D7BF0AB00ACF31A /* libiconv.tbd */; };
@@ -215,6 +217,12 @@
 		EC01895B1D81D52A005E46B9 /* TTVideoCodec.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TTVideoCodec.hpp; sourceTree = "<group>"; };
 		EC025A452039AD1A00FC185C /* TTPreviewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TTPreviewCell.h; sourceTree = "<group>"; };
 		EC025A462039AD1A00FC185C /* TTPreviewCell.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = TTPreviewCell.mm; sourceTree = "<group>"; };
+		EC0FB9BB22351FD300F9F21F /* TTAudio.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TTAudio.h; sourceTree = "<group>"; };
+		EC0FB9BC22351FEC00F9F21F /* TTAudioPriv.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TTAudioPriv.h; sourceTree = "<group>"; };
+		EC0FB9BD22351FFA00F9F21F /* TTAudioFilter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTAudioFilter.cpp; sourceTree = "<group>"; };
+		EC0FB9BE22351FFA00F9F21F /* TTAudioFilter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTAudioFilter.hpp; sourceTree = "<group>"; };
+		EC0FB9C0223E37F800F9F21F /* TTIOAudioUnit_ios.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTIOAudioUnit_ios.cpp; sourceTree = "<group>"; };
+		EC0FB9C1223E37F800F9F21F /* TTIOAudioUnit_ios.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTIOAudioUnit_ios.hpp; sourceTree = "<group>"; };
 		EC11654B1F52B9B100AF56ED /* TTFilterGroup.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TTFilterGroup.cpp; sourceTree = "<group>"; };
 		EC11654C1F52B9B100AF56ED /* TTFilterGroup.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TTFilterGroup.hpp; sourceTree = "<group>"; };
 		EC1280691D7BF0A400ACF31A /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
@@ -682,6 +690,19 @@
 			path = "FFmpeg-iOS";
 			sourceTree = "<group>";
 		};
+		EC0FB9B922351EF400F9F21F /* audio */ = {
+			isa = PBXGroup;
+			children = (
+				EC0FB9BB22351FD300F9F21F /* TTAudio.h */,
+				EC0FB9BC22351FEC00F9F21F /* TTAudioPriv.h */,
+				EC0FB9C0223E37F800F9F21F /* TTIOAudioUnit_ios.cpp */,
+				EC0FB9C1223E37F800F9F21F /* TTIOAudioUnit_ios.hpp */,
+				EC0FB9BD22351FFA00F9F21F /* TTAudioFilter.cpp */,
+				EC0FB9BE22351FFA00F9F21F /* TTAudioFilter.hpp */,
+			);
+			path = audio;
+			sourceTree = "<group>";
+		};
 		EC1165511F52E36B00AF56ED /* Sources */ = {
 			isa = PBXGroup;
 			children = (
@@ -807,6 +828,7 @@
 				EC4727521D0C14E40023EE51 /* network */,
 				EC4E9C711F1A7AB5005C8E36 /* render */,
 				EC1A20891F43FB0200632C0D /* process */,
+				EC0FB9B922351EF400F9F21F /* audio */,
 				ECE49F541F59AEDA004FE7C2 /* source */,
 				EC66005E1F95BF8500042B2A /* target */,
 				EC66004C1F95A8C100042B2A /* player */,
@@ -1725,6 +1747,7 @@
 				EC56E56B212007180009D8DC /* TTMP4Demuxer.cpp in Sources */,
 				EC56E7992139A3440009D8DC /* mp4_ctts_box.c in Sources */,
 				EC56E7882139A3440009D8DC /* mp4_btrt_box.c in Sources */,
+				EC0FB9C2223E37F800F9F21F /* TTIOAudioUnit_ios.cpp in Sources */,
 				ECF629EC1F7E6A4E0088CEEA /* MASConstraint.m in Sources */,
 				EC56E7702139A3440009D8DC /* mp4_co64_box.c in Sources */,
 				EC56E75F2139A3440009D8DC /* mp4_trak_box.c in Sources */,
@@ -1745,6 +1768,7 @@
 				EC56E77E2139A3440009D8DC /* mp4_debug.c in Sources */,
 				EC4E9CA01F1A7DE5005C8E36 /* TTPlayerView.m in Sources */,
 				EC4E9C6D1F1A6572005C8E36 /* TTCond.cpp in Sources */,
+				EC0FB9BF22351FFA00F9F21F /* TTAudioFilter.cpp in Sources */,
 				EC4DD37B20E8996900CFBF60 /* TTEditListViewController.m in Sources */,
 				EC56E7722139A3440009D8DC /* mp4_stsc_box.c in Sources */,
 				EC321828213BC1B500A54DB9 /* TTRingBuffer.cpp in Sources */,
