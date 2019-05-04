@@ -32,5 +32,9 @@ public: void set##var(type var) { _##var = var; }
 public: type var() { return _##var; }; \
 protected: void set##var(type var) { _##var = var; }
 
+#define TT_SP(type) std::shared_ptr<type>
+#define TT_MK_SP(type) std::make_shared<type>
+#define TT_UP(type) std::unique_ptr<type>
+
 
 #endif /* TTdef_h */

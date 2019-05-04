@@ -41,9 +41,6 @@ namespace TT {
         virtual int frameCount() = 0;
         virtual std::shared_ptr<Frame> frame(int index) = 0;
         
-        int startIndex;
-        int endIndex;
-        
         TT_PROPERTY_DEF_READONLY(bool, isOpen);
         TT_PROPERTY_DEF_READONLY(bool, isEnd);
         TT_PROPERTY_DEF_READONLY(std::shared_ptr<URL>, url);

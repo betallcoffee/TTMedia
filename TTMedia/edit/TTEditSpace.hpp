@@ -1,22 +1,24 @@
 //
-//  TTEditGroup.hpp
+//  TTEditSpace.hpp
 //  TTPlayerExample
 //
 //  Created by liang on 10/3/18.
 //  Copyright © 2018年 tina. All rights reserved.
 //
 
-#ifndef TTEditGroup_hpp
-#define TTEditGroup_hpp
+#ifndef TTEditSpace_hpp
+#define TTEditSpace_hpp
 
 #include <pthread.h>
 #include <vector>
 
+#include "TTdef.h"
 #include "TTMessageLoop.hpp"
 #include "TTFFWriter.hpp"
 #include "TTFilterFrame.hpp"
 #include "TTMaterial.hpp"
 #include "TTMedia.hpp"
+#include "TTClip.hpp"
 
 namespace TT {
     
@@ -27,13 +29,13 @@ namespace TT {
         kExportFile,
     };
     
-    class EditGroup {
+    class EditSpace {
     public:
-        EditGroup();
-        ~EditGroup();
+        EditSpace();
+        ~EditSpace();
         
         int materialCount();
-        std::shared_ptr<Material> material(int index);
+        TT_SP(Material) material(int index);
         
         void addMaterial(std::shared_ptr<Material> material);
         void removeMaterial(int index);
@@ -41,15 +43,23 @@ namespace TT {
         typedef std::function<void (void)> Callback;
         void loadMoreForMaterial(std::shared_ptr<Material> material, Callback callback);
         
+        void addClip(TT_SP(Clip) clip);
+        void removeClip(int index);
+        
         void exportFile(std::shared_ptr<URL> url);
         
     private:
         void quit();
         
-        std::shared_ptr<MessageLoop> _loop;
+        bool createWriter();
+        void exportAllClips();
         
-        std::vector<std::shared_ptr<Material>> _materials;
-        std::vector<std::shared_ptr<Media>> _videos;
+        TT_SP(MessageLoop) _loop;
+        
+        std::vector<TT_SP(Material)> _materials;
+        std::vector<TT_SP(Media)> _videos;
+        
+        std::vector<TT_SP(Clip)> _clips;
         
         pthread_mutex_t _editMutex;
         
@@ -58,4 +68,4 @@ namespace TT {
     };
 }
 
-#endif /* TTEditGroup_hpp */
+#endif /* TTEditSpace_hpp */

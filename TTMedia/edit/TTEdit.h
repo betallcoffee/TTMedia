@@ -9,7 +9,8 @@
 #ifndef TTEdit_h
 #define TTEdit_h
 
-#include "TTEditGroup.hpp"
+#include "TTEditSpace.hpp"
 #include "TTMedia.hpp"
+#include "TTClip.hpp"
 
 #endif /* TTEdit_h */

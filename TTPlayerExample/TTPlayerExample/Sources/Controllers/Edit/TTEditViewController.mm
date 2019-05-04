@@ -24,7 +24,7 @@ static NSString *kPreviewCellIdentifier = @"previewCell";
 , UICollectionViewDelegateFlowLayout
 >
 {
-    std::shared_ptr<TT::EditGroup> _editGroup;
+    std::shared_ptr<TT::EditSpace> _editGroup;
     
     std::shared_ptr<TT::FilterGroup> _filterGroup;
     std::shared_ptr<TT::Y420ToRGBFilter> _filterTexture;
@@ -41,7 +41,7 @@ static NSString *kPreviewCellIdentifier = @"previewCell";
 - (instancetype)initWithURLs:(NSArray<NSURL *> *)urls {
     self = [super init];
     if (self) {
-        _editGroup = std::make_shared<TT::EditGroup>();
+        _editGroup = std::make_shared<TT::EditSpace>();
         _urls = [urls mutableCopy];
     }
     
@@ -103,14 +103,16 @@ static NSString *kPreviewCellIdentifier = @"previewCell";
     for (int i = 0; i < count; i++) {
         std::shared_ptr<TT::Material> material = _editGroup->material(i);
         if (material) {
+            TT_SP(TT::Clip) clip = TT_MK_SP(TT::Clip)();
+            clip->setmaterial(material);
             int frameCount = material->frameCount();
             if (frameCount > startIndex) {
-                material->startIndex = static_cast<int>(startIndex);
+                clip->setsrcStartIndex(static_cast<int>(startIndex));
                 if (frameCount > endIndex) {
-                    material->endIndex = static_cast<int>(endIndex);
+                    clip->setsrcEndIndex(static_cast<int>(endIndex));
                     break;
                 } else {
-                    material->endIndex = frameCount;
+                    clip->setsrcEndIndex(frameCount);
                     endIndex -= (frameCount - startIndex);
                     startIndex = 0;
                 }

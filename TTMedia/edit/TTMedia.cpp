@@ -7,7 +7,7 @@
 //
 
 #include "easylogging++.h"
-
+#include "TTdef.h"
 #include "TTMedia.hpp"
 #include "TTMutex.hpp"
 
@@ -45,16 +45,16 @@ bool Media::open() {
         return true;
     }
     
-    _demuxer = std::make_shared<FFDemuxer>();
+    _demuxer = TT_MK_SP(FFDemuxer)();
     _demuxer->open(url());
     
     if (_demuxer->hasAudio()) {
-        _audioCodec = std::make_shared<AudioCodec>(_demuxer->audioStream()->internalStream());
+        _audioCodec = TT_MK_SP(AudioCodec)(_demuxer->audioStream()->internalStream());
         _audioCodec->open();
     }
     
     if (_demuxer->hasVideo()) {
-        _videoCodec = std::make_shared<VideoCodec>(_demuxer->videoStream()->internalStream());
+        _videoCodec = TT_MK_SP(VideoCodec)(_demuxer->videoStream()->internalStream());
         _videoCodec->open();
     }
     
@@ -257,8 +257,4 @@ bool Media::writeData() {
     }
     
     return true;
-}
-
-bool Media::encode() {
-    return false;
 }

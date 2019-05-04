@@ -60,7 +60,6 @@ namespace TT {
         
         bool audioDecode(std::shared_ptr<Packet> packet);
         bool videoDecode(std::shared_ptr<Packet> packet);
-        bool encode();
         
     private:
         std::shared_ptr<URL> _saveUrl;
