@@ -820,7 +820,7 @@
 		EC3EC49B1B9DD9D700C1438F /* TTMedia */ = {
 			isa = PBXGroup;
 			children = (
-				ECEFB8EE1C2511F40027FBEA /* Vendor */,
+				ECEFB8EE1C2511F40027FBEA /* vendor */,
 				EC4727601D0C5B3E0023EE51 /* util */,
 				ECB86CB5208BA79F004ED994 /* thread */,
 				ECB86CAA2076874A004ED994 /* comm */,
@@ -1490,14 +1490,14 @@
 			path = source;
 			sourceTree = "<group>";
 		};
-		ECEFB8EE1C2511F40027FBEA /* Vendor */ = {
+		ECEFB8EE1C2511F40027FBEA /* vendor */ = {
 			isa = PBXGroup;
 			children = (
 				EC56E7142139A3430009D8DC /* libmp4 */,
 				ECB053E91F3E94EC00A49FA5 /* easylogging */,
 				EC0188C31D81C3EB005E46B9 /* FFmpeg-iOS */,
 			);
-			path = Vendor;
+			path = vendor;
 			sourceTree = "<group>";
 		};
 		ECF629C81F7E4A4D0088CEEA /* color */ = {
