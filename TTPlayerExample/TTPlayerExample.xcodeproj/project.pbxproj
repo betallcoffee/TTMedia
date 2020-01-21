@@ -174,7 +174,7 @@
 		ECC66E461F60E2D1003F2076 /* TTBaseViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC66E3C1F60E2D1003F2076 /* TTBaseViewModel.m */; };
 		ECC66E471F60E2D1003F2076 /* TTHomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC66E3F1F60E2D1003F2076 /* TTHomeViewController.m */; };
 		ECC66E481F60E2D1003F2076 /* TTPlayerBar.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC66E441F60E2D1003F2076 /* TTPlayerBar.m */; };
-		ECC66F761F614DAB003F2076 /* TTFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC66F751F614DAB003F2076 /* TTFileManager.m */; };
+		ECC66F761F614DAB003F2076 /* TTMovieFilesManager.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC66F751F614DAB003F2076 /* TTMovieFilesManager.m */; };
 		ECC66F7A1F6180F1003F2076 /* TTMovieListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC66F791F6180F1003F2076 /* TTMovieListViewController.m */; };
 		ECC66F7D1F62313D003F2076 /* TTMovieListViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC66F7C1F62313D003F2076 /* TTMovieListViewModel.m */; };
 		ECC66F801F6281A8003F2076 /* TTMovieItemViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC66F7F1F6281A8003F2076 /* TTMovieItemViewModel.m */; };
@@ -598,8 +598,8 @@
 		ECC66E3F1F60E2D1003F2076 /* TTHomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTHomeViewController.m; sourceTree = "<group>"; };
 		ECC66E431F60E2D1003F2076 /* TTPlayerBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTPlayerBar.h; sourceTree = "<group>"; };
 		ECC66E441F60E2D1003F2076 /* TTPlayerBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTPlayerBar.m; sourceTree = "<group>"; };
-		ECC66F741F614DAB003F2076 /* TTFileManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTFileManager.h; sourceTree = "<group>"; };
-		ECC66F751F614DAB003F2076 /* TTFileManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTFileManager.m; sourceTree = "<group>"; };
+		ECC66F741F614DAB003F2076 /* TTMovieFilesManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTMovieFilesManager.h; sourceTree = "<group>"; };
+		ECC66F751F614DAB003F2076 /* TTMovieFilesManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTMovieFilesManager.m; sourceTree = "<group>"; };
 		ECC66F781F6180F1003F2076 /* TTMovieListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTMovieListViewController.h; sourceTree = "<group>"; };
 		ECC66F791F6180F1003F2076 /* TTMovieListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTMovieListViewController.m; sourceTree = "<group>"; };
 		ECC66F7B1F62313D003F2076 /* TTMovieListViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTMovieListViewModel.h; sourceTree = "<group>"; };
@@ -1382,8 +1382,8 @@
 		ECC66E401F60E2D1003F2076 /* Database */ = {
 			isa = PBXGroup;
 			children = (
-				ECC66F741F614DAB003F2076 /* TTFileManager.h */,
-				ECC66F751F614DAB003F2076 /* TTFileManager.m */,
+				ECC66F741F614DAB003F2076 /* TTMovieFilesManager.h */,
+				ECC66F751F614DAB003F2076 /* TTMovieFilesManager.m */,
 			);
 			path = Database;
 			sourceTree = "<group>";
@@ -1716,7 +1716,7 @@
 				EC4E9CA11F1A7DE5005C8E36 /* TTQueue.m in Sources */,
 				EC56E76F2139A3440009D8DC /* mp4_stz2_box.c in Sources */,
 				EC56E7742139A3440009D8DC /* mp4_bits.c in Sources */,
-				ECC66F761F614DAB003F2076 /* TTFileManager.m in Sources */,
+				ECC66F761F614DAB003F2076 /* TTMovieFilesManager.m in Sources */,
 				EC56E78B2139A3440009D8DC /* mp4_mp4v_box.c in Sources */,
 				ECF629F01F7E6A4E0088CEEA /* MASViewConstraint.m in Sources */,
 				EC1A209E1F45333E00632C0D /* TTY420ToRGBFilter.cpp in Sources */,

@@ -12,7 +12,7 @@
 #import "TTCaptureButton.h"
 
 #import "TTCaptureViewController.h"
-#import "TTFileManager.h"
+#import "TTMovieFilesManager.h"
 
 @interface TTCaptureViewController ()
 {
@@ -55,7 +55,7 @@
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
-    [TTFileManager sharedInstance].movieURLList = nil;
+    [[TTMovieFilesManager sharedInstance] reloadMovieURLList];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -168,7 +168,7 @@
     _filterGroup = std::make_shared<TT::FilterGroup>();
     _filterGroup->addFilter([_imageView filter]);
     
-    NSURL *movieURL = [[TTFileManager sharedInstance] newMovieURL];
+    NSURL *movieURL = [[TTMovieFilesManager sharedInstance] newMovieURL];
     _movieWriter = [[TTMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(640, 480)];
     _filterGroup->addFilter([_movieWriter filter], 1);
     

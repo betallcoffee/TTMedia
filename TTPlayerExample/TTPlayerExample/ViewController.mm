@@ -15,7 +15,7 @@
 
 #import "TTAVPlayerView.h"
 #import "ViewController.h"
-#import "TTFileManager.h"
+#import "TTMovieFilesManager.h"
 
 using namespace TT;
 
@@ -160,7 +160,7 @@ using namespace TT;
         button.selected = YES;
         NSString *filePath = [[NSBundle mainBundle] pathForResource:@"test" ofType:@"mp4"];
 //        NSString *filePath = [[NSBundle mainBundle] pathForResource:@"audio_HEv2" ofType:@"flv"];
-        NSURL *movieDir = [TTFileManager sharedInstance].movieDir;
+        NSURL *movieDir = [TTMovieFilesManager sharedInstance].movieDir;
         NSURL *fileURL = [movieDir URLByAppendingPathComponent:@"liangliang3.mp4"];
         filePath = [fileURL absoluteString];
         const char *cFilePath = [filePath cStringUsingEncoding:NSUTF8StringEncoding];

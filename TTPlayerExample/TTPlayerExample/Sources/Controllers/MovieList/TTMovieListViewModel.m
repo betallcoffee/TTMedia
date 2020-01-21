@@ -8,7 +8,7 @@
 
 #import "TTMovieListViewModel.h"
 #import "TTMovieItemViewModel.h"
-#import "TTFileManager.h"
+#import "TTMovieFilesManager.h"
 
 @interface TTMovieListViewModel ()
 {
@@ -21,7 +21,7 @@
 
 - (void)reload {
     _movieList = nil;
-    [[TTFileManager sharedInstance] reloadMovieURLList];
+    [[TTMovieFilesManager sharedInstance] reloadMovieURLList];
 }
 
 - (TTMovieItemViewModel *)itemAtIndex:(NSUInteger)index {
@@ -54,7 +54,7 @@
 - (NSArray<NSURL *> *)movieList {
     if (_movieList == nil) {
         _movieList = [NSMutableArray new];
-        [_movieList addObjectsFromArray:[TTFileManager sharedInstance].movieURLList];
+        [_movieList addObjectsFromArray:[TTMovieFilesManager sharedInstance].movieURLList];
     }
     return _movieList;
 }

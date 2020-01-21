@@ -1,28 +1,30 @@
 //
-//  TTFileManager.m
+//  TTMovieFilesManager.m
 //  TTPlayerExample
 //
 //  Created by liang on 7/9/17.
 //  Copyright © 2017年 tina. All rights reserved.
 //
 
-#import "TTFileManager.h"
+#import "TTMovieFilesManager.h"
 
-@interface TTFileManager ()
+@interface TTMovieFilesManager ()
 {
     NSFileManager *_fileManager;
     NSURL *_movieDir;
+    
+    NSArray<NSURL*>* _movieURLList;
 }
 
 @end
 
-@implementation TTFileManager
+@implementation TTMovieFilesManager
 
 + (instancetype)sharedInstance {
-    static TTFileManager *_sharedInstance;
+    static TTMovieFilesManager *_sharedInstance;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _sharedInstance = [TTFileManager new];
+        _sharedInstance = [TTMovieFilesManager new];
         
     });
     return _sharedInstance;
@@ -69,6 +71,13 @@
         if (error) {
             NSLog(@"TTFileManager movie list error: %@", error);
         }
+        
+        /// TODO(liangliang) : test
+        NSURL *testURL = [[NSBundle mainBundle]
+                              URLForResource:@"test" withExtension:@"mp4"];
+        NSMutableArray *tempArray = [_movieURLList mutableCopy];
+        [tempArray addObject:testURL];
+        _movieURLList = [tempArray copy];
         return [_movieURLList copy];
     }
 }

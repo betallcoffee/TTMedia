@@ -1,5 +1,5 @@
 //
-//  TTFileManager.h
+//  TTMovieFilesManager.H
 //  TTPlayerExample
 //
 //  Created by liang on 7/9/17.
@@ -8,10 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
-@interface TTFileManager : NSObject
+@interface TTMovieFilesManager : NSObject
 
 @property (nonatomic, strong, readonly) NSURL *movieDir;
-@property (nonatomic, copy) NSArray<NSURL *> *movieURLList;
+@property (nonatomic, copy, readonly) NSArray<NSURL *> *movieURLList;
 
 + (instancetype)sharedInstance;
 
