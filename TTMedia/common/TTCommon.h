@@ -1,13 +1,13 @@
 //
-//  TTComm.h
+//  TTCommon.h
 //  TTPlayerExample
 //
 //  Created by liang on 13/4/18.
 //  Copyright © 2018年 tina. All rights reserved.
 //
 
-#ifndef TTComm_h
-#define TTComm_h
+#ifndef TTCommon_h
+#define TTCommon_h
 
 #include <sys/types.h>
 #include <stdint.h>
@@ -83,4 +83,4 @@ namespace TT {
 }
 
 
-#endif /* TTComm_h */
+#endif /* TTCommon_h */

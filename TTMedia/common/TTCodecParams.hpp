@@ -12,7 +12,7 @@
 #include <stdint.h>
 #include <string>
 
-#include "TTComm.h"
+#include "TTCommon.h"
 
 namespace TT {
     

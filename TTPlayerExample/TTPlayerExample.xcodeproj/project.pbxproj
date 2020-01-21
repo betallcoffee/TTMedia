@@ -582,7 +582,7 @@
 		ECB86CAE2076874A004ED994 /* TTPacket.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TTPacket.hpp; sourceTree = "<group>"; };
 		ECB86CB120768788004ED994 /* TTCodecParams.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTCodecParams.cpp; sourceTree = "<group>"; };
 		ECB86CB220768788004ED994 /* TTCodecParams.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTCodecParams.hpp; sourceTree = "<group>"; };
-		ECB86CB4207FBD4B004ED994 /* TTComm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TTComm.h; sourceTree = "<group>"; };
+		ECB86CB4207FBD4B004ED994 /* TTCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TTCommon.h; sourceTree = "<group>"; };
 		ECB86CB6208BA7DB004ED994 /* TTMessageLoop.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTMessageLoop.cpp; sourceTree = "<group>"; };
 		ECB86CB7208BA7DB004ED994 /* TTMessageLoop.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTMessageLoop.hpp; sourceTree = "<group>"; };
 		ECC66E1E1F5A59C3003F2076 /* TTProcessPriv.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TTProcessPriv.h; sourceTree = "<group>"; };
@@ -823,7 +823,7 @@
 				ECEFB8EE1C2511F40027FBEA /* vendor */,
 				EC4727601D0C5B3E0023EE51 /* util */,
 				ECB86CB5208BA79F004ED994 /* thread */,
-				ECB86CAA2076874A004ED994 /* comm */,
+				ECB86CAA2076874A004ED994 /* common */,
 				EC47275C1D0C5A0D0023EE51 /* codec */,
 				EC55087E1FE6610A00C115A8 /* demuxer */,
 				EC552B85203ACDBD00ADA7EF /* muxer */,
@@ -1319,10 +1319,10 @@
 			path = lib;
 			sourceTree = "<group>";
 		};
-		ECB86CAA2076874A004ED994 /* comm */ = {
+		ECB86CAA2076874A004ED994 /* common */ = {
 			isa = PBXGroup;
 			children = (
-				ECB86CB4207FBD4B004ED994 /* TTComm.h */,
+				ECB86CB4207FBD4B004ED994 /* TTCommon.h */,
 				ECB86CAB2076874A004ED994 /* TTFrame.cpp */,
 				ECB86CAC2076874A004ED994 /* TTFrame.hpp */,
 				ECB86CAD2076874A004ED994 /* TTPacket.cpp */,
@@ -1332,7 +1332,7 @@
 				EC56E566211FFC7C0009D8DC /* TTStream.cpp */,
 				EC56E567211FFC7C0009D8DC /* TTStream.hpp */,
 			);
-			path = comm;
+			path = common;
 			sourceTree = "<group>";
 		};
 		ECB86CB5208BA79F004ED994 /* thread */ = {

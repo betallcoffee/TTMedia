@@ -19,7 +19,7 @@ extern "C" {
 };
 #endif
 
-#include "TTComm.h"
+#include "TTCommon.h"
 
 namespace TT {
     class Packet {

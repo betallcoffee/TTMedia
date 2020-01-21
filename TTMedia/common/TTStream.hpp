@@ -9,7 +9,7 @@
 #ifndef TTStream_hpp
 #define TTStream_hpp
 
-#include "TTComm.h"
+#include "TTCommon.h"
 
 #ifdef __cplusplus
 extern "C" {
