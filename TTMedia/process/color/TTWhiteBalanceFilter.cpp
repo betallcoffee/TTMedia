@@ -13,7 +13,7 @@ using namespace TT;
 static const GLchar *const kWhiteBalanceShader = STRINGIZE
 (
  uniform sampler2D inputImageTexture;
- varying highp vec2 textureCoordinate;
+ varying highp vec2 v_texcoord;
  
  uniform lowp float temperature;
  uniform lowp float tint;
@@ -25,7 +25,7 @@ static const GLchar *const kWhiteBalanceShader = STRINGIZE
  
  void main()
 {
-    lowp vec4 source = texture2D(inputImageTexture, textureCoordinate);
+    lowp vec4 source = texture2D(inputImageTexture, v_texcoord);
     
     mediump vec3 yiq = RGBtoYIQ * source.rgb; //adjusting tint
     yiq.b = clamp(yiq.b + tint*0.5226*0.1, -0.5226, 0.5226);

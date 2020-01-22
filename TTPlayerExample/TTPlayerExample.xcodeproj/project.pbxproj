@@ -23,6 +23,8 @@
 		EC1A209B1F43FB6A00632C0D /* TTGLContext_ios.mm in Sources */ = {isa = PBXBuildFile; fileRef = EC1A20991F43FB6A00632C0D /* TTGLContext_ios.mm */; };
 		EC1A209E1F45333E00632C0D /* TTY420ToRGBFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC1A209C1F45333E00632C0D /* TTY420ToRGBFilter.cpp */; };
 		EC1A20B21F498EA200632C0D /* TTFilter_ios.mm in Sources */ = {isa = PBXBuildFile; fileRef = EC1A20B11F498EA200632C0D /* TTFilter_ios.mm */; };
+		EC25886E23D74BD200342541 /* TTColorMatrixFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC25886C23D74BD200342541 /* TTColorMatrixFilter.cpp */; };
+		EC25887223D8586C00342541 /* TTSepiaFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC25887023D8586C00342541 /* TTSepiaFilter.cpp */; };
 		EC321828213BC1B500A54DB9 /* TTRingBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC321826213BC1B500A54DB9 /* TTRingBuffer.cpp */; };
 		EC35E7501D7C10C200F0659A /* libbz2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EC35E74F1D7C10C200F0659A /* libbz2.tbd */; };
 		EC3AB2E51F7F377200614CFB /* TTSaturationFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC3AB2E31F7F377200614CFB /* TTSaturationFilter.cpp */; };
@@ -247,6 +249,11 @@
 		EC1A20AF1F46C7AD00632C0D /* TTProcess.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TTProcess.h; sourceTree = "<group>"; };
 		EC1A20B01F498EA200632C0D /* TTFilter_ios.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTFilter_ios.h; sourceTree = "<group>"; };
 		EC1A20B11F498EA200632C0D /* TTFilter_ios.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TTFilter_ios.mm; sourceTree = "<group>"; };
+		EC25886C23D74BD200342541 /* TTColorMatrixFilter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTColorMatrixFilter.cpp; sourceTree = "<group>"; };
+		EC25886D23D74BD200342541 /* TTColorMatrixFilter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTColorMatrixFilter.hpp; sourceTree = "<group>"; };
+		EC25886F23D8402000342541 /* TTFilterCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TTFilterCommon.h; sourceTree = "<group>"; };
+		EC25887023D8586C00342541 /* TTSepiaFilter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTSepiaFilter.cpp; sourceTree = "<group>"; };
+		EC25887123D8586C00342541 /* TTSepiaFilter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTSepiaFilter.hpp; sourceTree = "<group>"; };
 		EC321826213BC1B500A54DB9 /* TTRingBuffer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTRingBuffer.cpp; sourceTree = "<group>"; };
 		EC321827213BC1B500A54DB9 /* TTRingBuffer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTRingBuffer.hpp; sourceTree = "<group>"; };
 		EC35E74F1D7C10C200F0659A /* libbz2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbz2.tbd; path = usr/lib/libbz2.tbd; sourceTree = SDKROOT; };
@@ -725,6 +732,7 @@
 				ECF629C81F7E4A4D0088CEEA /* color */,
 				EC1A20AF1F46C7AD00632C0D /* TTProcess.h */,
 				ECC66E1E1F5A59C3003F2076 /* TTProcessPriv.h */,
+				EC25886F23D8402000342541 /* TTFilterCommon.h */,
 				EC1A20991F43FB6A00632C0D /* TTGLContext_ios.mm */,
 				EC1A209A1F43FB6A00632C0D /* TTGLContext_ios.h */,
 				EC1A208B1F43FB0200632C0D /* TTFramebuffer.cpp */,
@@ -1517,6 +1525,10 @@
 				EC4DD36920A6E03500CFBF60 /* TTLevelFilter.hpp */,
 				EC4DD36E20A7251C00CFBF60 /* TTWhiteBalanceFilter.cpp */,
 				EC4DD36F20A7251C00CFBF60 /* TTWhiteBalanceFilter.hpp */,
+				EC25886C23D74BD200342541 /* TTColorMatrixFilter.cpp */,
+				EC25886D23D74BD200342541 /* TTColorMatrixFilter.hpp */,
+				EC25887023D8586C00342541 /* TTSepiaFilter.cpp */,
+				EC25887123D8586C00342541 /* TTSepiaFilter.hpp */,
 			);
 			path = color;
 			sourceTree = "<group>";
@@ -1759,12 +1771,14 @@
 				EC56E75F2139A3440009D8DC /* mp4_trak_box.c in Sources */,
 				EC56E7672139A3440009D8DC /* mp4_udta_box.c in Sources */,
 				EC56E78D2139A3440009D8DC /* mp4_file.c in Sources */,
+				EC25886E23D74BD200342541 /* TTColorMatrixFilter.cpp in Sources */,
 				EC5508941FE6A3E500C115A8 /* TTByteBuffer.cpp in Sources */,
 				EC56E7652139A3440009D8DC /* mp4_unknown_box.c in Sources */,
 				EC56E7712139A3440009D8DC /* mp4_sample_descs.c in Sources */,
 				EC4E9C9E1F1A7DE5005C8E36 /* TTPlayerControl.m in Sources */,
 				ECC66F7D1F62313D003F2076 /* TTMovieListViewModel.m in Sources */,
 				EC56E7662139A3440009D8DC /* mp4_padb_box.c in Sources */,
+				EC25887223D8586C00342541 /* TTSepiaFilter.cpp in Sources */,
 				EC0189591D81D1E6005E46B9 /* TTQoS.cpp in Sources */,
 				EC56E76A2139A3440009D8DC /* mp4_mdat_box.c in Sources */,
 				EC4E9C701F1A7AA6005C8E36 /* TTQueue.cpp in Sources */,

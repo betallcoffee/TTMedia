@@ -15,6 +15,12 @@
 #include "TTBrightnessFilter.hpp"
 #include "TTContrastFilter.hpp"
 #include "TTSaturationFilter.hpp"
+#include "TTExposureFilter.hpp"
+#include "TTHueFilter.hpp"
+#include "TTLevelFilter.hpp"
+#include "TTWhiteBalanceFilter.hpp"
+#include "TTColorMatrixFilter.hpp"
+#include "TTSepiaFilter.hpp"
 
 #include "TTY420ToRGBFilter.hpp"
 #include "TTNV12ToRGBFilter.hpp"

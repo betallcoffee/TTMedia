@@ -15,7 +15,7 @@ using namespace TT;
 static const GLchar *const kHueFragmentShader = STRINGIZE
 (
  precision highp float;
- varying highp vec2 textureCoordinate;
+ varying highp vec2 v_texcoord;
  
  uniform sampler2D inputImageTexture;
  uniform mediump float hueAdjust;
@@ -31,7 +31,7 @@ static const GLchar *const kHueFragmentShader = STRINGIZE
  void main ()
  {
      // Sample the input pixel
-     highp vec4 color   = texture2D(inputImageTexture, textureCoordinate);
+     highp vec4 color   = texture2D(inputImageTexture, v_texcoord);
      
      // Convert to YIQ
      highp float   YPrime  = dot (color, kRGBToYPrime);

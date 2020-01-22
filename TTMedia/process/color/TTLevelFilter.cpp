@@ -50,7 +50,7 @@ using namespace TT;
 
 static const GLchar *const kLevelFragmentShader = STRINGIZE
 (
- varying highp vec2 textureCoordinate;
+ varying highp vec2 v_texcoord;
  
  uniform sampler2D inputImageTexture;
  uniform mediump vec3 levelMinimum;
@@ -61,7 +61,7 @@ static const GLchar *const kLevelFragmentShader = STRINGIZE
  
  void main()
  {
-     mediump vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
+     mediump vec4 textureColor = texture2D(inputImageTexture, v_texcoord);
      
      gl_FragColor = vec4(LevelsControl(textureColor.rgb, levelMinimum, levelMiddle, levelMaximum, minOutput, maxOutput), textureColor.a);
  }

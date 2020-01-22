@@ -68,6 +68,16 @@ bool Program::compile(const GLchar *vertShader, const GLchar *fragShader) {
     GLint status;
     glGetProgramiv(_prog, GL_LINK_STATUS, &status);
     if (status == GL_FALSE) {
+        GLint logLength;
+        glGetProgramiv(_prog, GL_INFO_LOG_LENGTH, &logLength);
+        if (logLength > 0)
+        {
+            GLchar *log = (GLchar *)malloc(logLength);
+            glGetProgramInfoLog(_prog, logLength, &logLength, log);
+            LOG(ERROR) << "shader error " << log;
+            free(log);
+        }
+        
         reset();
         return false;
     }

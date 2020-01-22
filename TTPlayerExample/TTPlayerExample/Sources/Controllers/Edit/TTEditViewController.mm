@@ -86,11 +86,17 @@ static NSString *kPreviewCellIdentifier = @"previewCell";
 }
 
 - (void)setupFilter {
-    _filterGroup = std::make_shared<TT::FilterGroup>();
+    _filterGroup = TT_MK_SP(TT::FilterGroup)();
     _filterGroup->addFilter([_imageView filter]);
     
-    _filterTexture = std::make_shared<TT::Y420ToRGBFilter>();
-    _filterTexture->addFilter(_filterGroup);
+    TT_SP(TT::Filter) sepiaFilter = TT_MK_SP(TT::SepiaFilter)();
+    sepiaFilter->addFilter(_filterGroup);
+    
+    TT_SP(TT::Filter) whiterFilter = TT_MK_SP(TT::WhiteBalanceFilter)();
+    whiterFilter->addFilter(_filterGroup);
+    
+    _filterTexture = TT_MK_SP(TT::Y420ToRGBFilter)();
+    _filterTexture->addFilter(whiterFilter);
 }
 
 #pragma mark target/action

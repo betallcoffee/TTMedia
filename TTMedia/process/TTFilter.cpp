@@ -131,6 +131,7 @@ bool Filter::bindFramebuffer() {
 
 void Filter::compileShader() {
     GLContext::sharedProcessContext().use();
+    // TODO(liangliang) : process shader compile error.
     _program.compile(vertexShader(), fragmentShader());
     getAttribLocations();
     getUniformLocations();
