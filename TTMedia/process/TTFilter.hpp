@@ -33,6 +33,9 @@ namespace TT {
         void removeFilter(std::shared_ptr<Filter> filter, int index = 0);
         void removeAllFilters();
 
+        /**
+         *输入数据
+         */
         void setSrcFramebuffer(std::shared_ptr<Framebuffer> frameBuffer);
         std::shared_ptr<const Framebuffer> srcFramebuffer() { return _srcFramebuffer; }
         
@@ -44,10 +47,23 @@ namespace TT {
         virtual bool bindFramebuffer();
         
         virtual void compileShader();
+        /**
+         *返回自定义顶点 shader
+         *其中变量约定：
+         * attribute vec4 position;
+         * attribute vec2 texcoord;
+         * varying vec2 v_texcoord;
+         */
         virtual const GLchar *vertexShader();
         virtual void getAttribLocations();
         virtual void resolveAttribLocations();
         
+        /**
+         *返回自定义的片段 shader
+         *其中约定 ：
+         * varying highp vec2 v_texcoord; // 顶点 shader 传过来的 顶点信息
+         * uniform sampler2D texture; // 输入纹理
+         */
         virtual const GLchar *fragmentShader();
         virtual void getUniformLocations();
         virtual void resolveUniformLocations();

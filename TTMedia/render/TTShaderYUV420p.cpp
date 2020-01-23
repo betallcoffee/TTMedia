@@ -99,7 +99,7 @@ bool ShaderYUV420p::uploadTexture(std::shared_ptr<Frame> frame) {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glUniform1i(_uniformSamplers[i], i);
+        glUniform1i(_uniformSamplers[i], _textures[i]);
     }
     glUniformMatrix3fv(_uniformColorConvertionMatrix, 1, GL_FALSE, kColorConversionMatrix601);
 

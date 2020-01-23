@@ -72,7 +72,7 @@ void Framebuffer::tearDown() {
 
 void Framebuffer::active() {
     glBindFramebuffer(GL_FRAMEBUFFER, _framebuffer);
-    glViewport(0, 0, _width, _height);
+    glViewport(0, 0, (int)_width, (int)_height);
 }
 
 

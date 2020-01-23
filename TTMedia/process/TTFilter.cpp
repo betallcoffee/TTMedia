@@ -182,6 +182,9 @@ void Filter::updateTexture() {
         glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_2D, _srcFramebuffer->textrue());
         
+        /**
+         *参数是 glActiveTexture 的顺序，0 开始计数
+         */
         glUniform1i(_textureUniform, 2);
     }
 }

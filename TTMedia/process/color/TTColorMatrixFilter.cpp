@@ -13,21 +13,20 @@ using namespace TT;
 static const GLchar *const kColorMatrixFragmentShader = STRINGIZE
 (
  varying highp vec2 v_texcoord;
- 
- uniform sampler2D inputImageTexture;
+ uniform sampler2D texture;
  
  uniform lowp mat4 colorMatrix;
  uniform lowp float intensity;
  
  void main()
  {
-     lowp vec4 textureColor = texture2D(inputImageTexture, v_texcoord);
-     lowp vec4 outputColor = textureColor * colorMatrix;
-     
-     gl_FragColor = (intensity * outputColor) + ((1.0 - intensity) * textureColor);
- }
+    lowp vec4 textureColor = texture2D(texture, v_texcoord);
+    lowp vec4 outputColor = textureColor * colorMatrix;
+    gl_FragColor = outputColor;
+    
+}
  );
-
+//gl_FragColor = (intensity * outputColor) + ((1.0 - intensity) * textureColor);
 ColorMatrixFilter::ColorMatrixFilter() {
     _colorMatrix = (GPUMatrix4x4){
         {1.f, 0.f, 0.f, 0.f},
@@ -76,7 +75,7 @@ void ColorMatrixFilter::getUniformLocations() {
 void ColorMatrixFilter::resolveUniformLocations() {
     Filter::resolveUniformLocations();
     glUniformMatrix4fv(_colorMatrixUniform, 1, GL_FALSE, (GLfloat *)&_colorMatrix);
-    glUniform1f(_intensityUniform, _intensity);
+//    glUniform1f(_intensityUniform, _intensity);
 }
 
 

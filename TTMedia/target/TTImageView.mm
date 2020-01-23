@@ -135,8 +135,7 @@
     glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &backingWidth);
     glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &backingHeight);
     
-    if ( (backingWidth == 0) || (backingHeight == 0) )
-    {
+    if ( (backingWidth == 0) || (backingHeight == 0) ) {
         [self destroyDisplayFramebuffer];
         return;
     }
@@ -172,13 +171,14 @@
 
 - (void)setDisplayFramebuffer;
 {
-    if (!displayFramebuffer)
-    {
+    if (!displayFramebuffer) {
         [self createDisplayFramebuffer];
     }
     
-    glBindFramebuffer(GL_FRAMEBUFFER, displayFramebuffer);
-    glViewport(0, 0, (GLint)_sizeInPixels.width, (GLint)_sizeInPixels.height);
+    if (displayFramebuffer) {
+        glBindFramebuffer(GL_FRAMEBUFFER, displayFramebuffer);
+        glViewport(0, 0, (GLint)_sizeInPixels.width, (GLint)_sizeInPixels.height);
+    }
 }
 
 - (void)presentFramebuffer;
