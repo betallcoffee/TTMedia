@@ -80,6 +80,7 @@ namespace TT {
         std::shared_ptr<Framebuffer> _framebuffer;
         std::map<int, std::shared_ptr<Filter>> _filters;
         
+        /// 在设置 srcFramebuffer 时，读取 srcFramebuffer 的 width/height
         size_t _width;
         size_t _height;
         

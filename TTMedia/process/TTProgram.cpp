@@ -46,6 +46,10 @@ bool Program::isCompiled() {
 }
 
 bool Program::compile(const GLchar *vertShader, const GLchar *fragShader) {
+    if (vertShader == nullptr || fragShader == nullptr) {
+        return false;
+    }
+    
     reset();
     
     _prog = glCreateProgram();

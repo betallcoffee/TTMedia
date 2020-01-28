@@ -11,6 +11,7 @@
 
 #include "TTFilter.hpp"
 #include "TTFilterGroup.hpp"
+#include "TTTwoPassFilter.hpp"
 
 #include "TTBrightnessFilter.hpp"
 #include "TTContrastFilter.hpp"
@@ -27,6 +28,8 @@
 
 #include "TTImageView.h"
 #include "TTMovieWriter.h"
+
+#include "TTGaussianBlurFilter.hpp"
 
 
 #endif /* TTProcess_h */
