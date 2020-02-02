@@ -23,6 +23,7 @@
 @implementation TTPreviewCell
 
 - (void)setupUI {
+    self.backgroundColor = [UIColor redColor];
     if (_imageView == nil) {
         _imageView = [TTImageView new];
         _imageView.contentMode = UIViewContentModeScaleAspectFit;
@@ -31,12 +32,12 @@
             make.edges.equalTo(_imageView.superview);
         }];
     }
-    
+
     if (_filterTexture == nil) {
         _filterTexture = std::make_shared<TT::Y420ToRGBFilter>();
         _filterTexture->addFilter([_imageView filter]);
     }
-    
+
     if (_label == nil) {
         _label = [UILabel new];
         _label.backgroundColor = UIColor.clearColor;
@@ -49,7 +50,7 @@
 }
 
 - (void)showFrame:(std::shared_ptr<TT::Frame>)frame {
-    _filterTexture->processFrame(frame);
+//    _filterTexture->processFrame(frame);
 }
 
 @end

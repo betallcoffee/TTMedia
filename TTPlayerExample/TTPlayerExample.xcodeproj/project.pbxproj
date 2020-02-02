@@ -146,6 +146,8 @@
 		EC6600641F95BF8500042B2A /* TTMovieWriter.mm in Sources */ = {isa = PBXBuildFile; fileRef = EC6600621F95BF8500042B2A /* TTMovieWriter.mm */; };
 		EC6600681F95C19B00042B2A /* TTMedia.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC6600661F95C19B00042B2A /* TTMedia.cpp */; };
 		EC6601291FDD8D8F00042B2A /* TTDNSClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC6601271FDD8D8F00042B2A /* TTDNSClient.cpp */; };
+		EC7E516923DC78FC009F8193 /* TTGaussianBlurFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC7E516723DC78FB009F8193 /* TTGaussianBlurFilter.cpp */; };
+		EC7E516C23DDA13E009F8193 /* TTTwoPassFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC7E516A23DDA13E009F8193 /* TTTwoPassFilter.cpp */; };
 		EC89E7AD21B3BF1200E3808E /* TTCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC89E7AB21B3BF1200E3808E /* TTCodec.cpp */; };
 		EC89E7BB21CEAD8C00E3808E /* TTPlayerStateM.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC89E7B921CEAD8800E3808E /* TTPlayerStateM.cpp */; };
 		EC89E7C421FDC46400E3808E /* TTCodecControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC89E7BF21FDC46300E3808E /* TTCodecControl.cpp */; };
@@ -190,7 +192,6 @@
 		ECE49F5E1F5A44AE004FE7C2 /* TTNV12ToRGBFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECE49F5C1F5A44AE004FE7C2 /* TTNV12ToRGBFilter.cpp */; };
 		ECF629CB1F7E4A4D0088CEEA /* TTContrastFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECF629C91F7E4A4D0088CEEA /* TTContrastFilter.cpp */; };
 		ECF629CE1F7E4A710088CEEA /* TTBrightnessFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECF629CC1F7E4A710088CEEA /* TTBrightnessFilter.cpp */; };
-		ECF629EA1F7E6A4E0088CEEA /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = ECF629D01F7E6A4E0088CEEA /* Info.plist */; };
 		ECF629EB1F7E6A4E0088CEEA /* MASCompositeConstraint.m in Sources */ = {isa = PBXBuildFile; fileRef = ECF629D21F7E6A4E0088CEEA /* MASCompositeConstraint.m */; };
 		ECF629EC1F7E6A4E0088CEEA /* MASConstraint.m in Sources */ = {isa = PBXBuildFile; fileRef = ECF629D51F7E6A4E0088CEEA /* MASConstraint.m */; };
 		ECF629ED1F7E6A4E0088CEEA /* MASConstraintMaker.m in Sources */ = {isa = PBXBuildFile; fileRef = ECF629D71F7E6A4E0088CEEA /* MASConstraintMaker.m */; };
@@ -443,6 +444,10 @@
 		EC6600671F95C19B00042B2A /* TTMedia.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TTMedia.hpp; sourceTree = "<group>"; };
 		EC6601271FDD8D8F00042B2A /* TTDNSClient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TTDNSClient.cpp; sourceTree = "<group>"; };
 		EC6601281FDD8D8F00042B2A /* TTDNSClient.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TTDNSClient.hpp; sourceTree = "<group>"; };
+		EC7E516723DC78FB009F8193 /* TTGaussianBlurFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TTGaussianBlurFilter.cpp; sourceTree = "<group>"; };
+		EC7E516823DC78FB009F8193 /* TTGaussianBlurFilter.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TTGaussianBlurFilter.hpp; sourceTree = "<group>"; };
+		EC7E516A23DDA13E009F8193 /* TTTwoPassFilter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTTwoPassFilter.cpp; sourceTree = "<group>"; };
+		EC7E516B23DDA13E009F8193 /* TTTwoPassFilter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTTwoPassFilter.hpp; sourceTree = "<group>"; };
 		EC89E7A721876A9D00E3808E /* TTOpenGL.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TTOpenGL.h; sourceTree = "<group>"; };
 		EC89E7AB21B3BF1200E3808E /* TTCodec.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTCodec.cpp; sourceTree = "<group>"; };
 		EC89E7AC21B3BF1200E3808E /* TTCodec.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTCodec.hpp; sourceTree = "<group>"; };
@@ -729,6 +734,7 @@
 		EC1A20891F43FB0200632C0D /* process */ = {
 			isa = PBXGroup;
 			children = (
+				EC7E516623DC78FB009F8193 /* image */,
 				ECF629C81F7E4A4D0088CEEA /* color */,
 				EC1A20AF1F46C7AD00632C0D /* TTProcess.h */,
 				ECC66E1E1F5A59C3003F2076 /* TTProcessPriv.h */,
@@ -741,6 +747,8 @@
 				EC1A208D1F43FB0200632C0D /* TTProgram.hpp */,
 				EC1A20901F43FB0200632C0D /* TTFilter.cpp */,
 				EC1A20911F43FB0200632C0D /* TTFilter.hpp */,
+				EC7E516A23DDA13E009F8193 /* TTTwoPassFilter.cpp */,
+				EC7E516B23DDA13E009F8193 /* TTTwoPassFilter.hpp */,
 				EC48ACF12053E6C40009C0C2 /* TTFilterFrame.cpp */,
 				EC48ACF22053E6C40009C0C2 /* TTFilterFrame.hpp */,
 				ECC66E2F1F5A9AB3003F2076 /* TTFilterTexture.cpp */,
@@ -1130,6 +1138,15 @@
 				EC48ACF5205427E00009C0C2 /* TTEditSpace.hpp */,
 			);
 			path = edit;
+			sourceTree = "<group>";
+		};
+		EC7E516623DC78FB009F8193 /* image */ = {
+			isa = PBXGroup;
+			children = (
+				EC7E516723DC78FB009F8193 /* TTGaussianBlurFilter.cpp */,
+				EC7E516823DC78FB009F8193 /* TTGaussianBlurFilter.hpp */,
+			);
+			path = image;
 			sourceTree = "<group>";
 		};
 		ECB053E91F3E94EC00A49FA5 /* easylogging */ = {
@@ -1630,6 +1647,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -1654,7 +1672,6 @@
 				EC3D8F871B99BD8F006FC622 /* LaunchScreen.xib in Resources */,
 				EC4E9CAF1F2390A4005C8E36 /* test.mp4 in Resources */,
 				EC3D8F841B99BD8F006FC622 /* Images.xcassets in Resources */,
-				ECF629EA1F7E6A4E0088CEEA /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1835,7 +1852,9 @@
 				EC6600511F95A8C100042B2A /* TTPlayer.cpp in Sources */,
 				EC6600631F95BF8500042B2A /* TTImageView.mm in Sources */,
 				EC56E78C2139A3440009D8DC /* mp4_free_box.c in Sources */,
+				EC7E516C23DDA13E009F8193 /* TTTwoPassFilter.cpp in Sources */,
 				EC4E9CA91F1BC21E005C8E36 /* TTShaderYUV420p.cpp in Sources */,
+				EC7E516923DC78FC009F8193 /* TTGaussianBlurFilter.cpp in Sources */,
 				EC56E7602139A3440009D8DC /* mp4_avcC_box.c in Sources */,
 				EC552B91203ACECD00ADA7EF /* TTFFMuxer.cpp in Sources */,
 				EC55089B200BADD600C115A8 /* TTArray.cpp in Sources */,
