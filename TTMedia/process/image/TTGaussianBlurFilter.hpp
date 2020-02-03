@@ -25,10 +25,11 @@ protected:
     virtual const GLchar* vertexShader2();
     
     virtual const GLchar* fragmentShader();
+    virtual const GLchar* fragmentShader2();
+    
     virtual void getUniformLocations();
     virtual void resolveUniformLocations();
     
-    virtual const GLchar* fragmentShader2();
     virtual void getUniformLocations2();
     virtual void resolveUniformLocations2();
     

@@ -30,6 +30,7 @@
 #include "TTMovieWriter.h"
 
 #include "TTGaussianBlurFilter.hpp"
+#include "TTBilateralFilter.hpp"
 
 
 #endif /* TTProcess_h */

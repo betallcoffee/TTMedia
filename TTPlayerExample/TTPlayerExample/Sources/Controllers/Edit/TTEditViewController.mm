@@ -95,11 +95,11 @@ static NSString *kPreviewCellIdentifier = @"previewCell";
     TT_SP(TT::Filter) gaussianBlurFilter = TT_MK_SP(TT::GaussianBlurFilter)();
     gaussianBlurFilter->addFilter(_filterGroup);
     
-    TT_SP(TT::Filter) twoPassFilter = TT_MK_SP(TT::TwoPassFilter)();
-    twoPassFilter->addFilter(_filterGroup);
+    TT_SP(TT::Filter) bilateralFilter = TT_MK_SP(TT::BilateraFilter)();
+    bilateralFilter->addFilter(_filterGroup);
     
     _filterTexture = TT_MK_SP(TT::Y420ToRGBFilter)();
-    _filterTexture->addFilter(gaussianBlurFilter);
+    _filterTexture->addFilter(bilateralFilter);
 }
 
 #pragma mark target/action

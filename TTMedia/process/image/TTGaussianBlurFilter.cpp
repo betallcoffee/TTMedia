@@ -41,6 +41,10 @@ const GLchar* GaussianBlurFilter::fragmentShader() {
     return _fragmentShader.c_str();
 }
 
+const GLchar* GaussianBlurFilter::fragmentShader2() {
+    return _fragmentShader.c_str();
+}
+
 void GaussianBlurFilter::getUniformLocations() {
     TwoPassFilter::getUniformLocations();
     _verticalPassTexelWidthOffsetUniform = _program.getUniformLocation("texelWidthOffset");
@@ -57,10 +61,6 @@ void GaussianBlurFilter::resolveUniformLocations() {
     
     glUniform1f(_verticalPassTexelWidthOffsetUniform, _verticalPassTexelWidthOffset);
     glUniform1f(_verticalPassTexelHeightOffsetUniform, _verticalPassTexelHeightOffset);
-}
-
-const GLchar* GaussianBlurFilter::fragmentShader2() {
-    return _fragmentShader.c_str();
 }
 
 void GaussianBlurFilter::getUniformLocations2() {
