@@ -13,6 +13,13 @@
 #include "TTFilterGroup.hpp"
 #include "TTTwoPassFilter.hpp"
 
+#include "TTY420ToRGBFilter.hpp"
+#include "TTNV12ToRGBFilter.hpp"
+
+#include "TTImageView.h"
+#include "TTMovieWriter.h"
+
+// color
 #include "TTBrightnessFilter.hpp"
 #include "TTContrastFilter.hpp"
 #include "TTSaturationFilter.hpp"
@@ -22,15 +29,13 @@
 #include "TTWhiteBalanceFilter.hpp"
 #include "TTColorMatrixFilter.hpp"
 #include "TTSepiaFilter.hpp"
+#include "TTGrayscaleFilter.hpp"
 
-#include "TTY420ToRGBFilter.hpp"
-#include "TTNV12ToRGBFilter.hpp"
-
-#include "TTImageView.h"
-#include "TTMovieWriter.h"
-
+// image
 #include "TTGaussianBlurFilter.hpp"
 #include "TTBilateralFilter.hpp"
+
+
 
 
 #endif /* TTProcess_h */

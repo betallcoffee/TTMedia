@@ -98,8 +98,11 @@ static NSString *kPreviewCellIdentifier = @"previewCell";
     TT_SP(TT::Filter) bilateralFilter = TT_MK_SP(TT::BilateraFilter)();
     bilateralFilter->addFilter(_filterGroup);
     
+    TT_SP(TT::Filter) grayscaleFilter = TT_MK_SP(TT::GrayscaleFilter)();
+    grayscaleFilter->addFilter(_filterGroup);
+    
     _filterTexture = TT_MK_SP(TT::Y420ToRGBFilter)();
-    _filterTexture->addFilter(bilateralFilter);
+    _filterTexture->addFilter(grayscaleFilter);
 }
 
 #pragma mark target/action

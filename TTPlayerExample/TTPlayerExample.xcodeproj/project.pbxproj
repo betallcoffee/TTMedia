@@ -188,6 +188,7 @@
 		ECC66F8C1F62A3E0003F2076 /* TTCaptureViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = ECC66F8B1F62A3E0003F2076 /* TTCaptureViewController.mm */; };
 		ECC66F8F1F62B98D003F2076 /* TTCaptureButton.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC66F8E1F62B98D003F2076 /* TTCaptureButton.m */; };
 		ECC66F921F639EAD003F2076 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ECC66F911F639EAD003F2076 /* MediaPlayer.framework */; };
+		ECDD85E8248B950200AA2EFE /* TTGrayscaleFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECDD85E6248B950200AA2EFE /* TTGrayscaleFilter.cpp */; };
 		ECE49F571F59AEDA004FE7C2 /* TTCapture.mm in Sources */ = {isa = PBXBuildFile; fileRef = ECE49F561F59AEDA004FE7C2 /* TTCapture.mm */; };
 		ECE49F5A1F59D22F004FE7C2 /* TTNV12ToRGBFilter_ios.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECE49F581F59D22F004FE7C2 /* TTNV12ToRGBFilter_ios.cpp */; };
 		ECE49F5E1F5A44AE004FE7C2 /* TTNV12ToRGBFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECE49F5C1F5A44AE004FE7C2 /* TTNV12ToRGBFilter.cpp */; };
@@ -630,6 +631,8 @@
 		ECC66F8D1F62B98D003F2076 /* TTCaptureButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTCaptureButton.h; sourceTree = "<group>"; };
 		ECC66F8E1F62B98D003F2076 /* TTCaptureButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTCaptureButton.m; sourceTree = "<group>"; };
 		ECC66F911F639EAD003F2076 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
+		ECDD85E6248B950200AA2EFE /* TTGrayscaleFilter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTGrayscaleFilter.cpp; sourceTree = "<group>"; };
+		ECDD85E7248B950200AA2EFE /* TTGrayscaleFilter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTGrayscaleFilter.hpp; sourceTree = "<group>"; };
 		ECE49F551F59AEDA004FE7C2 /* TTCapture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTCapture.h; sourceTree = "<group>"; };
 		ECE49F561F59AEDA004FE7C2 /* TTCapture.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TTCapture.mm; sourceTree = "<group>"; };
 		ECE49F581F59D22F004FE7C2 /* TTNV12ToRGBFilter_ios.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TTNV12ToRGBFilter_ios.cpp; sourceTree = "<group>"; };
@@ -1551,6 +1554,8 @@
 				EC25886D23D74BD200342541 /* TTColorMatrixFilter.hpp */,
 				EC25887023D8586C00342541 /* TTSepiaFilter.cpp */,
 				EC25887123D8586C00342541 /* TTSepiaFilter.hpp */,
+				ECDD85E6248B950200AA2EFE /* TTGrayscaleFilter.cpp */,
+				ECDD85E7248B950200AA2EFE /* TTGrayscaleFilter.hpp */,
 			);
 			path = color;
 			sourceTree = "<group>";
@@ -1749,6 +1754,7 @@
 				EC11654D1F52B9B100AF56ED /* TTFilterGroup.cpp in Sources */,
 				EC56E76C2139A3440009D8DC /* mp4_dref_box.c in Sources */,
 				EC4E9CA11F1A7DE5005C8E36 /* TTQueue.m in Sources */,
+				ECDD85E8248B950200AA2EFE /* TTGrayscaleFilter.cpp in Sources */,
 				EC56E76F2139A3440009D8DC /* mp4_stz2_box.c in Sources */,
 				EC56E7742139A3440009D8DC /* mp4_bits.c in Sources */,
 				ECC66F761F614DAB003F2076 /* TTMovieFilesManager.m in Sources */,

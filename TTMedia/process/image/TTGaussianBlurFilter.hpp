@@ -4,7 +4,7 @@
 //
 //  Created by liang on 25/1/2020.
 //  Copyright © 2020 tina. All rights reserved.
-//
+// 高斯模糊
 
 #ifndef TTGaussianBlurFilter_hpp
 #define TTGaussianBlurFilter_hpp

@@ -4,7 +4,7 @@
 //
 //  Created by liang on 12/5/18.
 //  Copyright © 2018年 tina. All rights reserved.
-//
+// 白平衡
 
 /**
  * Created by Alaric Cole

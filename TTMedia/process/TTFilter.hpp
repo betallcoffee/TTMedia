@@ -50,9 +50,9 @@ namespace TT {
         /**
          *返回自定义顶点 shader
          *其中变量约定：
-         * attribute vec4 position;
-         * attribute vec2 texcoord;
-         * varying vec2 v_texcoord;
+         * attribute vec4 position; // 顶点坐标
+         * attribute vec2 texcoord; // 纹理坐标
+         * varying vec2 v_texcoord; // 转换后的纹理坐标
          */
         virtual const GLchar *vertexShader();
         virtual void getAttribLocations();
@@ -61,7 +61,7 @@ namespace TT {
         /**
          *返回自定义的片段 shader
          *其中约定 ：
-         * varying highp vec2 v_texcoord; // 顶点 shader 传过来的 顶点信息
+         * varying highp vec2 v_texcoord; // 顶点 shader 传过来的纹理坐标信息
          * uniform sampler2D texture; // 输入纹理
          */
         virtual const GLchar *fragmentShader();

@@ -22,9 +22,9 @@ namespace TT {
         void setContrast(float contrast);
         
     private:
-        virtual const GLchar *fragmentShader();
-        virtual void getUniformLocations();
-        virtual void resolveUniformLocations();
+        virtual const GLchar *fragmentShader() override;
+        virtual void getUniformLocations() override;
+        virtual void resolveUniformLocations() override;
         
     private:
         float _contrast;

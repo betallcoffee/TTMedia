@@ -4,7 +4,7 @@
 //
 //  Created by liang on 3/2/2020.
 //  Copyright © 2020 tina. All rights reserved.
-//
+// 双边滤波
 
 #ifndef TTBilateralFilter_hpp
 #define TTBilateralFilter_hpp
