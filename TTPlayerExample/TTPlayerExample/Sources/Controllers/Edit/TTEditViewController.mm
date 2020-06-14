@@ -101,8 +101,11 @@ static NSString *kPreviewCellIdentifier = @"previewCell";
     TT_SP(TT::Filter) grayscaleFilter = TT_MK_SP(TT::GrayscaleFilter)();
     grayscaleFilter->addFilter(_filterGroup);
     
+    TT_SP(TT::Filter) singleComponentGaussianBlurFilter = TT_MK_SP(TT::SingleComponentGaussianBlurFilter)();
+    singleComponentGaussianBlurFilter->addFilter(_filterGroup);
+    
     _filterTexture = TT_MK_SP(TT::Y420ToRGBFilter)();
-    _filterTexture->addFilter(grayscaleFilter);
+    _filterTexture->addFilter(singleComponentGaussianBlurFilter);
 }
 
 #pragma mark target/action

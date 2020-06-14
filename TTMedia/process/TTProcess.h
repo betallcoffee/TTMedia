@@ -34,6 +34,7 @@
 // image
 #include "TTGaussianBlurFilter.hpp"
 #include "TTBilateralFilter.hpp"
+#include "TTSingleComponentGaussianBlurFilter.hpp"
 
 
 

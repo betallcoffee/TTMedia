@@ -21,26 +21,25 @@ public:
     void setBlurRadius(float radius);
     
 protected:
-    virtual const GLchar* vertexShader();
-    virtual const GLchar* vertexShader2();
+    virtual const GLchar* vertexShader() override;
+    virtual const GLchar* vertexShader2() override;
     
-    virtual const GLchar* fragmentShader();
-    virtual const GLchar* fragmentShader2();
+    virtual const GLchar* fragmentShader() override;
+    virtual const GLchar* fragmentShader2() override;
     
-    virtual void getUniformLocations();
-    virtual void resolveUniformLocations();
+    virtual void getUniformLocations() override;
+    virtual void resolveUniformLocations() override;
     
-    virtual void getUniformLocations2();
-    virtual void resolveUniformLocations2();
+    virtual void getUniformLocations2() override;
+    virtual void resolveUniformLocations2() override;
     
-private:
-    void createVertexShader();
-    void createFragmentShader();
+    virtual void createVertexShader();
+    virtual void createFragmentShader();
     
-private:
     std::string _vertexShader;
     std::string _fragmentShader;
     
+private:
     GLint _verticalPassTexelWidthOffsetUniform = 0;
     GLint _verticalPassTexelHeightOffsetUniform = 0;
     GLint _horizontalPassTexelWidthOffsetUniform = 0;
@@ -52,6 +51,7 @@ private:
     GLfloat _horizontalPassTexelHeightOffset = 0;
     
     
+protected:
     /** A multiplier for the spacing between texels, ranging from 0.0 on up, with a default of 1.0. Adjusting this may slightly increase the blur strength, but will introduce artifacts in the result.
      */
     float _texelSpacingMultiplier = 1.0;
