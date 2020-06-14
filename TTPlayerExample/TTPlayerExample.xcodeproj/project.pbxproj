@@ -146,6 +146,7 @@
 		EC6600641F95BF8500042B2A /* TTMovieWriter.mm in Sources */ = {isa = PBXBuildFile; fileRef = EC6600621F95BF8500042B2A /* TTMovieWriter.mm */; };
 		EC6600681F95C19B00042B2A /* TTMedia.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC6600661F95C19B00042B2A /* TTMedia.cpp */; };
 		EC6601291FDD8D8F00042B2A /* TTDNSClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC6601271FDD8D8F00042B2A /* TTDNSClient.cpp */; };
+		EC7DD52424967453001B3A49 /* TTTexture3x3SamplingFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC7DD52224967453001B3A49 /* TTTexture3x3SamplingFilter.cpp */; };
 		EC7E516923DC78FC009F8193 /* TTGaussianBlurFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC7E516723DC78FB009F8193 /* TTGaussianBlurFilter.cpp */; };
 		EC7E516C23DDA13E009F8193 /* TTTwoPassFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC7E516A23DDA13E009F8193 /* TTTwoPassFilter.cpp */; };
 		EC7E524223E7CDDF009F8193 /* TTBilateralFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC7E524023E7CDDF009F8193 /* TTBilateralFilter.cpp */; };
@@ -447,6 +448,8 @@
 		EC6600671F95C19B00042B2A /* TTMedia.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TTMedia.hpp; sourceTree = "<group>"; };
 		EC6601271FDD8D8F00042B2A /* TTDNSClient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TTDNSClient.cpp; sourceTree = "<group>"; };
 		EC6601281FDD8D8F00042B2A /* TTDNSClient.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TTDNSClient.hpp; sourceTree = "<group>"; };
+		EC7DD52224967453001B3A49 /* TTTexture3x3SamplingFilter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTTexture3x3SamplingFilter.cpp; sourceTree = "<group>"; };
+		EC7DD52324967453001B3A49 /* TTTexture3x3SamplingFilter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTTexture3x3SamplingFilter.hpp; sourceTree = "<group>"; };
 		EC7E516723DC78FB009F8193 /* TTGaussianBlurFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TTGaussianBlurFilter.cpp; sourceTree = "<group>"; };
 		EC7E516823DC78FB009F8193 /* TTGaussianBlurFilter.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TTGaussianBlurFilter.hpp; sourceTree = "<group>"; };
 		EC7E516A23DDA13E009F8193 /* TTTwoPassFilter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTTwoPassFilter.cpp; sourceTree = "<group>"; };
@@ -758,6 +761,8 @@
 				EC1A20911F43FB0200632C0D /* TTFilter.hpp */,
 				EC7E516A23DDA13E009F8193 /* TTTwoPassFilter.cpp */,
 				EC7E516B23DDA13E009F8193 /* TTTwoPassFilter.hpp */,
+				EC7DD52224967453001B3A49 /* TTTexture3x3SamplingFilter.cpp */,
+				EC7DD52324967453001B3A49 /* TTTexture3x3SamplingFilter.hpp */,
 				EC48ACF12053E6C40009C0C2 /* TTFilterFrame.cpp */,
 				EC48ACF22053E6C40009C0C2 /* TTFilterFrame.hpp */,
 				ECC66E2F1F5A9AB3003F2076 /* TTFilterTexture.cpp */,
@@ -1883,6 +1888,7 @@
 				EC56E7842139A3440009D8DC /* mp4_mdia_box.c in Sources */,
 				EC025A472039AD1A00FC185C /* TTPreviewCell.mm in Sources */,
 				ECB86CB02076874A004ED994 /* TTPacket.cpp in Sources */,
+				EC7DD52424967453001B3A49 /* TTTexture3x3SamplingFilter.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

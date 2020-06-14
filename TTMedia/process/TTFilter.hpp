@@ -55,8 +55,6 @@ namespace TT {
          * varying vec2 v_texcoord; // 转换后的纹理坐标
          */
         virtual const GLchar *vertexShader();
-        virtual void getAttribLocations();
-        virtual void resolveAttribLocations();
         
         /**
          *返回自定义的片段 shader
@@ -65,6 +63,10 @@ namespace TT {
          * uniform sampler2D texture; // 输入纹理
          */
         virtual const GLchar *fragmentShader();
+        
+        virtual void getAttribLocations();
+        virtual void resolveAttribLocations();
+        
         virtual void getUniformLocations();
         virtual void resolveUniformLocations();
         
