@@ -105,10 +105,11 @@ static NSString *kPreviewCellIdentifier = @"previewCell";
     singleComponentGaussianBlurFilter->addFilter(_filterGroup);
     
     TT_SP(TT::Filter) sobelEdgeDetectionFilter = TT_MK_SP(TT::DirectionalSobelEdgeDetection)();
+    grayscaleFilter->addFilter(sobelEdgeDetectionFilter);
     sobelEdgeDetectionFilter->addFilter(_filterGroup);
     
     _filterTexture = TT_MK_SP(TT::Y420ToRGBFilter)();
-    _filterTexture->addFilter(sobelEdgeDetectionFilter);
+    _filterTexture->addFilter(grayscaleFilter);
 }
 
 #pragma mark target/action

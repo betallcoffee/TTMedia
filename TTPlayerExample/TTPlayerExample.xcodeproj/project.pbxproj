@@ -38,6 +38,7 @@
 		EC4727551D0C15100023EE51 /* TTTCPSocket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC4727531D0C15100023EE51 /* TTTCPSocket.cpp */; };
 		EC4727631D0C5B4F0023EE51 /* TTURL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC4727611D0C5B4F0023EE51 /* TTURL.cpp */; };
 		EC475D1B24B97F1C00D738B0 /* TTDirectionalSobelEdgeDetectionFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC475D1924B97F1C00D738B0 /* TTDirectionalSobelEdgeDetectionFilter.cpp */; };
+		EC475D1E24B9B4C300D738B0 /* TTDirectionalNonmaximumSuppressionFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC475D1C24B9B4C300D738B0 /* TTDirectionalNonmaximumSuppressionFilter.cpp */; };
 		EC48ACEA2053D7420009C0C2 /* TTFFWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC48ACE82053D7420009C0C2 /* TTFFWriter.cpp */; };
 		EC48ACF32053E6C40009C0C2 /* TTFilterFrame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC48ACF12053E6C40009C0C2 /* TTFilterFrame.cpp */; };
 		EC48ACF6205427E00009C0C2 /* TTEditSpace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC48ACF4205427E00009C0C2 /* TTEditSpace.cpp */; };
@@ -284,6 +285,8 @@
 		EC4727621D0C5B4F0023EE51 /* TTURL.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TTURL.hpp; sourceTree = "<group>"; };
 		EC475D1924B97F1C00D738B0 /* TTDirectionalSobelEdgeDetectionFilter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTDirectionalSobelEdgeDetectionFilter.cpp; sourceTree = "<group>"; };
 		EC475D1A24B97F1C00D738B0 /* TTDirectionalSobelEdgeDetectionFilter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTDirectionalSobelEdgeDetectionFilter.hpp; sourceTree = "<group>"; };
+		EC475D1C24B9B4C300D738B0 /* TTDirectionalNonmaximumSuppressionFilter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTDirectionalNonmaximumSuppressionFilter.cpp; sourceTree = "<group>"; };
+		EC475D1D24B9B4C300D738B0 /* TTDirectionalNonmaximumSuppressionFilter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTDirectionalNonmaximumSuppressionFilter.hpp; sourceTree = "<group>"; };
 		EC48ACE82053D7420009C0C2 /* TTFFWriter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTFFWriter.cpp; sourceTree = "<group>"; };
 		EC48ACE92053D7420009C0C2 /* TTFFWriter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTFFWriter.hpp; sourceTree = "<group>"; };
 		EC48ACF12053E6C40009C0C2 /* TTFilterFrame.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTFilterFrame.cpp; sourceTree = "<group>"; };
@@ -1168,6 +1171,8 @@
 				ECDD85EA248BA05F00AA2EFE /* TTSingleComponentGaussianBlurFilter.hpp */,
 				EC475D1924B97F1C00D738B0 /* TTDirectionalSobelEdgeDetectionFilter.cpp */,
 				EC475D1A24B97F1C00D738B0 /* TTDirectionalSobelEdgeDetectionFilter.hpp */,
+				EC475D1C24B9B4C300D738B0 /* TTDirectionalNonmaximumSuppressionFilter.cpp */,
+				EC475D1D24B9B4C300D738B0 /* TTDirectionalNonmaximumSuppressionFilter.hpp */,
 			);
 			path = image;
 			sourceTree = "<group>";
@@ -1887,6 +1892,7 @@
 				EC56E7602139A3440009D8DC /* mp4_avcC_box.c in Sources */,
 				EC552B91203ACECD00ADA7EF /* TTFFMuxer.cpp in Sources */,
 				EC55089B200BADD600C115A8 /* TTArray.cpp in Sources */,
+				EC475D1E24B9B4C300D738B0 /* TTDirectionalNonmaximumSuppressionFilter.cpp in Sources */,
 				EC3D8F791B99BD8F006FC622 /* main.m in Sources */,
 				EC1A209B1F43FB6A00632C0D /* TTGLContext_ios.mm in Sources */,
 				EC56E79B2139A3440009D8DC /* mp4_es_descr.c in Sources */,

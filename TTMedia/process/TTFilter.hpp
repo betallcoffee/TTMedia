@@ -44,6 +44,8 @@ namespace TT {
         virtual void notifyFramebufferToFilters(int64_t timestamp);
         
     protected:
+        virtual void setupFilterSize();
+        
         virtual bool bindFramebuffer();
         
         virtual void compileShader();

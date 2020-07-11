@@ -1,5 +1,5 @@
 //
-//  TTDirectionalNonmaximumSuppression.hpp
+//  TTDirectionalNonmaximumSuppressionFilter.hpp
 //  TTPlayerExample
 //
 //  Created by liang on 11/7/2020.

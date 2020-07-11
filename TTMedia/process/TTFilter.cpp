@@ -87,11 +87,12 @@ void Filter::setSrcFramebuffer(std::shared_ptr<Framebuffer> framebuffer) {
     if (_srcFramebuffer) {
         _width = _srcFramebuffer->width();
         _height = _srcFramebuffer->height();
+        setupFilterSize();
     } else {
         _width = 0;
         _height = 0;
+        setupFilterSize();
     }
-    
 }
 
 void Filter::process(int64_t timestamp) {
@@ -119,6 +120,10 @@ void Filter::process(int64_t timestamp) {
         notifyFramebufferToFilters(timestamp);
         PERFORMANCE_CHECKPOINT(timer);
     }
+}
+
+void Filter::setupFilterSize() {
+    
 }
 
 bool Filter::bindFramebuffer() {

@@ -1,12 +1,12 @@
 //
-//  TTDirectionalNonmaximumSuppression.cpp
+//  TTDirectionalNonmaximumSuppressionFilter.cpp
 //  TTPlayerExample
 //
 //  Created by liang on 11/7/2020.
 //  Copyright © 2020 tina. All rights reserved.
 //
 
-#include "TTDirectionalNonmaximumSuppression.hpp"
+#include "TTDirectionalNonmaximumSuppressionFilter.hpp"
 
 using namespace TT;
 
