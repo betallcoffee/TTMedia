@@ -31,8 +31,6 @@ protected:
      * varying vec2 v_texcoord;
      */
     virtual const GLchar *vertexShader2();
-    virtual void getAttribLocations2();
-    virtual void resolveAttribLocations2();
     
     /**
      *返回自定义的片段 shader
@@ -41,6 +39,10 @@ protected:
      * uniform sampler2D texture; // 输入纹理
      */
     virtual const GLchar *fragmentShader2();
+    
+    virtual void getAttribLocations2();
+    virtual void resolveAttribLocations2();
+    
     virtual void getUniformLocations2();
     virtual void resolveUniformLocations2();
     
