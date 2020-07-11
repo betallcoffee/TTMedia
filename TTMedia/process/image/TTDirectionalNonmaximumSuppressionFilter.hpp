@@ -30,6 +30,9 @@ public:
     virtual void getUniformLocations() override;
     virtual void resolveUniformLocations() override;
     
+    void setUpperThreshold(float threshold) { _upperThreshold = threshold; }
+    void setLowerThreshold(float threshold) { _lowerThreshold = threshold; }
+    
 private:
     // The texel width and height determines how far out to sample from this texel. By default, this is the normalized width of a pixel, but this can be overridden for different effects.
     

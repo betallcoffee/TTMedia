@@ -58,7 +58,7 @@
 }
 
 - (void)addFilter:(std::shared_ptr<TT::Filter>)filter {
-    _filter.addFilter(filter);
+    _filter.addOutput(filter);
 }
 
 - (BOOL)setupVideoCapture {

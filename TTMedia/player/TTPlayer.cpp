@@ -122,7 +122,7 @@ bool Player::openVideo() {
 bool Player::openVideoRender() {
     if (_videoControl->frameQueue()) {
         std::shared_ptr<Y420ToRGBFilter> filter = std::make_shared<Y420ToRGBFilter>();
-        filter->addFilter(_bindFilter);
+        filter->addOutput(_bindFilter);
         _renderControl = std::make_shared<RenderControl>();
         _renderControl->setfilter(filter);
         _renderControl->setclock(_clock);

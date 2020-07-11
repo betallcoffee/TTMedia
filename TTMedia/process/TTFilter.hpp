@@ -5,7 +5,7 @@
 //  Created by liang on 15/8/17.
 //  Copyright © 2017年 tina. All rights reserved.
 //
-// 基础的纹理处理类，绑定已经上传的纹理，进行处理，并输出到纹理
+// 基础的纹理处理类，绑定已经上传的 rgb 纹理到 GL_TEXTURE2 ，进行处理，并输出到纹理 GL_TEXTURE1
 
 #ifndef TTFilter_hpp
 #define TTFilter_hpp
@@ -29,9 +29,9 @@ namespace TT {
         Filter();
         virtual ~Filter();
         
-        void addFilter(std::shared_ptr<Filter> filter, int index = 0);
-        void removeFilter(std::shared_ptr<Filter> filter, int index = 0);
-        void removeAllFilters();
+        void addOutput(std::shared_ptr<Filter> output, int index = 0);
+        void removeOutput(std::shared_ptr<Filter> output, int index = 0);
+        void removeAllOutputs();
 
         /**
          *输入数据
@@ -82,7 +82,7 @@ namespace TT {
     protected:
         std::shared_ptr<Framebuffer> _srcFramebuffer;
         std::shared_ptr<Framebuffer> _framebuffer;
-        std::map<int, std::shared_ptr<Filter>> _filters;
+        std::map<int, std::shared_ptr<Filter>> _outputs;
         
         /// 在设置 srcFramebuffer 时，读取 srcFramebuffer 的 width/height
         size_t _width;

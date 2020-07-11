@@ -13,10 +13,10 @@
 
 namespace TT {
 
-class DirectionalSobelEdgeDetection : public Texture3x3SamplingFilter {
+class DirectionalSobelEdgeDetectionFilter : public Texture3x3SamplingFilter {
 public:
-    DirectionalSobelEdgeDetection();
-    ~DirectionalSobelEdgeDetection();
+    DirectionalSobelEdgeDetectionFilter();
+    ~DirectionalSobelEdgeDetectionFilter();
     
     /**
      *返回自定义的片段 shader

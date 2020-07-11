@@ -24,7 +24,7 @@ using namespace TT;
     std::shared_ptr<Player> _player;
     std::shared_ptr<IOAudioUnit_ios> _audio;
     
-    std::shared_ptr<FilterGroup> _filterGroup;
+    std::shared_ptr<Filter> _filter;
     std::shared_ptr<ContrastFilter> _contrast;
     
     TTImageView *_imageView;
@@ -82,19 +82,19 @@ using namespace TT;
 }
 
 - (void)setupFilter {
-    _filterGroup = std::make_shared<FilterGroup>();
+    _filter = std::make_shared<Filter>();
     
     _imageView = [TTImageView new];
     CGRect bounds = self.view.bounds;
     _imageView.frame = CGRectMake(0, 0, bounds.size.width, bounds.size.height - 64);
     _imageView.contentMode = UIViewContentModeScaleAspectFit;
     [self.view addSubview:_imageView];
-    _filterGroup->addFilter([_imageView filter]);
+    _filter->addOutput([_imageView filter]);
 }
 
 - (void)setupPlayer {
     _player = createPlayer_ios();
-    _player->bindFilter(_filterGroup);
+    _player->bindFilter(_filter);
     //    bindGLView_ios(_player, self.glView);
     //    self.glView.frame = self.view.bounds;
     //    [self.view addSubview:self.glView];

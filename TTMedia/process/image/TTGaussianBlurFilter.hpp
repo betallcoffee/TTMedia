@@ -64,7 +64,7 @@ protected:
     float _blurRadius = 4.0;
     /** A radius in pixels to use for the blur, with a default of 2.0. This adjusts the sigma variable in the Gaussian distribution function.
      */
-    float _blurRadiusInPixels = 0;
+    float _blurRadiusInPixels = 2.0;
     
     float _sigma = 10.0;
 };

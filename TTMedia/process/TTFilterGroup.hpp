@@ -9,16 +9,27 @@
 #ifndef TTFilterGroup_hpp
 #define TTFilterGroup_hpp
 
+#include <map>
+
 #include "TTFilter.hpp"
+#include "TTdef.h"
 
 namespace TT {
-    class FilterGroup : public Filter {
-    public:
-        FilterGroup();
-        ~FilterGroup();
-        
-        virtual void process(int64_t timestamp);
-    };
+class FilterGroup {
+public:
+    FilterGroup();
+    ~FilterGroup();
+    
+    void addInput(TT_SP(Filter) input, int index = 0);
+    std::map<int, TT_SP(Filter)> inputList() { return _inputList; }
+    
+    void setOutput(TT_SP(Filter) output) { _output = output; }
+    TT_SP(Filter) output() { return _output; }
+    
+protected:
+    std::map<int, TT_SP(Filter)> _inputList;
+    TT_SP(Filter) _output = nullptr;
+};
 }
 
 #endif /* TTFilterGroup_hpp */

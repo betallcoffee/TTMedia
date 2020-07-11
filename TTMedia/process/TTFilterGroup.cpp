@@ -10,19 +10,19 @@
 
 using namespace TT;
 
-FilterGroup::FilterGroup() {
+FilterGroup::FilterGroup()
+{
     
 }
 
-FilterGroup::~FilterGroup() {
-    
+FilterGroup::~FilterGroup()
+{
+
 }
 
-void FilterGroup::process(int64_t timestamp) {
-    std::map<int, std::shared_ptr<Filter>>::iterator it;
-    for (it = _filters.begin(); it != _filters.end(); it++) {
-        // Use src framebuffer, no process
-        it->second->setSrcFramebuffer(_srcFramebuffer);
-        it->second->process(timestamp);
+void FilterGroup::addInput(TT_SP(Filter) input, int index)
+{
+    if (input && index >= 0) {
+        _inputList[index] = input;
     }
 }

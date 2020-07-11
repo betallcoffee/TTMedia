@@ -41,7 +41,7 @@ static const GLchar* const kDirectionalSobelEdgeDetectionFragmentShader = STRING
      
      vec2 gradientDirection;
      gradientDirection.x = -bottomLeftIntensity - 2.0 * leftIntensity - topLeftIntensity + bottomRightIntensity + 2.0 * rightIntensity + topRightIntensity;
-     gradientDirection.y = -topLeftIntensity - 2.0 * topIntensity - topRightIntensity + bottomLeftIntensity + 2.0 * bottomIntensity + bottomRightIntensity;
+     gradientDirection.y = topLeftIntensity + 2.0 * topIntensity + topRightIntensity - bottomLeftIntensity - 2.0 * bottomIntensity - bottomRightIntensity;
      
      float gradientMagnitude = length(gradientDirection);
      vec2 normalizedDirection = normalize(gradientDirection);
@@ -52,17 +52,17 @@ static const GLchar* const kDirectionalSobelEdgeDetectionFragmentShader = STRING
  }
  );
 
-DirectionalSobelEdgeDetection::DirectionalSobelEdgeDetection()
+DirectionalSobelEdgeDetectionFilter::DirectionalSobelEdgeDetectionFilter()
 {
     
 }
 
-DirectionalSobelEdgeDetection::~DirectionalSobelEdgeDetection()
+DirectionalSobelEdgeDetectionFilter::~DirectionalSobelEdgeDetectionFilter()
 {
     
 }
 
-const GLchar *DirectionalSobelEdgeDetection::fragmentShader()
+const GLchar *DirectionalSobelEdgeDetectionFilter::fragmentShader()
 {
     return kDirectionalSobelEdgeDetectionFragmentShader;
 }

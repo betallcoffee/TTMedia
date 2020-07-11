@@ -50,33 +50,33 @@ Filter::Filter() :
 Filter::~Filter() {
     _srcFramebuffer.reset();
     _framebuffer.reset();
-    removeAllFilters();
+    removeAllOutputs();
 }
 
-void Filter::addFilter(std::shared_ptr<Filter> target, int index) {
-    if (target && index >= 0) {
-        _filters[index] = target;
+void Filter::addOutput(std::shared_ptr<Filter> output, int index) {
+    if (output && index >= 0) {
+        _outputs[index] = output;
     }
 }
 
-void Filter::removeFilter(std::shared_ptr<Filter> target, int index) {
-    if (target && index >= 0) {
-        _filters.erase(index);
+void Filter::removeOutput(std::shared_ptr<Filter> output, int index) {
+    if (output && index >= 0) {
+        _outputs.erase(index);
     }
 }
 
-void Filter::removeAllFilters() {
+void Filter::removeAllOutputs() {
     std::map<int, std::shared_ptr<Filter>>::iterator it;
-    for (it = _filters.begin(); it != _filters.end(); it++) {
+    for (it = _outputs.begin(); it != _outputs.end(); it++) {
         it->second.reset();
     }
-    _filters.clear();
+    _outputs.clear();
 }
 
 
 void Filter::notifyFramebufferToFilters(int64_t timestamp) {
     std::map<int, std::shared_ptr<Filter>>::iterator it;
-    for (it = _filters.begin(); it != _filters.end(); it++) {
+    for (it = _outputs.begin(); it != _outputs.end(); it++) {
         it->second->setSrcFramebuffer(_framebuffer);
         it->second->process(timestamp);
     }

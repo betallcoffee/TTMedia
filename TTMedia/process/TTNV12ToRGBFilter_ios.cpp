@@ -52,7 +52,7 @@ void NV12ToRGBFilter_ios::updateTexture() {
     if (0 == _textures[0])
         glGenTextures(2, _textures);
     
-    glActiveTexture(GL_TEXTURE0);
+    glActiveTexture(GL_TEXTURE2);
     
     glBindTexture(GL_TEXTURE_2D, _textures[0]);
     const size_t lumaStride = CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 0);
@@ -73,12 +73,12 @@ void NV12ToRGBFilter_ios::updateTexture() {
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, _textures[0]);
-    glUniform1i(_uniformSamplers[0], 0);
+    glUniform1i(_uniformSamplers[0], 2);
     
     size_t planeCount = CVPixelBufferGetPlaneCount(pixelBuffer);
     if(planeCount == 2) {
         // UV-plane.
-        glActiveTexture(GL_TEXTURE1);
+        glActiveTexture(GL_TEXTURE3);
         
         glBindTexture(GL_TEXTURE_2D, _textures[1]);
         const size_t chromaStride = CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 1);
@@ -97,7 +97,7 @@ void NV12ToRGBFilter_ios::updateTexture() {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glUniform1i(_uniformSamplers[1], 1);
+        glUniform1i(_uniformSamplers[1], 3);
     }
     
     glUniformMatrix3fv(_uniformColorConvertionMatrix, 1, GL_FALSE, kColorConversionMatrix601);

@@ -75,8 +75,10 @@
         /// TODO(liangliang) : test
         NSURL *testURL = [[NSBundle mainBundle]
                               URLForResource:@"test" withExtension:@"mp4"];
+        NSURL *lenaURL = [[NSBundle mainBundle] URLForResource:@"lena_origin"  withExtension:@"png"];
         NSMutableArray *tempArray = [_movieURLList mutableCopy];
         [tempArray addObject:testURL];
+        [tempArray addObject:lenaURL];
         _movieURLList = [tempArray copy];
         return [_movieURLList copy];
     }

@@ -40,6 +40,8 @@
 		EC475D1B24B97F1C00D738B0 /* TTDirectionalSobelEdgeDetectionFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC475D1924B97F1C00D738B0 /* TTDirectionalSobelEdgeDetectionFilter.cpp */; };
 		EC475D1E24B9B4C300D738B0 /* TTDirectionalNonmaximumSuppressionFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC475D1C24B9B4C300D738B0 /* TTDirectionalNonmaximumSuppressionFilter.cpp */; };
 		EC475D2124B9BC8900D738B0 /* TTWeakPixelInclusionFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC475D1F24B9BC8900D738B0 /* TTWeakPixelInclusionFilter.cpp */; };
+		EC475D2424B9BDCE00D738B0 /* TTCannyEdgeDetectionFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC475D2224B9BDCE00D738B0 /* TTCannyEdgeDetectionFilter.cpp */; };
+		EC475D2724B9E40C00D738B0 /* TTTowInputFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC475D2524B9E40C00D738B0 /* TTTowInputFilter.cpp */; };
 		EC48ACEA2053D7420009C0C2 /* TTFFWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC48ACE82053D7420009C0C2 /* TTFFWriter.cpp */; };
 		EC48ACF32053E6C40009C0C2 /* TTFilterFrame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC48ACF12053E6C40009C0C2 /* TTFilterFrame.cpp */; };
 		EC48ACF6205427E00009C0C2 /* TTEditSpace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC48ACF4205427E00009C0C2 /* TTEditSpace.cpp */; };
@@ -192,6 +194,7 @@
 		ECC66F8C1F62A3E0003F2076 /* TTCaptureViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = ECC66F8B1F62A3E0003F2076 /* TTCaptureViewController.mm */; };
 		ECC66F8F1F62B98D003F2076 /* TTCaptureButton.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC66F8E1F62B98D003F2076 /* TTCaptureButton.m */; };
 		ECC66F921F639EAD003F2076 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ECC66F911F639EAD003F2076 /* MediaPlayer.framework */; };
+		ECDD364824C292F000224EF1 /* lena_origin.png in Resources */ = {isa = PBXBuildFile; fileRef = ECDD364724C292F000224EF1 /* lena_origin.png */; };
 		ECDD85E8248B950200AA2EFE /* TTGrayscaleFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECDD85E6248B950200AA2EFE /* TTGrayscaleFilter.cpp */; };
 		ECDD85EB248BA05F00AA2EFE /* TTSingleComponentGaussianBlurFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECDD85E9248BA05F00AA2EFE /* TTSingleComponentGaussianBlurFilter.cpp */; };
 		ECE49F571F59AEDA004FE7C2 /* TTCapture.mm in Sources */ = {isa = PBXBuildFile; fileRef = ECE49F561F59AEDA004FE7C2 /* TTCapture.mm */; };
@@ -290,6 +293,10 @@
 		EC475D1D24B9B4C300D738B0 /* TTDirectionalNonmaximumSuppressionFilter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTDirectionalNonmaximumSuppressionFilter.hpp; sourceTree = "<group>"; };
 		EC475D1F24B9BC8900D738B0 /* TTWeakPixelInclusionFilter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTWeakPixelInclusionFilter.cpp; sourceTree = "<group>"; };
 		EC475D2024B9BC8900D738B0 /* TTWeakPixelInclusionFilter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTWeakPixelInclusionFilter.hpp; sourceTree = "<group>"; };
+		EC475D2224B9BDCE00D738B0 /* TTCannyEdgeDetectionFilter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTCannyEdgeDetectionFilter.cpp; sourceTree = "<group>"; };
+		EC475D2324B9BDCE00D738B0 /* TTCannyEdgeDetectionFilter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTCannyEdgeDetectionFilter.hpp; sourceTree = "<group>"; };
+		EC475D2524B9E40C00D738B0 /* TTTowInputFilter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTTowInputFilter.cpp; sourceTree = "<group>"; };
+		EC475D2624B9E40C00D738B0 /* TTTowInputFilter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTTowInputFilter.hpp; sourceTree = "<group>"; };
 		EC48ACE82053D7420009C0C2 /* TTFFWriter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTFFWriter.cpp; sourceTree = "<group>"; };
 		EC48ACE92053D7420009C0C2 /* TTFFWriter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTFFWriter.hpp; sourceTree = "<group>"; };
 		EC48ACF12053E6C40009C0C2 /* TTFilterFrame.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTFilterFrame.cpp; sourceTree = "<group>"; };
@@ -644,6 +651,7 @@
 		ECC66F8D1F62B98D003F2076 /* TTCaptureButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTCaptureButton.h; sourceTree = "<group>"; };
 		ECC66F8E1F62B98D003F2076 /* TTCaptureButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTCaptureButton.m; sourceTree = "<group>"; };
 		ECC66F911F639EAD003F2076 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
+		ECDD364724C292F000224EF1 /* lena_origin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lena_origin.png; sourceTree = "<group>"; };
 		ECDD85E6248B950200AA2EFE /* TTGrayscaleFilter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTGrayscaleFilter.cpp; sourceTree = "<group>"; };
 		ECDD85E7248B950200AA2EFE /* TTGrayscaleFilter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTGrayscaleFilter.hpp; sourceTree = "<group>"; };
 		ECDD85E9248BA05F00AA2EFE /* TTSingleComponentGaussianBlurFilter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTSingleComponentGaussianBlurFilter.cpp; sourceTree = "<group>"; };
@@ -768,16 +776,18 @@
 				EC1A208D1F43FB0200632C0D /* TTProgram.hpp */,
 				EC1A20901F43FB0200632C0D /* TTFilter.cpp */,
 				EC1A20911F43FB0200632C0D /* TTFilter.hpp */,
+				EC475D2524B9E40C00D738B0 /* TTTowInputFilter.cpp */,
+				EC475D2624B9E40C00D738B0 /* TTTowInputFilter.hpp */,
 				EC7E516A23DDA13E009F8193 /* TTTwoPassFilter.cpp */,
 				EC7E516B23DDA13E009F8193 /* TTTwoPassFilter.hpp */,
 				EC7DD52224967453001B3A49 /* TTTexture3x3SamplingFilter.cpp */,
 				EC7DD52324967453001B3A49 /* TTTexture3x3SamplingFilter.hpp */,
+				EC11654B1F52B9B100AF56ED /* TTFilterGroup.cpp */,
+				EC11654C1F52B9B100AF56ED /* TTFilterGroup.hpp */,
 				EC48ACF12053E6C40009C0C2 /* TTFilterFrame.cpp */,
 				EC48ACF22053E6C40009C0C2 /* TTFilterFrame.hpp */,
 				ECC66E2F1F5A9AB3003F2076 /* TTFilterTexture.cpp */,
 				ECC66E301F5A9AB3003F2076 /* TTFilterTexture.hpp */,
-				EC11654B1F52B9B100AF56ED /* TTFilterGroup.cpp */,
-				EC11654C1F52B9B100AF56ED /* TTFilterGroup.hpp */,
 				EC1A209C1F45333E00632C0D /* TTY420ToRGBFilter.cpp */,
 				EC1A209D1F45333E00632C0D /* TTY420ToRGBFilter.hpp */,
 				ECE49F5C1F5A44AE004FE7C2 /* TTNV12ToRGBFilter.cpp */,
@@ -831,6 +841,7 @@
 		EC3D8F761B99BD8F006FC622 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				ECDD364724C292F000224EF1 /* lena_origin.png */,
 				ECB053ED1F3EA6C800A49FA5 /* audio_HEv2.flv */,
 				EC4E9CAE1F2390A4005C8E36 /* test.mp4 */,
 				EC3D8F771B99BD8F006FC622 /* Info.plist */,
@@ -1178,6 +1189,8 @@
 				EC475D1D24B9B4C300D738B0 /* TTDirectionalNonmaximumSuppressionFilter.hpp */,
 				EC475D1F24B9BC8900D738B0 /* TTWeakPixelInclusionFilter.cpp */,
 				EC475D2024B9BC8900D738B0 /* TTWeakPixelInclusionFilter.hpp */,
+				EC475D2224B9BDCE00D738B0 /* TTCannyEdgeDetectionFilter.cpp */,
+				EC475D2324B9BDCE00D738B0 /* TTCannyEdgeDetectionFilter.hpp */,
 			);
 			path = image;
 			sourceTree = "<group>";
@@ -1707,6 +1720,7 @@
 				EC3D8F871B99BD8F006FC622 /* LaunchScreen.xib in Resources */,
 				EC4E9CAF1F2390A4005C8E36 /* test.mp4 in Resources */,
 				EC3D8F841B99BD8F006FC622 /* Images.xcassets in Resources */,
+				ECDD364824C292F000224EF1 /* lena_origin.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1811,6 +1825,7 @@
 				EC56E7962139A3440009D8DC /* mp4_elst_box.c in Sources */,
 				EC89E7BB21CEAD8C00E3808E /* TTPlayerStateM.cpp in Sources */,
 				EC89E7AD21B3BF1200E3808E /* TTCodec.cpp in Sources */,
+				EC475D2724B9E40C00D738B0 /* TTTowInputFilter.cpp in Sources */,
 				EC56E7872139A3440009D8DC /* mp4_dec_config_descr.c in Sources */,
 				EC56E79C2139A3440009D8DC /* mp4_object_descriptor.c in Sources */,
 				ECB053E81F3DE7AA00A49FA5 /* TTClock.cpp in Sources */,
@@ -1854,6 +1869,7 @@
 				ECF629CE1F7E4A710088CEEA /* TTBrightnessFilter.cpp in Sources */,
 				ECC66E451F60E2D1003F2076 /* TTBaseViewController.m in Sources */,
 				EC4DD36720A6070900CFBF60 /* TTHueFilter.cpp in Sources */,
+				EC475D2424B9BDCE00D738B0 /* TTCannyEdgeDetectionFilter.cpp in Sources */,
 				EC55088E1FE6619000C115A8 /* TTHTTPClient.cpp in Sources */,
 				EC48ACEA2053D7420009C0C2 /* TTFFWriter.cpp in Sources */,
 				ECF629F31F7E6A4E0088CEEA /* View+MASAdditions.m in Sources */,

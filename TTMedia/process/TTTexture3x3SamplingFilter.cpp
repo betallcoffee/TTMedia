@@ -63,6 +63,17 @@ Texture3x3SamplingFilter::~Texture3x3SamplingFilter()
     
 }
 
+void Texture3x3SamplingFilter::setupFilterSize()
+{
+    if (_width > 0) {
+        _texelWidth = 1.0 / _width;
+    }
+    
+    if (_height > 0) {
+        _texelHeight = 1.0 / _height;
+    }
+}
+
 const GLchar *Texture3x3SamplingFilter::vertexShader()
 {
     return kTexture3x3SamplingVertexShader;

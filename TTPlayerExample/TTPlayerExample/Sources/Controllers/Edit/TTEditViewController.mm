@@ -25,9 +25,8 @@ static NSString *kPreviewCellIdentifier = @"previewCell";
 >
 {
     std::shared_ptr<TT::EditSpace> _editGroup;
-    
-    std::shared_ptr<TT::FilterGroup> _filterGroup;
     std::shared_ptr<TT::Y420ToRGBFilter> _filterTexture;
+    TT_SP(TT::FilterGroup) _filterGroup;
 }
 
 @property (nonatomic, strong) TTSlideSelectView *selectView;
@@ -86,30 +85,44 @@ static NSString *kPreviewCellIdentifier = @"previewCell";
 }
 
 - (void)setupFilter {
-    _filterGroup = TT_MK_SP(TT::FilterGroup)();
-    _filterGroup->addFilter([_imageView filter]);
+    TT_SP(TT::Filter) output = [_imageView filter];
     
     TT_SP(TT::Filter) sepiaFilter = TT_MK_SP(TT::SepiaFilter)();
-    sepiaFilter->addFilter(_filterGroup);
+    sepiaFilter->addOutput(output);
 
     TT_SP(TT::Filter) gaussianBlurFilter = TT_MK_SP(TT::GaussianBlurFilter)();
-    gaussianBlurFilter->addFilter(_filterGroup);
+    gaussianBlurFilter->addOutput(output);
     
     TT_SP(TT::Filter) bilateralFilter = TT_MK_SP(TT::BilateraFilter)();
-    bilateralFilter->addFilter(_filterGroup);
+    bilateralFilter->addOutput(output);
     
     TT_SP(TT::Filter) grayscaleFilter = TT_MK_SP(TT::GrayscaleFilter)();
-    grayscaleFilter->addFilter(_filterGroup);
+    grayscaleFilter->addOutput(output);
     
     TT_SP(TT::Filter) singleComponentGaussianBlurFilter = TT_MK_SP(TT::SingleComponentGaussianBlurFilter)();
-    singleComponentGaussianBlurFilter->addFilter(_filterGroup);
+    singleComponentGaussianBlurFilter->addOutput(output);
     
-    TT_SP(TT::Filter) sobelEdgeDetectionFilter = TT_MK_SP(TT::DirectionalSobelEdgeDetection)();
-    grayscaleFilter->addFilter(sobelEdgeDetectionFilter);
-    sobelEdgeDetectionFilter->addFilter(_filterGroup);
+    TT_SP(TT::Filter) sobelEdgeDetectionFilter = TT_MK_SP(TT::DirectionalSobelEdgeDetectionFilter)();
+    grayscaleFilter->addOutput(sobelEdgeDetectionFilter);
+    sobelEdgeDetectionFilter->addOutput(output);
+    
+    TT_SP(TT::Filter) nonmaximumSuppressionFilter = TT_MK_SP(TT::DirectionalNonmaximumSuppressionFilter)();
+    nonmaximumSuppressionFilter->addOutput(output);
+    
+    TT_SP(TT::Filter) weakPixelInclusionFilter = TT_MK_SP(TT::WeakPixelInclusionFilter)();
+    weakPixelInclusionFilter->addOutput(output);
+    
+    TT_SP(TT::FilterGroup) cannyEdgeDetectionFilter = TT_MK_SP(TT::CannyEdgeDetectionFilter)();
+    cannyEdgeDetectionFilter->output()->addOutput(output);
     
     _filterTexture = TT_MK_SP(TT::Y420ToRGBFilter)();
-    _filterTexture->addFilter(grayscaleFilter);
+    
+    _filterGroup = cannyEdgeDetectionFilter;
+    auto it = _filterGroup->inputList().begin();
+    if (it != _filterGroup->inputList().end() && it->second != nullptr) {
+        _filterTexture->addOutput(it->second);
+    }
+//    _filterTexture->addOutput(sobelEdgeDetectionFilter);
 }
 
 #pragma mark target/action

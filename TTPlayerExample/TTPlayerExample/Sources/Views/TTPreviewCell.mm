@@ -35,7 +35,7 @@
 
     if (_filterTexture == nil) {
         _filterTexture = std::make_shared<TT::Y420ToRGBFilter>();
-        _filterTexture->addFilter([_imageView filter]);
+        _filterTexture->addOutput([_imageView filter]);
     }
 
     if (_label == nil) {

@@ -23,6 +23,8 @@ public:
     void setTexelHeight(float height) { _texelHeight = height; }
     
 private:
+    virtual void setupFilterSize() override;
+    
     /**
      *返回自定义顶点 shader
      *其中变量约定：

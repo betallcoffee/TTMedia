@@ -38,6 +38,7 @@
 #include "TTDirectionalSobelEdgeDetectionFilter.hpp"
 #include "TTDirectionalNonmaximumSuppressionFilter.hpp"
 #include "TTWeakPixelInclusionFilter.hpp"
+#include "TTCannyEdgeDetectionFilter.hpp"
 
 
 
