@@ -37,6 +37,7 @@
 #include "TTSingleComponentGaussianBlurFilter.hpp"
 #include "TTDirectionalSobelEdgeDetectionFilter.hpp"
 #include "TTDirectionalNonmaximumSuppressionFilter.hpp"
+#include "TTWeakPixelInclusionFilter.hpp"
 
 
 

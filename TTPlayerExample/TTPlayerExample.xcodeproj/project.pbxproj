@@ -39,6 +39,7 @@
 		EC4727631D0C5B4F0023EE51 /* TTURL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC4727611D0C5B4F0023EE51 /* TTURL.cpp */; };
 		EC475D1B24B97F1C00D738B0 /* TTDirectionalSobelEdgeDetectionFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC475D1924B97F1C00D738B0 /* TTDirectionalSobelEdgeDetectionFilter.cpp */; };
 		EC475D1E24B9B4C300D738B0 /* TTDirectionalNonmaximumSuppressionFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC475D1C24B9B4C300D738B0 /* TTDirectionalNonmaximumSuppressionFilter.cpp */; };
+		EC475D2124B9BC8900D738B0 /* TTWeakPixelInclusionFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC475D1F24B9BC8900D738B0 /* TTWeakPixelInclusionFilter.cpp */; };
 		EC48ACEA2053D7420009C0C2 /* TTFFWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC48ACE82053D7420009C0C2 /* TTFFWriter.cpp */; };
 		EC48ACF32053E6C40009C0C2 /* TTFilterFrame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC48ACF12053E6C40009C0C2 /* TTFilterFrame.cpp */; };
 		EC48ACF6205427E00009C0C2 /* TTEditSpace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC48ACF4205427E00009C0C2 /* TTEditSpace.cpp */; };
@@ -287,6 +288,8 @@
 		EC475D1A24B97F1C00D738B0 /* TTDirectionalSobelEdgeDetectionFilter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTDirectionalSobelEdgeDetectionFilter.hpp; sourceTree = "<group>"; };
 		EC475D1C24B9B4C300D738B0 /* TTDirectionalNonmaximumSuppressionFilter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTDirectionalNonmaximumSuppressionFilter.cpp; sourceTree = "<group>"; };
 		EC475D1D24B9B4C300D738B0 /* TTDirectionalNonmaximumSuppressionFilter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTDirectionalNonmaximumSuppressionFilter.hpp; sourceTree = "<group>"; };
+		EC475D1F24B9BC8900D738B0 /* TTWeakPixelInclusionFilter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTWeakPixelInclusionFilter.cpp; sourceTree = "<group>"; };
+		EC475D2024B9BC8900D738B0 /* TTWeakPixelInclusionFilter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTWeakPixelInclusionFilter.hpp; sourceTree = "<group>"; };
 		EC48ACE82053D7420009C0C2 /* TTFFWriter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTFFWriter.cpp; sourceTree = "<group>"; };
 		EC48ACE92053D7420009C0C2 /* TTFFWriter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTFFWriter.hpp; sourceTree = "<group>"; };
 		EC48ACF12053E6C40009C0C2 /* TTFilterFrame.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTFilterFrame.cpp; sourceTree = "<group>"; };
@@ -1173,6 +1176,8 @@
 				EC475D1A24B97F1C00D738B0 /* TTDirectionalSobelEdgeDetectionFilter.hpp */,
 				EC475D1C24B9B4C300D738B0 /* TTDirectionalNonmaximumSuppressionFilter.cpp */,
 				EC475D1D24B9B4C300D738B0 /* TTDirectionalNonmaximumSuppressionFilter.hpp */,
+				EC475D1F24B9BC8900D738B0 /* TTWeakPixelInclusionFilter.cpp */,
+				EC475D2024B9BC8900D738B0 /* TTWeakPixelInclusionFilter.hpp */,
 			);
 			path = image;
 			sourceTree = "<group>";
@@ -1858,6 +1863,7 @@
 				EC4727551D0C15100023EE51 /* TTTCPSocket.cpp in Sources */,
 				EC56E7802139A3440009D8DC /* mp4_mp4s_box.c in Sources */,
 				EC89E7C621FDC46400E3808E /* TTRenderControl.cpp in Sources */,
+				EC475D2124B9BC8900D738B0 /* TTWeakPixelInclusionFilter.cpp in Sources */,
 				EC48ACF9205451320009C0C2 /* TTMaterial.cpp in Sources */,
 				EC56E7772139A3440009D8DC /* mp4_moov_box.c in Sources */,
 				ECF629CB1F7E4A4D0088CEEA /* TTContrastFilter.cpp in Sources */,
