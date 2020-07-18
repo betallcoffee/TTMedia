@@ -127,6 +127,6 @@ void TowInputFilter::updateTexture()
         /**
          *参数是 glActiveTexture 的顺序，0 开始计数
          */
-        glUniform1i(_textureUniform, 3);
+        glUniform1i(_textureUniform2, 3);
     }
 }

@@ -23,9 +23,9 @@ static const GLchar* const kBuffingFragmentShader = STRINGIZE
  
  void main()
  {
-    highp vec4 origin = texture2D(texture3,v_texcoord);
-    highp vec4 canny = texture2D(texture2, v_texcoord2);
-    highp vec4 bilateral = texture2D(texture, v_texcoord3);
+    highp vec4 origin = texture2D(texture, v_texcoord);
+    highp vec4 canny = texture2D(texture2, v_texcoord);
+    highp vec4 bilateral = texture2D(texture3, v_texcoord3);
     highp vec4 smooth;
     lowp float r = origin.r;
     lowp float g = origin.g;

@@ -12,6 +12,12 @@
 #include "TTGaussianBlurFilter.hpp"
 
 namespace TT {
+
+/**
+ * 考虑到了颜色的差异，它的像素点取值也是周边像素点的加权平均，
+ * 而且权重也是高斯函数。不同的是，这个权重不仅与像素间距离有关，
+ * 还与像素值本身的差异有关，具体讲是，像素值差异越小，权重越大，也是这个特性让它具有了保持边缘的特性
+ */
 class BilateralFilter : public GaussianBlurFilter {
 public:
     BilateralFilter();

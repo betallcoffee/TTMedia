@@ -26,7 +26,7 @@ static const GLchar *const kThreeInputVertexShader = STRINGIZE
      gl_Position = position;
      v_texcoord = texcoord.xy;
      v_texcoord2 = texcoord2.xy;
-     v_texcorrd3 = texcoord3.xy;
+     v_texcoord3 = texcoord3.xy;
  }
  );
 
@@ -59,7 +59,7 @@ ThreeInputFilter::~ThreeInputFilter()
 void ThreeInputFilter::setInputFramebuffer(TT_SP(Framebuffer) frameBuffer, int index)
 {
     if (index == 1 || index == 2) {
-        Filter::setInputFramebuffer(frameBuffer, index);
+        TowInputFilter::setInputFramebuffer(frameBuffer, index);
     } else if (index == 3) {
         _inputFramebuffer3 = frameBuffer;
     }
@@ -79,7 +79,7 @@ void ThreeInputFilter::notifyFramebufferToFilters(int64_t timestamp, int index)
         _hasReceivedTexture3 = true;
     }
     
-    if (_hasReceivedTexture && _hasReceivedTexture2) {
+    if (_hasReceivedTexture && _hasReceivedTexture2 && _hasReceivedTexture3) {
         Filter::notifyFramebufferToFilters(timestamp);
         _hasReceivedTexture = false;
         _hasReceivedTexture2 = false;
@@ -135,6 +135,6 @@ void ThreeInputFilter::updateTexture()
         /**
          *参数是 glActiveTexture 的顺序，0 开始计数
          */
-        glUniform1i(_textureUniform, 4);
+        glUniform1i(_textureUniform3, 4);
     }
 }

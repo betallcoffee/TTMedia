@@ -39,7 +39,7 @@
 #include "TTDirectionalNonmaximumSuppressionFilter.hpp"
 #include "TTWeakPixelInclusionFilter.hpp"
 #include "TTCannyEdgeDetectionFilter.hpp"
-
+#include "TTBeautifyFilter.hpp"
 
 
 

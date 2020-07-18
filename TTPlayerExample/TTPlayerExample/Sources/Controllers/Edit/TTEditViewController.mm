@@ -111,12 +111,16 @@ static NSString *kPreviewCellIdentifier = @"previewCell";
 //    TT_SP(TT::Filter) weakPixelInclusionFilter = TT_MK_SP(TT::WeakPixelInclusionFilter)();
 //    weakPixelInclusionFilter->addOutput(output);
     
-    TT_SP(TT::FilterGroup) cannyEdgeDetectionFilter = TT_MK_SP(TT::CannyEdgeDetectionFilter)();
-    cannyEdgeDetectionFilter->assembleFilters();
-    cannyEdgeDetectionFilter->addOutput(output);
+//    TT_SP(TT::FilterGroup) cannyEdgeDetectionFilter = TT_MK_SP(TT::CannyEdgeDetectionFilter)();
+//    cannyEdgeDetectionFilter->assembleFilters();
+//    cannyEdgeDetectionFilter->addOutput(output);
+    
+    TT_SP(TT::FilterGroup) beautifyFilter = TT_MK_SP(TT::BeautifyFilter)();
+    beautifyFilter->assembleFilters();
+    beautifyFilter->addOutput(output);
     
     _filterTexture = TT_MK_SP(TT::Y420ToRGBFilter)();
-    _filterTexture->addOutput(cannyEdgeDetectionFilter);
+    _filterTexture->addOutput(beautifyFilter);
 }
 
 #pragma mark target/action

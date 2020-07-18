@@ -38,19 +38,16 @@ public:
     virtual void process(int64_t timestamp, int index = 0) override;
     
     /**
-     * 组装 filter
+     * 组装 group filter
      */
     virtual void assembleFilters() = 0;
     
     void addFilter(TT_SP(Filter) filter, int index = 0);
     std::map<int, TT_SP(Filter)> filterList() { return _filterList; }
     
-    void setOutput(TT_SP(Filter) output) { _output = output; }
-    TT_SP(Filter) output() { return _output; }
-    
 protected:
     std::map<int, TT_SP(Filter)> _filterList;
-    TT_SP(Filter) _output = nullptr;
+    TT_SP(Filter) _sinkFilter = nullptr;
 };
 
 }

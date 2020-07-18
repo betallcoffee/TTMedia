@@ -22,37 +22,37 @@ FilterGroup::~FilterGroup()
 
 void FilterGroup::addOutput(TT_SP(Filter) output, int index)
 {
-    if (_output) {
-        _output->addOutput(output, index);
+    if (_sinkFilter) {
+        _sinkFilter->addOutput(output, index);
     }
 }
 
 void FilterGroup::removeOutput(TT_SP(Filter) output, int index)
 {
-    if (_output) {
-        _output->removeOutput(output, index);
+    if (_sinkFilter) {
+        _sinkFilter->removeOutput(output, index);
     }
 }
 
 void FilterGroup::removeAllOutputs()
 {
-    if (_output) {
-        _output->removeAllOutputs();
+    if (_sinkFilter) {
+        _sinkFilter->removeAllOutputs();
     }
 }
 
 size_t FilterGroup::width()
 {
-    if (_output) {
-        return _output->width();
+    if (_sinkFilter) {
+        return _sinkFilter->width();
     }
     return 0;
 }
 
 size_t FilterGroup::height()
 {
-    if (_output) {
-        return _output->height();
+    if (_sinkFilter) {
+        return _sinkFilter->height();
     }
     return 0;
 }
@@ -60,16 +60,20 @@ size_t FilterGroup::height()
 void FilterGroup::setInputFramebuffer(TT_SP(Framebuffer) frameBuffer, int index)
 {
     auto it = _filterList.begin();
-    if (it != _filterList.end() && it->second != nullptr) {
-        it->second->setInputFramebuffer(frameBuffer, index);
+    for ( ;it != _filterList.end(); it++) {
+        if (it->second) {
+            it->second->setInputFramebuffer(frameBuffer, it->first);
+        }
     }
 }
 
 void FilterGroup::process(int64_t timestamp, int index)
 {
     auto it = _filterList.begin();
-    if (it != _filterList.end() && it->second != nullptr) {
-        it->second->process(timestamp, index);
+    for ( ;it != _filterList.end(); it++) {
+        if (it->second) {
+            it->second->process(timestamp, it->first);
+        }
     }
 }
 

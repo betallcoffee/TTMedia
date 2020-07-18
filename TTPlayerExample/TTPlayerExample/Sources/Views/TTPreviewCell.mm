@@ -50,7 +50,7 @@
 }
 
 - (void)showFrame:(std::shared_ptr<TT::Frame>)frame {
-    _filterTexture->processFrame(frame);
+//    _filterTexture->processFrame(frame);
 }
 
 @end

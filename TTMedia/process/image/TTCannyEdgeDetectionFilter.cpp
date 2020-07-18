@@ -42,5 +42,5 @@ void CannyEdgeDetectionFilter::assembleFilters()
     _nonmaximumSuppressionFilter->addOutput(_weakPixelInclusionFilter);
     
     addFilter(_grayscaleFilter);
-    _output = _weakPixelInclusionFilter;
+    _sinkFilter = _weakPixelInclusionFilter;
 }
