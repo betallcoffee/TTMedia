@@ -28,6 +28,7 @@ namespace TT {
         explicit Program();
         ~Program();
         
+        void reset();
         bool isCompiled();
         bool compile(const GLchar *vertShader, const GLchar *fragShader);
         bool validate();
@@ -40,7 +41,6 @@ namespace TT {
         static const GLfloat *texCoordForRotation(TexRotations rotation);
         
     private:
-        void reset();
         GLuint compileShader(GLenum type, const GLchar *source);
         
     private:

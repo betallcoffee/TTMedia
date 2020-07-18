@@ -13,8 +13,6 @@
 using namespace TT;
 
 GaussianBlurFilter::GaussianBlurFilter() {
-    createVertexShader();
-    createFragmentShader();
 }
 
 void GaussianBlurFilter::setTexelSpacingMultiplier(float texelSpacing) {
@@ -25,8 +23,18 @@ void GaussianBlurFilter::setTexelSpacingMultiplier(float texelSpacing) {
 
 void GaussianBlurFilter::setBlurRadius(float radius) {
     _blurRadius = radius;
+    // 修改 _blurRadius 需要重置 program ，触发动态生成 shader
+    _program.reset();
+}
+
+void GaussianBlurFilter::createShader() {
+    // one pass 和 two pass 两个 shader 一样，只在 one pass create 一次。
     createVertexShader();
     createFragmentShader();
+}
+
+void GaussianBlurFilter::createShader2() {
+    
 }
 
 const GLchar* GaussianBlurFilter::vertexShader() {

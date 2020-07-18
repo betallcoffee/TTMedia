@@ -87,30 +87,30 @@ static NSString *kPreviewCellIdentifier = @"previewCell";
 - (void)setupFilter {
     TT_SP(TT::Filter) output = [_imageView filter];
     
-    TT_SP(TT::Filter) sepiaFilter = TT_MK_SP(TT::SepiaFilter)();
-    sepiaFilter->addOutput(output);
-
-    TT_SP(TT::Filter) gaussianBlurFilter = TT_MK_SP(TT::GaussianBlurFilter)();
-    gaussianBlurFilter->addOutput(output);
-    
-    TT_SP(TT::Filter) bilateralFilter = TT_MK_SP(TT::BilateraFilter)();
-    bilateralFilter->addOutput(output);
-    
-    TT_SP(TT::Filter) grayscaleFilter = TT_MK_SP(TT::GrayscaleFilter)();
-    grayscaleFilter->addOutput(output);
-    
-    TT_SP(TT::Filter) singleComponentGaussianBlurFilter = TT_MK_SP(TT::SingleComponentGaussianBlurFilter)();
-    singleComponentGaussianBlurFilter->addOutput(output);
-    
-    TT_SP(TT::Filter) sobelEdgeDetectionFilter = TT_MK_SP(TT::DirectionalSobelEdgeDetectionFilter)();
-    grayscaleFilter->addOutput(sobelEdgeDetectionFilter);
-    sobelEdgeDetectionFilter->addOutput(output);
-    
-    TT_SP(TT::Filter) nonmaximumSuppressionFilter = TT_MK_SP(TT::DirectionalNonmaximumSuppressionFilter)();
-    nonmaximumSuppressionFilter->addOutput(output);
-    
-    TT_SP(TT::Filter) weakPixelInclusionFilter = TT_MK_SP(TT::WeakPixelInclusionFilter)();
-    weakPixelInclusionFilter->addOutput(output);
+//    TT_SP(TT::Filter) sepiaFilter = TT_MK_SP(TT::SepiaFilter)();
+//    sepiaFilter->addOutput(output);
+//
+//    TT_SP(TT::Filter) gaussianBlurFilter = TT_MK_SP(TT::GaussianBlurFilter)();
+//    gaussianBlurFilter->addOutput(output);
+//    
+//    TT_SP(TT::Filter) bilateralFilter = TT_MK_SP(TT::BilateraFilter)();
+//    bilateralFilter->addOutput(output);
+//    
+//    TT_SP(TT::Filter) grayscaleFilter = TT_MK_SP(TT::GrayscaleFilter)();
+//    grayscaleFilter->addOutput(output);
+//    
+//    TT_SP(TT::Filter) singleComponentGaussianBlurFilter = TT_MK_SP(TT::SingleComponentGaussianBlurFilter)();
+//    singleComponentGaussianBlurFilter->addOutput(output);
+//    
+//    TT_SP(TT::Filter) sobelEdgeDetectionFilter = TT_MK_SP(TT::DirectionalSobelEdgeDetectionFilter)();
+//    grayscaleFilter->addOutput(sobelEdgeDetectionFilter);
+//    sobelEdgeDetectionFilter->addOutput(output);
+//    
+//    TT_SP(TT::Filter) nonmaximumSuppressionFilter = TT_MK_SP(TT::DirectionalNonmaximumSuppressionFilter)();
+//    nonmaximumSuppressionFilter->addOutput(output);
+//    
+//    TT_SP(TT::Filter) weakPixelInclusionFilter = TT_MK_SP(TT::WeakPixelInclusionFilter)();
+//    weakPixelInclusionFilter->addOutput(output);
     
     TT_SP(TT::FilterGroup) cannyEdgeDetectionFilter = TT_MK_SP(TT::CannyEdgeDetectionFilter)();
     cannyEdgeDetectionFilter->output()->addOutput(output);

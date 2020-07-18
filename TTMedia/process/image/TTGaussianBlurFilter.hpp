@@ -21,6 +21,9 @@ public:
     void setBlurRadius(float radius);
     
 protected:
+    virtual void createShader() override;
+    virtual void createShader2() override;
+    
     virtual const GLchar* vertexShader() override;
     virtual const GLchar* vertexShader2() override;
     

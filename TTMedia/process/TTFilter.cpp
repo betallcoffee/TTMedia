@@ -97,26 +97,37 @@ void Filter::setSrcFramebuffer(std::shared_ptr<Framebuffer> framebuffer) {
 
 void Filter::process(int64_t timestamp) {
     TIMED_FUNC(timer);
+    // 1. 设置 opengl context
     GLContext::sharedProcessContext().use();
     
     PERFORMANCE_CHECKPOINT(timer);
+    // 2. 设置 frame buffer, 包含输出 width/height 和绘制到纹理
     if (bindFramebuffer()) {
-        if (!_program.isCompiled())
+        // 3. 编译和设置 shader
+        if (!_program.isCompiled()) {
+            createShader();
             compileShader();
+        }
+        
         _program.use();
         
         glClearColor(0, 0, 0, 0);
         glClear(GL_COLOR_BUFFER_BIT);
         
+        // 4. 上传纹理数据到 gpu
         updateTexture();
         
+        // 5. 设置 shader 中的 atrrib 变量值
         resolveAttribLocations();
+        // 6. 设置 shader 中的 uniform 变量值
         resolveUniformLocations();
         
         PERFORMANCE_CHECKPOINT(timer);
+        // 7. 绘制，执行 opengl pipeline
         draw();
         
         PERFORMANCE_CHECKPOINT(timer);
+        // 8. 将绘制结果纹理传递后续 filter
         notifyFramebufferToFilters(timestamp);
         PERFORMANCE_CHECKPOINT(timer);
     }

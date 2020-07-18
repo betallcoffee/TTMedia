@@ -22,6 +22,8 @@ public:
     virtual void process(int64_t timestamp);
     
 protected:
+    
+    virtual void createShader2() {}
     virtual void compileShader2();
     /**
      *返回自定义顶点 shader

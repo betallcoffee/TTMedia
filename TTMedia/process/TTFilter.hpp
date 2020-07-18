@@ -48,6 +48,10 @@ namespace TT {
         
         virtual bool bindFramebuffer();
         
+        /**
+         * 动态创建生成的 shader，将 program reset 则会重新生成 shader
+         */
+        virtual void createShader() {}
         virtual void compileShader();
         /**
          *返回自定义顶点 shader
@@ -66,6 +70,9 @@ namespace TT {
          */
         virtual const GLchar *fragmentShader();
         
+        /**
+         * shader 中的 attrib 和 uniform 变量在每次 process 都会赋值
+         */
         virtual void getAttribLocations();
         virtual void resolveAttribLocations();
         

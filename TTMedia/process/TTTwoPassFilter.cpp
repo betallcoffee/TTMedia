@@ -31,8 +31,10 @@ void TwoPassFilter::process(int64_t timestamp) {
         _firstFramebuffer->active();
         
         /// one pass
-        if (!_program.isCompiled())
+        if (!_program.isCompiled()) {
+            createShader();
             compileShader();
+        }
         _program.use();
         
         glClearColor(0, 0, 0, 1);
@@ -49,8 +51,11 @@ void TwoPassFilter::process(int64_t timestamp) {
     
     if (bindFramebuffer()) {
         /// two pass
-        if (!_program2.isCompiled())
+        if (!_program2.isCompiled()) {
+            createShader2();
             compileShader2();
+        }
+        
         _program2.use();
         
         glClearColor(0, 0, 0, 1);

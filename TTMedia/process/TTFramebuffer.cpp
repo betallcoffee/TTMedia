@@ -20,6 +20,7 @@ Framebuffer::~Framebuffer() {
 
 bool Framebuffer::setUp(size_t width, size_t height) {
     if (_framebuffer) {
+        // width/height 无变化，无须重新创建 framebuffer
         if (width == _width && height == _height) {
             return true;
         } else {
