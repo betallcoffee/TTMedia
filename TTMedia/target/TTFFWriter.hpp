@@ -31,7 +31,7 @@ namespace TT {
         void processPacket(std::shared_ptr<Packet> packet);
         
         void processFrame(std::shared_ptr<Frame> frame) override;
-        void process(int64_t timestamp) override;
+        void process(int64_t timestamp, int index = 0) override;
         
     private:
         std::shared_ptr<FFMuxer> _muxer;

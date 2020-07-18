@@ -63,6 +63,6 @@ void FFWriter::processFrame(std::shared_ptr<Frame> frame) {
     }
 }
 
-void FFWriter::process(int64_t timestamp) {
+void FFWriter::process(int64_t timestamp, int index) {
     
 }

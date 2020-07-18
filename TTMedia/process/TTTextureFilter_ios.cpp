@@ -47,7 +47,7 @@ void TextureFilter_ios::updateTexture() {
     CVPixelBufferLockBaseAddress(pixelBuffer, 0);
     
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, _framebuffer->textrue());
+    glBindTexture(GL_TEXTURE_2D, _outputFramebuffer->textrue());
     
     // Using BGRA extension to pull in video frame data directly
     // The use of bytesPerRow / 4 accounts for a display glitch present in preview video frames when using the photo preset on the camera

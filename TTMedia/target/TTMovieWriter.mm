@@ -189,9 +189,7 @@ static const GLchar *const kColorSwizzlingFragmentShader = STRINGIZE
 
 - (void)setup {
     [self finish];
-    if ([self filter]->srcFramebuffer()) {
-        LOG(DEBUG) << "framebuffer size: " << [self filter]->srcFramebuffer()->width() << " " << [self filter]->srcFramebuffer()->height();
-    }
+    LOG(DEBUG) << "framebuffer size: " << [self filter]->width() << " " << [self filter]->height();
     LOG(DEBUG) << "video size: " << _videoSize.width << " " << _videoSize.height;
     
     NSError *error = nil;

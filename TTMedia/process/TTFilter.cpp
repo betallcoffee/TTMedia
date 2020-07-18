@@ -41,15 +41,15 @@ static const GLchar *const kFragmentShader = STRINGIZE
  );
 
 Filter::Filter() :
- _srcFramebuffer(nullptr), _framebuffer(nullptr),
+ _inputFramebuffer(nullptr), _outputFramebuffer(nullptr),
  _width(0), _height(0),
  _positionLocation(0), _texCoordLocation(0), _textureUniform(0) {
-    _framebuffer = std::make_shared<Framebuffer>();
+    _outputFramebuffer = std::make_shared<Framebuffer>();
 }
 
 Filter::~Filter() {
-    _srcFramebuffer.reset();
-    _framebuffer.reset();
+    _inputFramebuffer.reset();
+    _outputFramebuffer.reset();
     removeAllOutputs();
 }
 
@@ -73,20 +73,11 @@ void Filter::removeAllOutputs() {
     _outputs.clear();
 }
 
-
-void Filter::notifyFramebufferToFilters(int64_t timestamp) {
-    std::map<int, std::shared_ptr<Filter>>::iterator it;
-    for (it = _outputs.begin(); it != _outputs.end(); it++) {
-        it->second->setSrcFramebuffer(_framebuffer);
-        it->second->process(timestamp);
-    }
-}
-
-void Filter::setSrcFramebuffer(std::shared_ptr<Framebuffer> framebuffer) {
-    _srcFramebuffer = framebuffer;
-    if (_srcFramebuffer) {
-        _width = _srcFramebuffer->width();
-        _height = _srcFramebuffer->height();
+void Filter::setInputFramebuffer(std::shared_ptr<Framebuffer> framebuffer, int index) {
+    _inputFramebuffer = framebuffer;
+    if (_inputFramebuffer) {
+        _width = _inputFramebuffer->width();
+        _height = _inputFramebuffer->height();
         setupFilterSize();
     } else {
         _width = 0;
@@ -95,7 +86,15 @@ void Filter::setSrcFramebuffer(std::shared_ptr<Framebuffer> framebuffer) {
     }
 }
 
-void Filter::process(int64_t timestamp) {
+void Filter::notifyFramebufferToFilters(int64_t timestamp, int index) {
+    std::map<int, std::shared_ptr<Filter>>::iterator it;
+    for (it = _outputs.begin(); it != _outputs.end(); it++) {
+        it->second->setInputFramebuffer(_outputFramebuffer, it->first);
+        it->second->process(timestamp, it->first);
+    }
+}
+
+void Filter::process(int64_t timestamp, int index) {
     TIMED_FUNC(timer);
     // 1. 设置 opengl context
     GLContext::sharedProcessContext().use();
@@ -128,7 +127,7 @@ void Filter::process(int64_t timestamp) {
         
         PERFORMANCE_CHECKPOINT(timer);
         // 8. 将绘制结果纹理传递后续 filter
-        notifyFramebufferToFilters(timestamp);
+        notifyFramebufferToFilters(timestamp, index);
         PERFORMANCE_CHECKPOINT(timer);
     }
 }
@@ -138,8 +137,8 @@ void Filter::setupFilterSize() {
 }
 
 bool Filter::bindFramebuffer() {
-    if (_framebuffer->setUp(_width, _height)) {
-        _framebuffer->active();
+    if (_outputFramebuffer->setUp(_width, _height)) {
+        _outputFramebuffer->active();
         return true;
     }
     return false;
@@ -194,9 +193,9 @@ const GLfloat *Filter::texCoordForRotation(TexRotations rotation) {
 }
 
 void Filter::updateTexture() {
-    if (_srcFramebuffer) {
+    if (_inputFramebuffer) {
         glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, _srcFramebuffer->textrue());
+        glBindTexture(GL_TEXTURE_2D, _inputFramebuffer->textrue());
         
         /**
          *参数是 glActiveTexture 的顺序，0 开始计数

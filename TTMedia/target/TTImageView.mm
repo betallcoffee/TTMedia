@@ -190,8 +190,7 @@
 
 - (BOOL)bindFramebuffer {
     [self setDisplayFramebuffer];
-    CGSize size = CGSizeMake([self filter]->srcFramebuffer()->width(),
-                            [self filter]->srcFramebuffer()->height());
+    CGSize size = CGSizeMake([self filter]->width(), [self filter]->height());
     [self setImageSize:size];
     
     return YES;
