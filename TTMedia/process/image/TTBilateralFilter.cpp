@@ -119,43 +119,43 @@ static const GLchar* const kBilateralFragmentShader = STRINGIZE
  }
 );
 
-BilateraFilter::BilateraFilter() {
+BilateralFilter::BilateralFilter() {
     setTexelSpacingMultiplier(4.0);
 }
 
-const GLchar* BilateraFilter::vertexShader() {
+const GLchar* BilateralFilter::vertexShader() {
     return kBilateralVetexShader;
 }
 
-const GLchar* BilateraFilter::vertexShader2() {
+const GLchar* BilateralFilter::vertexShader2() {
     return kBilateralVetexShader;
 }
 
-const GLchar* BilateraFilter::fragmentShader() {
+const GLchar* BilateralFilter::fragmentShader() {
     return kBilateralFragmentShader;
 }
 
-const GLchar* BilateraFilter::fragmentShader2() {
+const GLchar* BilateralFilter::fragmentShader2() {
     return kBilateralFragmentShader;
 }
 
-void BilateraFilter::getUniformLocations() {
+void BilateralFilter::getUniformLocations() {
     GaussianBlurFilter::getUniformLocations();
     _firstDistanceNormalizationFactorUniform = _program.getUniformLocation("distanceNormalizationFactor");
 }
 
-void BilateraFilter::resolveUniformLocations() {
+void BilateralFilter::resolveUniformLocations() {
     GaussianBlurFilter::resolveUniformLocations();
     
     glUniform1f(_firstDistanceNormalizationFactorUniform, _distanceNormalizationFactor);
 }
 
-void BilateraFilter::getUniformLocations2() {
+void BilateralFilter::getUniformLocations2() {
     GaussianBlurFilter::getUniformLocations2();
     _secondDistanceNormalizationFactorUniform = _program2.getUniformLocation("distanceNormalizationFactor");
 }
 
-void BilateraFilter::resolveUniformLocations2() {
+void BilateralFilter::resolveUniformLocations2() {
     GaussianBlurFilter::resolveUniformLocations2();
     
     glUniform1f(_secondDistanceNormalizationFactorUniform, _distanceNormalizationFactor);

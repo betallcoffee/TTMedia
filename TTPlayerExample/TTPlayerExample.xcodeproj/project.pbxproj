@@ -197,6 +197,7 @@
 		ECDD364824C292F000224EF1 /* lena_origin.png in Resources */ = {isa = PBXBuildFile; fileRef = ECDD364724C292F000224EF1 /* lena_origin.png */; };
 		ECDD364B24C30D2000224EF1 /* TTThreeInputFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECDD364924C30D2000224EF1 /* TTThreeInputFilter.cpp */; };
 		ECDD365224C3285800224EF1 /* TTBuffingFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECDD365024C3285800224EF1 /* TTBuffingFilter.cpp */; };
+		ECDD365524C32D5200224EF1 /* TTBeautifyFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECDD365324C32D5200224EF1 /* TTBeautifyFilter.cpp */; };
 		ECDD85E8248B950200AA2EFE /* TTGrayscaleFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECDD85E6248B950200AA2EFE /* TTGrayscaleFilter.cpp */; };
 		ECDD85EB248BA05F00AA2EFE /* TTSingleComponentGaussianBlurFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECDD85E9248BA05F00AA2EFE /* TTSingleComponentGaussianBlurFilter.cpp */; };
 		ECE49F571F59AEDA004FE7C2 /* TTCapture.mm in Sources */ = {isa = PBXBuildFile; fileRef = ECE49F561F59AEDA004FE7C2 /* TTCapture.mm */; };
@@ -658,6 +659,8 @@
 		ECDD364A24C30D2000224EF1 /* TTThreeInputFilter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTThreeInputFilter.hpp; sourceTree = "<group>"; };
 		ECDD365024C3285800224EF1 /* TTBuffingFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TTBuffingFilter.cpp; sourceTree = "<group>"; };
 		ECDD365124C3285800224EF1 /* TTBuffingFilter.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TTBuffingFilter.hpp; sourceTree = "<group>"; };
+		ECDD365324C32D5200224EF1 /* TTBeautifyFilter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTBeautifyFilter.cpp; sourceTree = "<group>"; };
+		ECDD365424C32D5200224EF1 /* TTBeautifyFilter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTBeautifyFilter.hpp; sourceTree = "<group>"; };
 		ECDD85E6248B950200AA2EFE /* TTGrayscaleFilter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTGrayscaleFilter.cpp; sourceTree = "<group>"; };
 		ECDD85E7248B950200AA2EFE /* TTGrayscaleFilter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTGrayscaleFilter.hpp; sourceTree = "<group>"; };
 		ECDD85E9248BA05F00AA2EFE /* TTSingleComponentGaussianBlurFilter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTSingleComponentGaussianBlurFilter.cpp; sourceTree = "<group>"; };
@@ -1566,6 +1569,8 @@
 			children = (
 				ECDD365024C3285800224EF1 /* TTBuffingFilter.cpp */,
 				ECDD365124C3285800224EF1 /* TTBuffingFilter.hpp */,
+				ECDD365324C32D5200224EF1 /* TTBeautifyFilter.cpp */,
+				ECDD365424C32D5200224EF1 /* TTBeautifyFilter.hpp */,
 			);
 			path = effect;
 			sourceTree = "<group>";
@@ -1778,6 +1783,7 @@
 				EC56E7982139A3440009D8DC /* mp4_nmhd_box.c in Sources */,
 				ECC66F7A1F6180F1003F2076 /* TTMovieListViewController.m in Sources */,
 				EC56E7892139A3440009D8DC /* mp4_tsro_box.c in Sources */,
+				ECDD365524C32D5200224EF1 /* TTBeautifyFilter.cpp in Sources */,
 				ECC66F831F629E1C003F2076 /* TTTabViewController.m in Sources */,
 				EC01895C1D81D52A005E46B9 /* TTVideoCodec.cpp in Sources */,
 				ECE49F5E1F5A44AE004FE7C2 /* TTNV12ToRGBFilter.cpp in Sources */,

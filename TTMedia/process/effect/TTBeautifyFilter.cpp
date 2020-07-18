@@ -1,0 +1,34 @@
+//
+//  TTBeautifyFilter.cpp
+//  TTPlayerExample
+//
+//  Created by liang on 18/7/2020.
+//  Copyright © 2020 tina. All rights reserved.
+//
+
+#include "TTBeautifyFilter.hpp"
+
+using namespace TT;
+
+BeautifyFilter::BeautifyFilter()
+{
+    
+}
+
+BeautifyFilter::~BeautifyFilter()
+{
+    
+}
+
+void BeautifyFilter::assembleFilters()
+{
+    // First pass: face smoothing filter
+    _bilateralFilter = TT_MK_SP(BilateralFilter)();
+    
+    // Second pass: edge detection
+    _cannyEdgeDetectionFilter = TT_MK_SP(CannyEdgeDetectionFilter)();
+    
+    // Third pass: combination bilateral, edge detection and origin
+    _buffingFilter = TT_MK_SP(BuffingFilter)();
+    
+}

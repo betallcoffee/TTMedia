@@ -31,19 +31,25 @@ public:
     Filter();
     virtual ~Filter();
     
-    void addOutput(std::shared_ptr<Filter> output, int index = 0);
-    void removeOutput(std::shared_ptr<Filter> output, int index = 0);
-    void removeAllOutputs();
+    virtual void addOutput(std::shared_ptr<Filter> output, int index = 0);
+    virtual void removeOutput(std::shared_ptr<Filter> output, int index = 0);
+    virtual void removeAllOutputs();
     
-    size_t width() { return _width; }
-    size_t height() { return _height; }
+    virtual size_t width() { return _width; }
+    virtual size_t height() { return _height; }
     
     /**
-     *输入数据
+     * 传递数据给后续 filter
      */
-    virtual void setInputFramebuffer(TT_SP(Framebuffer) frameBuffer, int index = 0);
     virtual void notifyFramebufferToFilters(int64_t timestamp, int index = 0);
     
+    /**
+     * 接受输入数据
+     */
+    virtual void setInputFramebuffer(TT_SP(Framebuffer) frameBuffer, int index = 0);
+    /**
+     * 处理输入数据
+     */
     virtual void process(int64_t timestamp, int index = 0);
     
 protected:

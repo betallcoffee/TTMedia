@@ -37,6 +37,8 @@ public:
     CannyEdgeDetectionFilter();
     ~CannyEdgeDetectionFilter();
     
+    void assembleFilters();
+    
 private:
     TT_SP(GrayscaleFilter) _grayscaleFilter = nullptr;
     TT_SP(SingleComponentGaussianBlurFilter) _singleComponentGaussianBlurFilter = nullptr;

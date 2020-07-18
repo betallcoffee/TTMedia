@@ -12,6 +12,15 @@ using namespace TT;
 
 CannyEdgeDetectionFilter::CannyEdgeDetectionFilter()
 {
+}
+
+CannyEdgeDetectionFilter::~CannyEdgeDetectionFilter()
+{
+    
+}
+
+void CannyEdgeDetectionFilter::assembleFilters()
+{
     // 1. 灰度图
     _grayscaleFilter = TT_MK_SP(GrayscaleFilter)();
     // 2. 高斯模糊
@@ -32,11 +41,6 @@ CannyEdgeDetectionFilter::CannyEdgeDetectionFilter()
     _sobelEdgeDetectionFilter->addOutput(_nonmaximumSuppressionFilter);
     _nonmaximumSuppressionFilter->addOutput(_weakPixelInclusionFilter);
     
-    addInput(_grayscaleFilter);
+    addFilter(_grayscaleFilter);
     _output = _weakPixelInclusionFilter;
-}
-
-CannyEdgeDetectionFilter::~CannyEdgeDetectionFilter()
-{
-    
 }

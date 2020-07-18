@@ -73,6 +73,14 @@ void Filter::removeAllOutputs() {
     _outputs.clear();
 }
 
+void Filter::notifyFramebufferToFilters(int64_t timestamp, int index) {
+    std::map<int, std::shared_ptr<Filter>>::iterator it;
+    for (it = _outputs.begin(); it != _outputs.end(); it++) {
+        it->second->setInputFramebuffer(_outputFramebuffer, it->first);
+        it->second->process(timestamp, it->first);
+    }
+}
+
 void Filter::setInputFramebuffer(std::shared_ptr<Framebuffer> framebuffer, int index) {
     _inputFramebuffer = framebuffer;
     if (_inputFramebuffer) {
@@ -83,14 +91,6 @@ void Filter::setInputFramebuffer(std::shared_ptr<Framebuffer> framebuffer, int i
         _width = 0;
         _height = 0;
         setupFilterSize();
-    }
-}
-
-void Filter::notifyFramebufferToFilters(int64_t timestamp, int index) {
-    std::map<int, std::shared_ptr<Filter>>::iterator it;
-    for (it = _outputs.begin(); it != _outputs.end(); it++) {
-        it->second->setInputFramebuffer(_outputFramebuffer, it->first);
-        it->second->process(timestamp, it->first);
     }
 }
 

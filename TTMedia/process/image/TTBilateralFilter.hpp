@@ -12,9 +12,9 @@
 #include "TTGaussianBlurFilter.hpp"
 
 namespace TT {
-class BilateraFilter : public GaussianBlurFilter {
+class BilateralFilter : public GaussianBlurFilter {
 public:
-    BilateraFilter();
+    BilateralFilter();
     
 protected:
     virtual const GLchar* vertexShader();

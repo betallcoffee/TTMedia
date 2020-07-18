@@ -26,7 +26,6 @@ static NSString *kPreviewCellIdentifier = @"previewCell";
 {
     std::shared_ptr<TT::EditSpace> _editGroup;
     std::shared_ptr<TT::Y420ToRGBFilter> _filterTexture;
-    TT_SP(TT::FilterGroup) _filterGroup;
 }
 
 @property (nonatomic, strong) TTSlideSelectView *selectView;
@@ -113,16 +112,11 @@ static NSString *kPreviewCellIdentifier = @"previewCell";
 //    weakPixelInclusionFilter->addOutput(output);
     
     TT_SP(TT::FilterGroup) cannyEdgeDetectionFilter = TT_MK_SP(TT::CannyEdgeDetectionFilter)();
-    cannyEdgeDetectionFilter->output()->addOutput(output);
+    cannyEdgeDetectionFilter->assembleFilters();
+    cannyEdgeDetectionFilter->addOutput(output);
     
     _filterTexture = TT_MK_SP(TT::Y420ToRGBFilter)();
-    
-    _filterGroup = cannyEdgeDetectionFilter;
-    auto it = _filterGroup->inputList().begin();
-    if (it != _filterGroup->inputList().end() && it->second != nullptr) {
-        _filterTexture->addOutput(it->second);
-    }
-//    _filterTexture->addOutput(sobelEdgeDetectionFilter);
+    _filterTexture->addOutput(cannyEdgeDetectionFilter);
 }
 
 #pragma mark target/action
