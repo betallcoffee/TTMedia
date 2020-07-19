@@ -16,7 +16,6 @@
 #include "TTMessageLoop.hpp"
 #include "TTFFWriter.hpp"
 #include "TTFilterFrame.hpp"
-#include "TTMaterial.hpp"
 #include "TTMedia.hpp"
 #include "TTClip.hpp"
 
@@ -34,14 +33,14 @@ namespace TT {
         EditSpace();
         ~EditSpace();
         
-        int materialCount();
-        TT_SP(Material) material(int index);
+        int mediaCount();
+        TT_SP(Media) media(int index);
         
-        void addMaterial(std::shared_ptr<Material> material);
-        void removeMaterial(int index);
+        void addMedia(TT_SP(Media) media);
+        void removeMedia(int index);
         
         typedef std::function<void (void)> Callback;
-        void loadMoreForMaterial(std::shared_ptr<Material> material, Callback callback);
+        void loadMoreForMedia(std::shared_ptr<Media> media, Callback callback);
         
         void addClip(TT_SP(Clip) clip);
         void removeClip(int index);
@@ -56,9 +55,7 @@ namespace TT {
         
         TT_SP(MessageLoop) _loop;
         
-        std::vector<TT_SP(Material)> _materials;
-        std::vector<TT_SP(Media)> _videos;
-        
+        std::vector<TT_SP(Media)> _medias;
         std::vector<TT_SP(Clip)> _clips;
         
         pthread_mutex_t _editMutex;

@@ -38,6 +38,7 @@ namespace TT {
         kCodecIDNone = 0,
         kCodecIDAAC = 1,
         kCodecIDH264 = 2,
+        kCodecIDPNG = 3,
     } CodecID;
     
     typedef enum {

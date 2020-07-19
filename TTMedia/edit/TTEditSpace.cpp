@@ -25,46 +25,42 @@ EditSpace::~EditSpace() {
     _loop->stop();
 }
 
-int EditSpace::materialCount() {
-    return (int)_materials.size();
+int EditSpace::mediaCount() {
+    return (int)_medias.size();
 }
 
-std::shared_ptr<Material> EditSpace::material(int index) {
+TT_SP(Media) EditSpace::media(int index) {
     Mutex m(&_editMutex);
-    if (0 <= index && index < _materials.size()) {
-        return _materials[index];
+    if (0 <= index && index < _medias.size()) {
+        return _medias[index];
     }
     return nullptr;
 }
 
-void EditSpace::addMaterial(std::shared_ptr<Material> edit) {
+void EditSpace::addMedia(std::shared_ptr<Media> media) {
     int code = static_cast<int>(EditMessage::kOpen);
-    auto openFunc = [&, edit](TT_SP(Message) message) {
-        edit->open();
+    auto openFunc = [&, media](TT_SP(Message) message) {
+        media->open();
     };
     auto openMessage = TT_MK_SP(Message)(code, openFunc);
     _loop->postMessage(openMessage);
     
     Mutex m(&_editMutex);
-    _materials.push_back(edit);
-    if (MaterialType::kVideo == edit->type()) {
-        std::shared_ptr<Media> video = std::dynamic_pointer_cast<Media>(edit);
-        _videos.push_back(video);
-    }
+    _medias.push_back(media);
 }
 
-void EditSpace::removeMaterial(int index) {
+void EditSpace::removeMedia(int index) {
     Mutex m(&_editMutex);
-    if (index >= 0 && index < _materials.size()) {
-        _materials.erase(_materials.begin() + index);
+    if (index >= 0 && index < _medias.size()) {
+        _medias.erase(_medias.begin() + index);
     }
 }
 
-void EditSpace::loadMoreForMaterial(std::shared_ptr<Material> material, Callback callback) {
+void EditSpace::loadMoreForMedia(std::shared_ptr<Media> media, Callback callback) {
     int code = static_cast<int>(EditMessage::kLoadMore);
     auto loadFunc = [=](TT_SP(Message) message) {
         Mutex m(&_editMutex);
-        material->loadMore();
+        media->loadMore();
         if (callback) {
             callback();
         }
@@ -104,8 +100,8 @@ void EditSpace::quit() {
 bool EditSpace::createWriter() {
     size_t width = 1024;
     size_t height = 720;
-    if (!_videos.empty()) {
-        std::shared_ptr<Media> video = *_videos.begin();
+    if (!_medias.empty()) {
+        std::shared_ptr<Media> video = *_medias.begin();
         width = video->width();
         height = video->height();
     }
@@ -128,9 +124,9 @@ void EditSpace::exportAllClips() {
     if (_writer) {
         for (auto clip : _clips) {
             LOG(INFO) << "Writer index:" << clip->srcStartIndex() << " to " << clip->srcEndIndex();
-            auto material = clip->material();
+            auto media = clip->media();
             for (int i = clip->srcStartIndex(); i < clip->srcEndIndex(); i++) {
-                auto frame = material->frame(i);
+                auto frame = media->frame(i);
                 _writer->processFrame(frame);
             }
         }

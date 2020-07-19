@@ -52,7 +52,7 @@ static NSString *kPreviewCellIdentifier = @"previewCell";
     [self setupFilter];
     
     [_urls enumerateObjectsUsingBlock:^(NSURL * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        [self addMaterial:obj];
+        [self addMedia:obj];
     }];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(onSaveButton:)];
@@ -129,13 +129,13 @@ static NSString *kPreviewCellIdentifier = @"previewCell";
     NSUInteger endIndex = self.selectView.rightIndex;
     LOG(INFO) << "on save button:" << startIndex << " to " << endIndex;
     
-    NSUInteger count = _editGroup->materialCount();
+    NSUInteger count = _editGroup->mediaCount();
     for (int i = 0; i < count; i++) {
-        std::shared_ptr<TT::Material> material = _editGroup->material(i);
-        if (material) {
+        std::shared_ptr<TT::Media> media = _editGroup->media(i);
+        if (media) {
             TT_SP(TT::Clip) clip = TT_MK_SP(TT::Clip)();
-            clip->setmaterial(material);
-            int frameCount = material->frameCount();
+            clip->setmedia(media);
+            int frameCount = media->frameCount();
             if (frameCount > startIndex) {
                 clip->setsrcStartIndex(static_cast<int>(startIndex));
                 if (frameCount > endIndex) {
@@ -160,16 +160,16 @@ static NSString *kPreviewCellIdentifier = @"previewCell";
     _editGroup->exportFile(_saveUrl);
 }
 
-#pragma mark Edit Material
-- (void)addMaterial:(NSURL *)url {
+#pragma mark Edit Media
+- (void)addMedia:(NSURL *)url {
     const char *str = [url.absoluteString cStringUsingEncoding:NSUTF8StringEncoding];
     std::shared_ptr<TT::Media> video = std::make_shared<TT::Media>(std::make_shared<TT::URL>(str));
-    _editGroup->addMaterial(video);
-    [self loadMoreForMaterial:video];
+    _editGroup->addMedia(video);
+    [self loadMoreForMedia:video];
 }
 
-- (void)loadMoreForMaterial:(std::shared_ptr<TT::Material>)material {
-    _editGroup->loadMoreForMaterial(material, [=](){
+- (void)loadMoreForMedia:(std::shared_ptr<TT::Media>)media {
+    _editGroup->loadMoreForMedia(media, [=](){
         [self reloadPreviewBar];
     });
 }
@@ -183,16 +183,16 @@ static NSString *kPreviewCellIdentifier = @"previewCell";
 #pragma mark -- UICollectionViewDataSource
 //定义展示的UICollectionViewCell的个数
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    std::shared_ptr<TT::Material> material = _editGroup->material(static_cast<int>(section));
-    if (material) {
-        return material->frameCount();
+    std::shared_ptr<TT::Media> media = _editGroup->media(static_cast<int>(section));
+    if (media) {
+        return media->frameCount();
     }
     return 0;
 }
 
 //定义展示的Section的个数
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-    return _editGroup->materialCount();
+    return _editGroup->mediaCount();
 }
 
 //每个UICollectionView展示的内容
@@ -207,19 +207,19 @@ static NSString *kPreviewCellIdentifier = @"previewCell";
                                            alpha:1.0f];
     cell.label.text = [NSString stringWithFormat:@"%d", static_cast<int>(indexPath.row)];
     
-    std::shared_ptr<TT::Material> material = _editGroup->material(static_cast<int>(indexPath.section));
-    if(material) {
+    std::shared_ptr<TT::Media> media = _editGroup->media(static_cast<int>(indexPath.section));
+    if(media) {
         [cell setupUI];
         
-        std::shared_ptr<TT::Frame> frame = material->frame(static_cast<int>(indexPath.row));
+        std::shared_ptr<TT::Frame> frame = media->frame(static_cast<int>(indexPath.row));
         if (frame) {
             [cell showFrame:frame];
         }
         
-        int count = material->frameCount();
+        int count = media->frameCount();
         if (indexPath.row + 1 >= count
-            && !material->isEnd()) {
-            [self loadMoreForMaterial:material];
+            && !media->isEnd()) {
+            [self loadMoreForMedia:media];
         }
     }
     
@@ -247,9 +247,9 @@ static NSString *kPreviewCellIdentifier = @"previewCell";
     NSArray<NSIndexPath *> *indexPaths = _previewBar.indexPathsForVisibleItems;
     if (indexPaths.count > 0) {
         NSIndexPath *indexPath = indexPaths.firstObject;
-        std::shared_ptr<TT::Material> material = _editGroup->material(static_cast<int>(indexPath.section));
-        if(material) {
-            std::shared_ptr<TT::Frame> frame = material->frame(static_cast<int>(indexPath.row));
+        std::shared_ptr<TT::Media> media = _editGroup->media(static_cast<int>(indexPath.section));
+        if(media) {
+            std::shared_ptr<TT::Frame> frame = media->frame(static_cast<int>(indexPath.row));
             _filterTexture->processFrame(frame);
         }
     }
@@ -260,9 +260,9 @@ static NSString *kPreviewCellIdentifier = @"previewCell";
     UICollectionViewCell *cell = (UICollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
     cell.backgroundColor = [UIColor whiteColor];
     
-    std::shared_ptr<TT::Material> material = _editGroup->material(static_cast<int>(indexPath.section));
-    if(material) {
-        std::shared_ptr<TT::Frame> frame = material->frame(static_cast<int>(indexPath.row));
+    std::shared_ptr<TT::Media> media = _editGroup->media(static_cast<int>(indexPath.section));
+    if(media) {
+        std::shared_ptr<TT::Frame> frame = media->frame(static_cast<int>(indexPath.row));
         _filterTexture->processFrame(frame);
     }
     [collectionView reloadData];

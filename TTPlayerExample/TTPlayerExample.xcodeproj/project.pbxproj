@@ -45,7 +45,6 @@
 		EC48ACEA2053D7420009C0C2 /* TTFFWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC48ACE82053D7420009C0C2 /* TTFFWriter.cpp */; };
 		EC48ACF32053E6C40009C0C2 /* TTFilterFrame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC48ACF12053E6C40009C0C2 /* TTFilterFrame.cpp */; };
 		EC48ACF6205427E00009C0C2 /* TTEditSpace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC48ACF4205427E00009C0C2 /* TTEditSpace.cpp */; };
-		EC48ACF9205451320009C0C2 /* TTMaterial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC48ACF7205451320009C0C2 /* TTMaterial.cpp */; };
 		EC4DD36420A35CD400CFBF60 /* TTExposureFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC4DD36220A35CD400CFBF60 /* TTExposureFilter.cpp */; };
 		EC4DD36720A6070900CFBF60 /* TTHueFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC4DD36520A6070900CFBF60 /* TTHueFilter.cpp */; };
 		EC4DD36A20A6E03500CFBF60 /* TTLevelFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC4DD36820A6E03500CFBF60 /* TTLevelFilter.cpp */; };
@@ -306,8 +305,6 @@
 		EC48ACF22053E6C40009C0C2 /* TTFilterFrame.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTFilterFrame.hpp; sourceTree = "<group>"; };
 		EC48ACF4205427E00009C0C2 /* TTEditSpace.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTEditSpace.cpp; sourceTree = "<group>"; };
 		EC48ACF5205427E00009C0C2 /* TTEditSpace.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTEditSpace.hpp; sourceTree = "<group>"; };
-		EC48ACF7205451320009C0C2 /* TTMaterial.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTMaterial.cpp; sourceTree = "<group>"; };
-		EC48ACF8205451320009C0C2 /* TTMaterial.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTMaterial.hpp; sourceTree = "<group>"; };
 		EC48ACFA2065F7630009C0C2 /* TTEdit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TTEdit.h; sourceTree = "<group>"; };
 		EC4DD36220A35CD400CFBF60 /* TTExposureFilter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTExposureFilter.cpp; sourceTree = "<group>"; };
 		EC4DD36320A35CD400CFBF60 /* TTExposureFilter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTExposureFilter.hpp; sourceTree = "<group>"; };
@@ -487,6 +484,7 @@
 		EC89E7C221FDC46400E3808E /* TTRenderControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TTRenderControl.cpp; sourceTree = "<group>"; };
 		EC89E7C321FDC46400E3808E /* TTRenderControl.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TTRenderControl.hpp; sourceTree = "<group>"; };
 		EC8D83EB1D846E7B00C25D03 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		ECB04EBA24C3E7BB0095B9DC /* TTDefForObjc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TTDefForObjc.h; sourceTree = "<group>"; };
 		ECB053D81F3C13AB00A49FA5 /* TTAudioCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TTAudioCodec.cpp; sourceTree = "<group>"; };
 		ECB053D91F3C13AB00A49FA5 /* TTAudioCodec.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TTAudioCodec.hpp; sourceTree = "<group>"; };
 		ECB053DE1F3C629100A49FA5 /* TTAudioQueue_ios.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TTAudioQueue_ios.cpp; sourceTree = "<group>"; };
@@ -934,6 +932,7 @@
 			isa = PBXGroup;
 			children = (
 				EC1A20AE1F46C59600632C0D /* TTdef.h */,
+				ECB04EBA24C3E7BB0095B9DC /* TTDefForObjc.h */,
 				EC4E9C6E1F1A7AA6005C8E36 /* TTQueue.cpp */,
 				EC4E9C6F1F1A7AA6005C8E36 /* TTQueue.hpp */,
 				EC550899200BADD600C115A8 /* TTArray.cpp */,
@@ -1174,8 +1173,6 @@
 			isa = PBXGroup;
 			children = (
 				EC48ACFA2065F7630009C0C2 /* TTEdit.h */,
-				EC48ACF7205451320009C0C2 /* TTMaterial.cpp */,
-				EC48ACF8205451320009C0C2 /* TTMaterial.hpp */,
 				EC6600661F95C19B00042B2A /* TTMedia.cpp */,
 				EC6600671F95C19B00042B2A /* TTMedia.hpp */,
 				EC0FB9C7227DEAEE00F9F21F /* TTClip.cpp */,
@@ -1906,7 +1903,6 @@
 				EC56E7802139A3440009D8DC /* mp4_mp4s_box.c in Sources */,
 				EC89E7C621FDC46400E3808E /* TTRenderControl.cpp in Sources */,
 				EC475D2124B9BC8900D738B0 /* TTWeakPixelInclusionFilter.cpp in Sources */,
-				EC48ACF9205451320009C0C2 /* TTMaterial.cpp in Sources */,
 				EC56E7772139A3440009D8DC /* mp4_moov_box.c in Sources */,
 				ECF629CB1F7E4A4D0088CEEA /* TTContrastFilter.cpp in Sources */,
 				ECB053EC1F3E94EC00A49FA5 /* easylogging++.cc in Sources */,

@@ -13,14 +13,14 @@
 #include "TTdef.h"
 
 namespace TT {
-    class Material;
+    class Media;
     
     class Clip {
     public:
         Clip();
         ~Clip();
         
-        TT_PROPERTY_DEF(TT_SP(Material), material);
+        TT_PROPERTY_DEF(TT_SP(Media), media);
         TT_PROPERTY_DEF(int, srcStartIndex);
         TT_PROPERTY_DEF(int, srcEndIndex);
         

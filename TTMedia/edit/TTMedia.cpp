@@ -23,7 +23,7 @@ using namespace TT;
 const static int kMaxFrameCount = 0;
 
 Media::Media(std::shared_ptr<URL> url)
-: Material(MaterialType::kVideo, url)
+: _url(url)
 , _mutex(PTHREAD_MUTEX_INITIALIZER)
 , _stream(nullptr), _demuxer(nullptr), _writer(nullptr)
 , _videoCodec(nullptr), _audioCodec(nullptr)

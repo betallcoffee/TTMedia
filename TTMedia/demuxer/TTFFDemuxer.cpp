@@ -58,7 +58,7 @@ bool FFDemuxer::open(std::shared_ptr<URL> url) {
     
     av_dump_format(_formatContext, 0, _url->cStr(), 0);
     
-    for(int i=0; i<_formatContext->nb_streams; i++){
+    for(int i = 0; i<_formatContext->nb_streams; i++){
         int type = _formatContext->streams[i]->codec->codec_type;
         if (type == AVMEDIA_TYPE_AUDIO) {
             AVStream *stream = _formatContext->streams[i];
@@ -76,6 +76,8 @@ bool FFDemuxer::open(std::shared_ptr<URL> url) {
             _videoCodecParams->height = stream->codecpar->height;
             if (stream->codecpar->codec_id == AV_CODEC_ID_H264) {
                 _videoCodecParams->codecID = CodecID::kCodecIDH264;
+            } else if (stream->codecpar->codec_id == AV_CODEC_ID_PNG) {
+                _videoCodecParams->codecID = CodecID::kCodecIDPNG;
             }
         }
     }
