@@ -41,55 +41,55 @@
 using namespace TT;
 
 bool Filter_ios::bindFramebuffer() {
-    CALL_SEL_RETURN(bindFramebuffer);
+    CALL_SEL_RETURN(Filter, bindFramebuffer);
 }
 
 void Filter_ios::compileShader() {
-    CALL_SEL(compileShader);
+    CALL_SEL(Filter, compileShader);
 }
 
 const GLchar *Filter_ios::vertexShader() {
-    CALL_SEL_RETURN(vertexShader);
+    CALL_SEL_RETURN(Filter, vertexShader);
 }
 
 const GLchar *Filter_ios::fragmentShader() {
-    CALL_SEL_RETURN(fragmentShader);
+    CALL_SEL_RETURN(Filter, fragmentShader);
 }
 
 void Filter_ios::getAttribLocations() {
-    CALL_SEL(getAttribLocations);
+    CALL_SEL(Filter, getAttribLocations);
 }
 
 void Filter_ios::getUniformLocations() {
-    CALL_SEL(getUniformLocations);
+    CALL_SEL(Filter, getUniformLocations);
 }
 
 void Filter_ios::resolveAttribLocations() {
-    CALL_SEL(resolveAttribLocations);
+    CALL_SEL(Filter, resolveAttribLocations);
 }
 
 void Filter_ios::resolveUniformLocations() {
-    CALL_SEL(resolveUniformLocations);
+    CALL_SEL(Filter, resolveUniformLocations);
 }
 
 const GLfloat *Filter_ios::positionVertices() {
-    CALL_SEL_RETURN(positionVertices);
+    CALL_SEL_RETURN(Filter, positionVertices);
 }
 
 const GLfloat *Filter_ios::texCoordForRotation(TexRotations rotation) {
-    CALL_SEL_RETURN_1(texCoordForRotation, rotation);
+    CALL_SEL_RETURN_1(Filter, texCoordForRotation, rotation);
 }
 
 void Filter_ios::updateTexture() {
-    CALL_SEL(updateTexture);
+    CALL_SEL(Filter, updateTexture);
 }
 
 void Filter_ios::draw() {
-    CALL_SEL(draw);
+    CALL_SEL(Filter, draw);
 }
 
 void Filter_ios::notifyFramebufferToFilters(int64_t timestamp) {
-    CALL_SEL_1(notifyFramebufferToFilters, timestamp);
+    CALL_SEL_1(Filter, notifyFramebufferToFilters, timestamp);
 }
 
 

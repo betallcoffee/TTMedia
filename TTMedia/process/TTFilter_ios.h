@@ -13,9 +13,9 @@
 
 #import <Foundation/Foundation.h>
 
+#include "TTDefForObjc.h"
 #include "TTFilter.hpp"
 #include "TTClass.hpp"
-
 
 @protocol TTFilterDelegate <NSObject>
 
@@ -57,9 +57,7 @@ namespace TT {
         Filter_ios() {};
         virtual ~Filter_ios() {};
         
-        void setObject(id<TTFilterDelegate> object) { _object = object; }
-        id<TTFilterDelegate> object() { return _object; }
-        
+        OBJC_DELEGATE(TTFilterDelegate)
     protected:
         virtual bool bindFramebuffer();
         
@@ -82,8 +80,6 @@ namespace TT {
         virtual void notifyFramebufferToFilters(int64_t timestamp);
         
     protected:
-        id<TTFilterDelegate> _object;
-        
         NoCopy(Filter_ios);
         
     };

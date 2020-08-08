@@ -9,41 +9,49 @@
 #ifndef TTDefForObjc_h
 #define TTDefForObjc_h
 
-#define CHECK_SEL(func_name)  ([object() respondsToSelector:@selector(func_name)])
+#define OBJC_DELEGATE(protocol_name) public: \
+void setObject(id<protocol_name> object) { \
+_object = object; \
+} \
+id<protocol_name> object() { return _object; }\
+private: \
+id<protocol_name> _object;
 
-#define CALL_SEL(func_name) \
+#define CHECK_SEL(sel_name)  ([object() respondsToSelector:@selector(sel_name)])
+
+#define CALL_SEL(class_name, sel_name) \
 do { \
-if (CHECK_SEL(func_name)) { \
-[object() func_name]; \
+if (CHECK_SEL(sel_name)) { \
+[object() sel_name]; \
 } else { \
-Filter::func_name(); \
+class_name::sel_name(); \
 } \
 }while(0)
 
-#define CALL_SEL_1(func_name, first) \
+#define CALL_SEL_1(class_name, sel_name, first) \
 do { \
-if (CHECK_SEL(func_name:)) { \
-[object() func_name:first]; \
+if (CHECK_SEL(sel_name:)) { \
+[object() sel_name:first]; \
 } else { \
-Filter::func_name(first); \
+class_name::sel_name(first); \
 } \
 }while(0)
 
-#define CALL_SEL_RETURN(func_name) \
+#define CALL_SEL_RETURN(class_name, sel_name) \
 do { \
-if (CHECK_SEL(func_name)) { \
-return [object() func_name]; \
+if (CHECK_SEL(sel_name)) { \
+return [object() sel_name]; \
 } else { \
-return Filter::func_name(); \
+return class_name::sel_name(); \
 } \
 }while(0)
 
-#define CALL_SEL_RETURN_1(func_name, first) \
+#define CALL_SEL_RETURN_1(class_name, sel_name, first) \
 do { \
-if (CHECK_SEL(func_name:)) { \
-return [object() func_name:first]; \
+if (CHECK_SEL(sel_name:)) { \
+return [object() sel_name:first]; \
 } else { \
-return Filter::func_name(first); \
+return class_name::sel_name(first); \
 } \
 }while(0)
 

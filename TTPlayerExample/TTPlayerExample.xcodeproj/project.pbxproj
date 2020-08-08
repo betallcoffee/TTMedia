@@ -160,6 +160,7 @@
 		EC89E7C521FDC46400E3808E /* TTDemuxerControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC89E7C021FDC46400E3808E /* TTDemuxerControl.cpp */; };
 		EC89E7C621FDC46400E3808E /* TTRenderControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC89E7C221FDC46400E3808E /* TTRenderControl.cpp */; };
 		EC8D83EC1D846E7B00C25D03 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC8D83EB1D846E7B00C25D03 /* CoreVideo.framework */; };
+		ECB04EBE24C3E8FE0095B9DC /* TTDemuxer_ios.mm in Sources */ = {isa = PBXBuildFile; fileRef = ECB04EBD24C3E8FE0095B9DC /* TTDemuxer_ios.mm */; };
 		ECB053DA1F3C13AB00A49FA5 /* TTAudioCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECB053D81F3C13AB00A49FA5 /* TTAudioCodec.cpp */; };
 		ECB053E01F3C629100A49FA5 /* TTAudioQueue_ios.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECB053DE1F3C629100A49FA5 /* TTAudioQueue_ios.cpp */; };
 		ECB053E31F3C632D00A49FA5 /* TTAudioQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECB053E11F3C632D00A49FA5 /* TTAudioQueue.cpp */; };
@@ -485,6 +486,8 @@
 		EC89E7C321FDC46400E3808E /* TTRenderControl.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TTRenderControl.hpp; sourceTree = "<group>"; };
 		EC8D83EB1D846E7B00C25D03 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		ECB04EBA24C3E7BB0095B9DC /* TTDefForObjc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TTDefForObjc.h; sourceTree = "<group>"; };
+		ECB04EBD24C3E8FE0095B9DC /* TTDemuxer_ios.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = TTDemuxer_ios.mm; sourceTree = "<group>"; };
+		ECB04EBF24C3E9150095B9DC /* TTDemuxer_ios.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TTDemuxer_ios.h; sourceTree = "<group>"; };
 		ECB053D81F3C13AB00A49FA5 /* TTAudioCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TTAudioCodec.cpp; sourceTree = "<group>"; };
 		ECB053D91F3C13AB00A49FA5 /* TTAudioCodec.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TTAudioCodec.hpp; sourceTree = "<group>"; };
 		ECB053DE1F3C629100A49FA5 /* TTAudioQueue_ios.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TTAudioQueue_ios.cpp; sourceTree = "<group>"; };
@@ -1010,6 +1013,8 @@
 			children = (
 				EC55087F1FE6610A00C115A8 /* TTDemuxer.cpp */,
 				EC5508801FE6610A00C115A8 /* TTDemuxer.hpp */,
+				ECB04EBD24C3E8FE0095B9DC /* TTDemuxer_ios.mm */,
+				ECB04EBF24C3E9150095B9DC /* TTDemuxer_ios.h */,
 				EC5508811FE6610A00C115A8 /* TTFFDemuxer.cpp */,
 				EC5508821FE6610A00C115A8 /* TTFFDemuxer.hpp */,
 				EC56E569212007180009D8DC /* TTMP4Demuxer.cpp */,
@@ -1764,6 +1769,7 @@
 				EC56E7632139A3440009D8DC /* mp4_stbl_box.c in Sources */,
 				EC4DD36420A35CD400CFBF60 /* TTExposureFilter.cpp in Sources */,
 				EC4E9CA51F1B9E99005C8E36 /* TTOpenGLView.mm in Sources */,
+				ECB04EBE24C3E8FE0095B9DC /* TTDemuxer_ios.mm in Sources */,
 				EC56E79A2139A3440009D8DC /* mp4_default_descr.c in Sources */,
 				EC56E7922139A3440009D8DC /* mp4_stsh_box.c in Sources */,
 				EC56E7732139A3440009D8DC /* mp4_hdlr_box.c in Sources */,

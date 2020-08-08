@@ -186,14 +186,6 @@ bool MP4Demuxer::seek(uint64_t pos) {
     return false;
 }
 
-std::shared_ptr<AudioCodec> MP4Demuxer::audioCodec() {
-    return _audioCodec;
-}
-
-std::shared_ptr<VideoCodec> MP4Demuxer::videoCodec() {
-    return _videoCodec;
-}
-
 uint8_t MP4Demuxer::readByte(mp4_bits_t *bs) {
     void *opaque = mp4_bs_get_read_opaque(bs);
     if (opaque) {

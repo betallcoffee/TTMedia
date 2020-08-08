@@ -13,11 +13,6 @@
 using namespace TT;
 
 Demuxer::Demuxer()
-: _audioStream(nullptr)
-, _videoStream(nullptr)
-, _audioCodecParams(nullptr)
-, _videoCodecParams(nullptr)
-, _isOpened(false)
 {
     
 }
@@ -26,7 +21,7 @@ Demuxer::~Demuxer() {
     
 }
 
-int Demuxer::probe(std::shared_ptr<URL> url) {
+int Demuxer::probe(TT_SP(URL) url) {
     return 0;
 }
 
@@ -41,20 +36,4 @@ std::shared_ptr<Demuxer> Demuxer::createDemuxer(std::shared_ptr<URL> url) {
         return std::make_shared<FFDemuxer>();
     }
     return nullptr;
-}
-
-std::shared_ptr<Stream> Demuxer::audioStream() {
-    return _audioStream;
-}
-
-std::shared_ptr<Stream> Demuxer::videoStream() {
-    return _videoStream;
-}
-
-std::shared_ptr<CodecParams> Demuxer::audioCodecParams() {
-    return _audioCodecParams;
-}
-
-std::shared_ptr<CodecParams> Demuxer::videoCodecParams() {
-    return _videoCodecParams;
 }
