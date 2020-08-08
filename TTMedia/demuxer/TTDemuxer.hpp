@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include "TTdef.h"
+#include "TTDef.h"
 #include "TTURL.hpp"
 
 #include "TTPacket.hpp"

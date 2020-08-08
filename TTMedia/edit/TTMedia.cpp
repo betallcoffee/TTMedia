@@ -7,12 +7,12 @@
 //
 
 #include "easylogging++.h"
-#include "TTdef.h"
+#include "TTDef.h"
 #include "TTMedia.hpp"
 #include "TTMutex.hpp"
 
 #include "TTHTTPIO.hpp"
-#include "TTFFDemuxer.hpp"
+#include "TTDemuxer.hpp"
 #include "TTAudioCodec.hpp"
 #include "TTVideoCodec.hpp"
 
@@ -25,8 +25,6 @@ const static int kMaxFrameCount = 0;
 Media::Media(std::shared_ptr<URL> url)
 : _url(url)
 , _mutex(PTHREAD_MUTEX_INITIALIZER)
-, _stream(nullptr), _demuxer(nullptr), _writer(nullptr)
-, _videoCodec(nullptr), _audioCodec(nullptr)
 , _vFrameArray("video_frame_array", kMaxFrameCount)
 , _aFrameArray("audio_frame_array", kMaxFrameCount)
 , _previews("video_preview_frame", kMaxFrameCount) {
@@ -45,7 +43,7 @@ bool Media::open() {
         return true;
     }
     
-    _demuxer = TT_MK_SP(FFDemuxer)();
+    _demuxer = Demuxer::createDemuxer(url());
     _demuxer->open(url());
     
     if (_demuxer->hasAudio()) {

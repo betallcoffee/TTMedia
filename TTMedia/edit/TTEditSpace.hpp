@@ -12,7 +12,7 @@
 #include <pthread.h>
 #include <vector>
 
-#include "TTdef.h"
+#include "TTDef.h"
 #include "TTMessageLoop.hpp"
 #include "TTFFWriter.hpp"
 #include "TTFilterFrame.hpp"

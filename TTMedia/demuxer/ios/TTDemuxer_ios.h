@@ -11,7 +11,7 @@
 
 #include <Foundation/Foundation.h>
 
-#include "TTdef.h"
+#include "TTDef.h"
 #include "TTDefForObjc.h"
 #include "TTDemuxer.hpp"
 

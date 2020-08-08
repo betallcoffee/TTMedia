@@ -9,7 +9,7 @@
 #ifndef TTTexture3x3SamplingFilter_hpp
 #define TTTexture3x3SamplingFilter_hpp
 
-#include "TTdef.h"
+#include "TTDef.h"
 #include "TTFilter.hpp"
 
 namespace TT {

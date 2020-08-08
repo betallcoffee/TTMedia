@@ -25,7 +25,7 @@ namespace TT {
 class Packet;
 class Frame;
 class Stream;
-class FFDemuxer;
+class Demuxer;
 class FFWriter;
 class AudioCodec;
 class VideoCodec;
@@ -64,18 +64,18 @@ private:
     bool videoDecode(std::shared_ptr<Packet> packet);
     
 private:
-    std::shared_ptr<URL> _saveUrl;
-    size_t _width;
-    size_t _height;
+    std::shared_ptr<URL> _saveUrl = nullptr;
+    size_t _width = 0;
+    size_t _height = 0;
     
-    pthread_mutex_t _mutex;
+    pthread_mutex_t _mutex = PTHREAD_MUTEX_INITIALIZER;
     
-    std::shared_ptr<Stream> _stream;
-    std::shared_ptr<FFDemuxer> _demuxer;
-    std::shared_ptr<FFWriter> _writer;
+    std::shared_ptr<Stream> _stream = nullptr;
+    std::shared_ptr<Demuxer> _demuxer = nullptr;
+    std::shared_ptr<FFWriter> _writer = nullptr;
     
-    std::shared_ptr<AudioCodec> _audioCodec;
-    std::shared_ptr<VideoCodec> _videoCodec;
+    std::shared_ptr<AudioCodec> _audioCodec = nullptr;
+    std::shared_ptr<VideoCodec> _videoCodec = nullptr;
     
     Array<std::shared_ptr<Frame>> _vFrameArray;
     Array<std::shared_ptr<Frame>> _previews;

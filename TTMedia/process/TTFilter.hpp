@@ -14,7 +14,7 @@
 
 #include <OpenGLES/ES2/gl.h>
 
-#include "TTdef.h"
+#include "TTDef.h"
 #include "TTOpenGL.h"
 #include "TTClass.hpp"
 #include "TTProgram.hpp"

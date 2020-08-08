@@ -11,7 +11,7 @@
 
 #include <sys/types.h>
 #include <stdint.h>
-#include "TTdef.h"
+#include "TTDef.h"
 
 namespace TT {
     typedef enum {

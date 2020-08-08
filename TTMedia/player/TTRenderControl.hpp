@@ -10,7 +10,7 @@
 #define TTRenderControl_hpp
 
 #include <memory>
-#include "TTdef.h"
+#include "TTDef.h"
 #include "TTQueue.hpp"
 
 #include "TTClock.hpp"

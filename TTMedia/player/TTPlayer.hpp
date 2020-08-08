@@ -11,7 +11,7 @@
 
 #include <pthread.h>
 
-#include "TTdef.h"
+#include "TTDef.h"
 #include "TTQueue.hpp"
 #include "TTURL.hpp"
 #include "TTCond.hpp"

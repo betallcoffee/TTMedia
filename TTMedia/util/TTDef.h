@@ -1,5 +1,5 @@
 //
-//  TTdef.h
+//  TTDef.h
 //  TTPlayerExample
 //
 //  Created by liang on 18/8/17.

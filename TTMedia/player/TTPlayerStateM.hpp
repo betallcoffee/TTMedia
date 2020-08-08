@@ -11,7 +11,7 @@
 
 #include <memory>
 
-#include "TTdef.h"
+#include "TTDef.h"
 #include "TTStateM.hpp"
 
 namespace TT {

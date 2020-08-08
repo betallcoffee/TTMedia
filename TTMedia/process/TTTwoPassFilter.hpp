@@ -9,7 +9,7 @@
 #ifndef TTTwoPassFilter_hpp
 #define TTTwoPassFilter_hpp
 
-#include "TTdef.h"
+#include "TTDef.h"
 #include "TTFilter.hpp"
 #include "TTFramebuffer.hpp"
 

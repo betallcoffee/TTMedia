@@ -23,7 +23,7 @@ extern "C" {
 };
 #endif
 
-#include "TTdef.h"
+#include "TTDef.h"
 #include "TTCodecParams.hpp"
 #include "TTCodec.hpp"
 

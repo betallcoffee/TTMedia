@@ -10,7 +10,7 @@
 #define TTClip_hpp
 
 #include <vector>
-#include "TTdef.h"
+#include "TTDef.h"
 
 namespace TT {
     class Media;

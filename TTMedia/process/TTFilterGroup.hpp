@@ -12,7 +12,7 @@
 #include <map>
 
 #include "TTFilter.hpp"
-#include "TTdef.h"
+#include "TTDef.h"
 
 namespace TT {
 

@@ -13,7 +13,7 @@
 #include <vector>
 #include <pthread.h>
 
-#include "TTdef.h"
+#include "TTDef.h"
 #include "TTMutex.hpp"
 
 namespace TT {

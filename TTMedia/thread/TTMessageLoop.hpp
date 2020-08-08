@@ -13,7 +13,7 @@
 #include <pthread.h>
 #include <map>
 
-#include "TTdef.h"
+#include "TTDef.h"
 
 #include "TTQueue.hpp"
 
