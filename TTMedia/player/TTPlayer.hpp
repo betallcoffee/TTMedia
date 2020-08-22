@@ -111,7 +111,7 @@ namespace TT {
         virtual void closed() override;
         virtual void error() override;
         
-        TT_PROPERTY_DEF(std::weak_ptr<Player>, player);
+        TT_PROPERTY_DEF_NOINIT(std::weak_ptr<Player>, player);
     };
     
     class VideoCodecObserver : public CodecObserver {
@@ -125,7 +125,7 @@ namespace TT {
         
         virtual void audioDesc(AudioDesc &desc) override {};
         
-        TT_PROPERTY_DEF(std::weak_ptr<Player>, player);
+        TT_PROPERTY_DEF_NOINIT(std::weak_ptr<Player>, player);
     };
     
     class AudioCodecObserver : public CodecObserver {
@@ -139,7 +139,7 @@ namespace TT {
         
         virtual void audioDesc(AudioDesc &desc) override;
         
-        TT_PROPERTY_DEF(std::weak_ptr<Player>, player);
+        TT_PROPERTY_DEF_NOINIT(std::weak_ptr<Player>, player);
     };
 }
 

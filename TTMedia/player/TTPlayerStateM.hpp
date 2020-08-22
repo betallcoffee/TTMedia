@@ -38,7 +38,7 @@ namespace TT {
     public:
         PlayerState(std::shared_ptr<Player> player);
         virtual ~PlayerState() {};
-        TT_PROPERTY_DEF_READONLY(std::weak_ptr<Player>, player);
+        TT_PROPERTY_DEF_READONLY_NOINIT(std::weak_ptr<Player>, player);
         
     protected:
         bool run() override;

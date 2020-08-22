@@ -97,7 +97,7 @@ bool Render::displayFrame(std::shared_ptr<Frame> frame) {
         return false;
     }
     
-    _textureType = frame->dataType;
+    _textureType = frame->dataType();
     if (_renderCtx.setup(_renderCtx.opaque, this)) {
         return _renderCtx.display(_renderCtx.opaque, frame);
     }

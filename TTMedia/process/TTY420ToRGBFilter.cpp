@@ -65,7 +65,7 @@ void Y420ToRGBFilter::updateTexture() {
     if (0 == _textures[0])
         glGenTextures(3, _textures);
     
-    const size_t frameHeight = _frame->height;
+    const size_t frameHeight = _frame->height();
     const size_t heights[3] = { frameHeight, frameHeight / 2, frameHeight / 2 };
     
     for (int i = 0; i < _frame->numOfPlanars; ++i) {

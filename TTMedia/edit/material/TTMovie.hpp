@@ -1,5 +1,5 @@
 //
-//  TTMedia.hpp
+//  TTMovie.hpp
 //  TTPlayerExample
 //
 //  Created by liang on 17/10/17.
@@ -16,6 +16,7 @@
 #include "TTQueue.hpp"
 #include "TTURL.hpp"
 
+#include "TTMaterial.hpp"
 #include "TTFilterFrame.hpp"
 #include "TTAudioQueue.hpp"
 #include "TTRender.hpp"
@@ -23,38 +24,30 @@
 namespace TT {
 
 class Packet;
-class Frame;
 class Stream;
 class Demuxer;
 class FFWriter;
 class AudioCodec;
 class VideoCodec;
 
-class Media {
+class Movie : public Material {
 public:
-    Media(std::shared_ptr<URL> url);
-    ~Media();
+    Movie();
+    ~Movie();
     
-    bool open();
-    bool close();
-    void save(std::shared_ptr<URL> url);
-    bool loadMore();
+    virtual bool open() override;
+    virtual bool close() override;
+    void save(std::shared_ptr<URL> url) override;
+    bool loadMore() override;
     
     int audioFrameCount();
     std::shared_ptr<Frame> audioFrame(int index);
     
-    int frameCount();
-    std::shared_ptr<Frame> frame(int index);
-    
-    size_t width() { return _width; }
-    size_t height() { return _height; }
+    virtual int frameCount() override;
+    virtual TT_SP(Frame) frameAt(int index) override;
     
     int previewCount();
     std::shared_ptr<Frame> preview(int index);
-    
-    TT_PROPERTY_DEF_READONLY(bool, isOpen);
-    TT_PROPERTY_DEF_READONLY(bool, isEnd);
-    TT_PROPERTY_DEF_READONLY(std::shared_ptr<URL>, url);
     
 private:
     bool readData();
@@ -65,8 +58,6 @@ private:
     
 private:
     std::shared_ptr<URL> _saveUrl = nullptr;
-    size_t _width = 0;
-    size_t _height = 0;
     
     pthread_mutex_t _mutex = PTHREAD_MUTEX_INITIALIZER;
     

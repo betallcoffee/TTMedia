@@ -87,12 +87,12 @@ void FFMuxer::flush() {
 }
 
 bool FFMuxer::write(std::shared_ptr<Frame> frame) {
-    if (kMediaTypeVideo == frame->mediaType) {
+    if (kMediaTypeVideo == frame->mediaType()) {
         if (_videoCodec) {
             _videoCodec->encode(frame);
             return true;
         }
-    } else if (kMediaTypeAudio == frame->mediaType) {
+    } else if (kMediaTypeAudio == frame->mediaType()) {
         if (_audioCodec) {
             _audioCodec->encode(frame);
             return true;

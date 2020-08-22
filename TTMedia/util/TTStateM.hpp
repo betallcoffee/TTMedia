@@ -44,7 +44,7 @@ namespace TT {
         
         bool run();
         
-        TT_PROPERTY_DEF_READONLY(std::shared_ptr<State>, state);
+        TT_PROPERTY_DEF_READONLY(std::shared_ptr<State>, state, nullptr);
     private:
         pthread_mutex_t _stateMutex;
     };

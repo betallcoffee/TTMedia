@@ -19,6 +19,7 @@ extern "C" {
 };
 #endif
 
+#include "TTDef.h"
 #include "TTCommon.h"
 
 namespace TT {
@@ -32,8 +33,10 @@ namespace TT {
     class Frame {
     public:
         Frame();
-        Frame(AVFrame *avFrame, MediaType mediaType = kMediaTypeVideo, DataType dataType = kTextureTypeY420p);
         ~Frame();
+        
+        Frame(AVFrame *avFrame, MediaType mediaType = kMediaTypeVideo, DataType dataType = kTextureTypeY420p);
+        Frame(const uint8_t *srcData, size_t srcDataSize, MediaType mediaType, DataType dataType);
         
         AVFrame *avFrame() { return _avFrame; }
         
@@ -42,27 +45,27 @@ namespace TT {
         
         enum {kNumOfPlanars = 3};
         
-        MediaType mediaType;
-        DataType dataType;
-        
-        int tag;
+        int tag = 0;
         
         uint8_t *data[kNumOfPlanars];
         size_t lineSize[kNumOfPlanars];
-        size_t numOfPlanars;
+        size_t numOfPlanars = kNumOfPlanars;
         
-        size_t width;
-        size_t height;
+        int64_t pts = AV_NOPTS_VALUE;
+        int64_t pkt_pts = AV_NOPTS_VALUE;
+        int64_t pkt_dts = AV_NOPTS_VALUE;
         
-        int64_t pts;
-        int64_t pkt_pts;
-        int64_t pkt_dts;
+        enum AVSampleFormat sampleFormat = AV_SAMPLE_FMT_NONE;
         
-        enum AVSampleFormat sampleFormat;
+        TT_PROPERTY_DEF(MediaType, mediaType, kMediaTypeNone);
+        TT_PROPERTY_DEF(DataType, dataType, kTextureTypeRGB);
+        
+        TT_PROPERTY_DEF(size_t, width, 0);
+        TT_PROPERTY_DEF(size_t, height, 0);
         
     private:
-        AVFrame *_avFrame;
-        bool _isKeyFrame;
+        AVFrame *_avFrame = nullptr;
+        bool _isKeyFrame = false;
     };
 }
 

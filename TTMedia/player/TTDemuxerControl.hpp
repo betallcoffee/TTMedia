@@ -48,13 +48,13 @@ namespace TT {
         
         bool seek(int64_t millisecond);
         
-        TT_PROPERTY_DEF_READONLY(std::shared_ptr<MessageLoop>, loop);
+        TT_PROPERTY_DEF_READONLY(std::shared_ptr<MessageLoop>, loop, nullptr);
         
-        TT_PROPERTY_DEF(std::weak_ptr<DemuxerObserver>, observer);
-        TT_PROPERTY_DEF_READONLY(std::shared_ptr<Demuxer>, demuxer);
+        TT_PROPERTY_DEF_NOINIT(std::weak_ptr<DemuxerObserver>, observer);
+        TT_PROPERTY_DEF_READONLY(std::shared_ptr<Demuxer>, demuxer, nullptr);
         typedef Queue<std::shared_ptr<Packet>> PacketQueue;
-        TT_PROPERTY_DEF_READONLY(std::shared_ptr<PacketQueue>, vPacketQueue);
-        TT_PROPERTY_DEF_READONLY(std::shared_ptr<PacketQueue>, aPacketQueue);
+        TT_PROPERTY_DEF_READONLY(std::shared_ptr<PacketQueue>, vPacketQueue, nullptr);
+        TT_PROPERTY_DEF_READONLY(std::shared_ptr<PacketQueue>, aPacketQueue, nullptr);
         
     private:
         void initMessages();

@@ -10,7 +10,8 @@
 #define TTEdit_h
 
 #include "TTEditSpace.hpp"
-#include "TTMedia.hpp"
+#include "TTMovie.hpp"
 #include "TTClip.hpp"
+#include "TTCGImagePicture.h"
 
 #endif /* TTEdit_h */

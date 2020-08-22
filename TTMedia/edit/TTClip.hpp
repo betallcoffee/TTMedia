@@ -11,24 +11,24 @@
 
 #include <vector>
 #include "TTDef.h"
+#include "TTMaterial.hpp"
 
 namespace TT {
-    class Media;
+
+class Clip {
+public:
+    Clip();
+    ~Clip();
     
-    class Clip {
-    public:
-        Clip();
-        ~Clip();
-        
-        TT_PROPERTY_DEF(TT_SP(Media), media);
-        TT_PROPERTY_DEF(int, srcStartIndex);
-        TT_PROPERTY_DEF(int, srcEndIndex);
-        
-        TT_PROPERTY_DEF(int, dstStartIndex);
-        TT_PROPERTY_DEF(int, dstEndIndex);
-        
-    private:
-    };
+    TT_PROPERTY_DEF(TT_SP(Material), material, nullptr);
+    TT_PROPERTY_DEF(int, srcStartIndex, 0);
+    TT_PROPERTY_DEF(int, srcEndIndex, 0);
+    
+    TT_PROPERTY_DEF(int, dstStartIndex, 0);
+    TT_PROPERTY_DEF(int, dstEndIndex, 0);
+    
+private:
+};
 }
 
 #endif /* TTClip_hpp */

@@ -127,9 +127,9 @@
     [self.lock lock];
     [EAGLContext setCurrentContext:_context];
     
-    if (_size.width != frame->width || _size.height != frame->height) {
-        _size = CGSizeMake(frame->width, frame->height);
-        _render->updateBuffers(_sarNum, _sarDen, frame->width, frame->height);
+    if (_size.width != frame->width() || _size.height != frame->height()) {
+        _size = CGSizeMake(frame->width(), frame->height());
+        _render->updateBuffers(_sarNum, _sarDen, frame->width(), frame->height());
     }
     
     PERFORMANCE_CHECKPOINT(timed);

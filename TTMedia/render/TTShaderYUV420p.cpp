@@ -79,7 +79,7 @@ bool ShaderYUV420p::uploadTexture(std::shared_ptr<Frame> frame) {
     if (0 == _textures[0])
         glGenTextures(3, _textures);
     
-    const size_t frameHeight = frame->height;
+    const size_t frameHeight = frame->height();
     const size_t heights[3] = { frameHeight, frameHeight / 2, frameHeight / 2 };
     
     for (int i = 0; i < frame->numOfPlanars; ++i) {

@@ -9,6 +9,19 @@
 #ifndef TTPicture_hpp
 #define TTPicture_hpp
 
-#include <stdio.h>
+#include "TTDef.h"
+#include "TTURL.hpp"
+#include "TTFrame.hpp"
+#include "TTMaterial.hpp"
+
+namespace TT {
+
+class Picture : public Material {
+public:
+    Picture() {};
+    ~Picture() {};
+};
+
+}
 
 #endif /* TTPicture_hpp */

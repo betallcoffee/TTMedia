@@ -20,8 +20,8 @@ FilterFrame::~FilterFrame() {
 void FilterFrame::processFrame(std::shared_ptr<Frame> frame) {
     if (frame) {
         _frame = frame;
-        _width = _frame->width;
-        _height = _frame->height;
+        _width = _frame->width();
+        _height = _frame->height();
         process(frame->pts);
         _frame = nullptr;
     }

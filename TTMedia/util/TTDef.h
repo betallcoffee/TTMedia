@@ -55,11 +55,19 @@ protected: void set##var(type var)
 #define TT_PROPERTY_IMPL(class, type, var) type class::var() { return _##var; } \
 void class::set##var(type var) { _##var = var; }
 
-#define TT_PROPERTY_DEF(type, var) private: type _##var; \
+#define TT_PROPERTY_DEF(type, var, value) private: type _##var = value; \
 public: type var() { return _##var; }; \
 public: void set##var(type var) { _##var = var; }
 
-#define TT_PROPERTY_DEF_READONLY(type, var) private: type _##var; \
+#define TT_PROPERTY_DEF_NOINIT(type, var) private: type _##var; \
+public: type var() { return _##var; }; \
+public: void set##var(type var) { _##var = var; }
+
+#define TT_PROPERTY_DEF_READONLY(type, var, value) private: type _##var = value; \
+public: type var() { return _##var; }; \
+protected: void set##var(type var) { _##var = var; }
+
+#define TT_PROPERTY_DEF_READONLY_NOINIT(type, var) private: type _##var; \
 public: type var() { return _##var; }; \
 protected: void set##var(type var) { _##var = var; }
 

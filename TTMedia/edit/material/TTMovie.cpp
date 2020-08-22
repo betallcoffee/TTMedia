@@ -1,5 +1,5 @@
 //
-//  TTMedia.cpp
+//  TTMovie.cpp
 //  TTPlayerExample
 //
 //  Created by liang on 17/10/17.
@@ -8,7 +8,7 @@
 
 #include "easylogging++.h"
 #include "TTDef.h"
-#include "TTMedia.hpp"
+#include "TTMovie.hpp"
 #include "TTMutex.hpp"
 
 #include "TTHTTPIO.hpp"
@@ -22,9 +22,8 @@ using namespace TT;
 
 const static int kMaxFrameCount = 0;
 
-Media::Media(std::shared_ptr<URL> url)
-: _url(url)
-, _mutex(PTHREAD_MUTEX_INITIALIZER)
+Movie::Movie()
+: _mutex(PTHREAD_MUTEX_INITIALIZER)
 , _vFrameArray("video_frame_array", kMaxFrameCount)
 , _aFrameArray("audio_frame_array", kMaxFrameCount)
 , _previews("video_preview_frame", kMaxFrameCount) {
@@ -34,17 +33,21 @@ Media::Media(std::shared_ptr<URL> url)
     LOG(DEBUG) << "ffmpeg build configure: " << avcodec_configuration();
 }
 
-Media::~Media() {
+Movie::~Movie() {
 }
 
-bool Media::open() {
+bool Movie::open() {
     Mutex m(&_mutex);
+    if (this->url() == nullptr) {
+        return false;
+    }
+    
     if (isOpen()) {
         return true;
     }
     
-    _demuxer = Demuxer::createDemuxer(url());
-    _demuxer->open(url());
+    _demuxer = Demuxer::createDemuxer(this->url());
+    _demuxer->open(this->url());
     
     if (_demuxer->hasAudio()) {
         _audioCodec = TT_MK_SP(AudioCodec)(_demuxer->audioStream()->internalStream());
@@ -61,7 +64,7 @@ bool Media::open() {
     return true;
 }
 
-bool Media::close() {
+bool Movie::close() {
     Mutex m(&_mutex);
     _vFrameArray.clear();
     _previews.clear();
@@ -90,7 +93,7 @@ bool Media::close() {
     return true;
 }
 
-void Media::save(std::shared_ptr<URL> url) {
+void Movie::save(std::shared_ptr<URL> url) {
     Mutex m(&_mutex);
     _saveUrl = url;
     if (_demuxer && _writer == nullptr) {
@@ -112,7 +115,7 @@ void Media::save(std::shared_ptr<URL> url) {
     }
 }
 
-bool Media::loadMore() {
+bool Movie::loadMore() {
     Mutex m(&_mutex);
     if (!isOpen()) {
         return false;
@@ -135,12 +138,12 @@ bool Media::loadMore() {
     }
 }
 
-int Media::audioFrameCount() {
+int Movie::audioFrameCount() {
     Mutex m(&_mutex);
     return static_cast<int>(_aFrameArray.size());
 }
 
-std::shared_ptr<Frame> Media::audioFrame(int index) {
+std::shared_ptr<Frame> Movie::audioFrame(int index) {
     Mutex m(&_mutex);
     if (0 <= index && index < _aFrameArray.size()) {
         return _aFrameArray[index];
@@ -148,12 +151,12 @@ std::shared_ptr<Frame> Media::audioFrame(int index) {
     return nullptr;
 }
 
-int Media::frameCount() {
+int Movie::frameCount() {
     Mutex m(&_mutex);
     return static_cast<int>(_vFrameArray.size());
 }
 
-std::shared_ptr<Frame> Media::frame(int index) {
+std::shared_ptr<Frame> Movie::frameAt(int index) {
     Mutex m(&_mutex);
     if (0 <= index && index < _vFrameArray.size()) {
         return _vFrameArray[index];
@@ -161,12 +164,12 @@ std::shared_ptr<Frame> Media::frame(int index) {
     return nullptr;
 }
 
-int Media::previewCount() {
+int Movie::previewCount() {
     Mutex m(&_mutex);
     return static_cast<int>(_previews.size());
 }
 
-std::shared_ptr<Frame> Media::preview(int index) {
+std::shared_ptr<Frame> Movie::preview(int index) {
     Mutex m(&_mutex);
     if (0 <= index && index < _previews.size()) {
         return _previews[index];
@@ -174,7 +177,7 @@ std::shared_ptr<Frame> Media::preview(int index) {
     return nullptr;
 }
 
-bool Media::readData() {
+bool Movie::readData() {
     std::shared_ptr<Packet> packet = _demuxer->read();
     if (packet) {
         switch (packet->type) {
@@ -193,7 +196,7 @@ bool Media::readData() {
     return true;
 }
 
-bool Media::audioDecode(std::shared_ptr<Packet> packet) {
+bool Movie::audioDecode(std::shared_ptr<Packet> packet) {
     if (packet && _audioCodec) {
         std::shared_ptr<Frame> frame;
         frame = _audioCodec->decode(packet);
@@ -206,13 +209,13 @@ bool Media::audioDecode(std::shared_ptr<Packet> packet) {
     return false;
 }
 
-bool Media::videoDecode(std::shared_ptr<Packet> packet) {
+bool Movie::videoDecode(std::shared_ptr<Packet> packet) {
     if (packet && _videoCodec) {
         std::shared_ptr<Frame> frame;
         frame = _videoCodec->decode(packet);
         if (frame) {
-            _width = frame->width;
-            _height = frame->height;
+            this->setwidth(frame->width());
+            this->setheight(frame->height());
             // Reorder with pts for B frame.
             LOG(TRACE) << "Reorder begin " << frame->pts << " frame count:" << _vFrameArray.size();
             frame->tag = static_cast<int>(_vFrameArray.size());
@@ -235,7 +238,7 @@ bool Media::videoDecode(std::shared_ptr<Packet> packet) {
     return false;
 }
 
-bool Media::writeData() {
+bool Movie::writeData() {
     if (_demuxer && _writer == nullptr) {
         _writer = std::make_shared<FFWriter>();
         if (!_writer->open(_saveUrl, _demuxer->audioCodecParams(), _demuxer->videoCodecParams())) {

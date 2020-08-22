@@ -95,8 +95,8 @@ std::shared_ptr<Frame> VideoCodec::decode(std::shared_ptr<Packet> packet) {
         av_frame_free(&avFrame);
     } else if (gotFrame) {
         std::shared_ptr<Frame> frame = std::make_shared<Frame>(avFrame);
-        frame->mediaType = kMediaTypeVideo;
-        frame->dataType = kTextureTypeY420p;
+        frame->setmediaType(kMediaTypeVideo);
+        frame->setdataType(kTextureTypeY420p);
         frame->pts = avFrame->pts == AV_NOPTS_VALUE ? packet->dts : avFrame->pts;
         AVRational tb = _avStream->time_base;
         frame->pts = frame->pts * av_q2d(tb) * 1000;

@@ -50,7 +50,7 @@ namespace TT {
         void setCodecCallback(std::function<AudioCodecCB> cb) { _cb = cb; }
         
         typedef std::function<void (std::shared_ptr<Packet>)> EncodeFrameCallback;
-        TT_PROPERTY_DEF(EncodeFrameCallback, encodeFrameCallback);
+        TT_PROPERTY_DEF(EncodeFrameCallback, encodeFrameCallback, nullptr);
         
     private:
         void createSwrContext();

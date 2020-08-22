@@ -49,16 +49,16 @@ namespace TT {
         virtual bool start(std::shared_ptr<Stream> stream);
         virtual bool stop();
         
-        TT_PROPERTY_DEF_READONLY(std::shared_ptr<MessageLoop>, loop);
-        TT_PROPERTY_DEF(std::weak_ptr<CodecObserver>, observer);
+        TT_PROPERTY_DEF_READONLY(std::shared_ptr<MessageLoop>, loop, nullptr);
+        TT_PROPERTY_DEF_NOINIT(std::weak_ptr<CodecObserver>, observer);
         
-        TT_PROPERTY_DEF(std::shared_ptr<Codec>, codec);
-        TT_PROPERTY_DEF_READONLY(std::shared_ptr<Stream>, stream);
+        TT_PROPERTY_DEF(std::shared_ptr<Codec>, codec, nullptr);
+        TT_PROPERTY_DEF_READONLY(std::shared_ptr<Stream>, stream, nullptr);
         
         typedef Queue<std::shared_ptr<Packet>> PacketQueue;
-        TT_PROPERTY_DEF(std::shared_ptr<PacketQueue>, packetQueue);
+        TT_PROPERTY_DEF(std::shared_ptr<PacketQueue>, packetQueue, nullptr);
         typedef Queue<std::shared_ptr<Frame>> FrameQueue;
-        TT_PROPERTY_DEF_READONLY(std::shared_ptr<FrameQueue>, frameQueue);
+        TT_PROPERTY_DEF_READONLY(std::shared_ptr<FrameQueue>, frameQueue, nullptr);
         
     private:
         virtual void initMessages();
@@ -84,7 +84,7 @@ namespace TT {
         AudioCodecControl();
         ~AudioCodecControl();
         
-        TT_PROPERTY_DEF_READONLY(AudioDesc, desc);
+        TT_PROPERTY_DEF_READONLY(AudioDesc, desc, {0});
               
     private:
         bool open(std::shared_ptr<Stream> stream) override;

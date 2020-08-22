@@ -39,14 +39,14 @@ namespace TT {
         bool stop();
         void updateAudioClock(int64_t pts);
         
-        TT_PROPERTY_DEF_READONLY(std::shared_ptr<MessageLoop>, loop);
+        TT_PROPERTY_DEF_READONLY(std::shared_ptr<MessageLoop>, loop, nullptr);
         
         typedef Queue<std::shared_ptr<Frame>> FrameQueue;
-        TT_PROPERTY_DEF(std::shared_ptr<FrameQueue>, frameQueue);
+        TT_PROPERTY_DEF(std::shared_ptr<FrameQueue>, frameQueue, nullptr);
         
-        TT_PROPERTY_DEF(std::shared_ptr<Y420ToRGBFilter>, filter);
+        TT_PROPERTY_DEF(std::shared_ptr<Y420ToRGBFilter>, filter, nullptr);
         
-        TT_PROPERTY_DEF(AVSyncClock, clock);
+        TT_PROPERTY_DEF(AVSyncClock, clock, AV_SYNC_AUDIO_MASTER);
         
     private:
         void initMessages();

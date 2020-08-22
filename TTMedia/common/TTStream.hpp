@@ -26,13 +26,13 @@ namespace TT {
         Stream(AVStream *stream);
         virtual ~Stream();
         
-        TT_PROPERTY_DEF(int, index);
-        TT_PROPERTY_DEF(StreamType, type);
-        TT_PROPERTY_DEF(CodecID, codecID);
-        TT_PROPERTY_DEF(TTRational, timeScale);
-        TT_PROPERTY_DEF(uint64_t, duration);
-        TT_PROPERTY_DEF_READONLY(uint8_t *, extraData);
-        TT_PROPERTY_DEF(size_t, extraSize);
+        TT_PROPERTY_DEF(int, index, 0);
+        TT_PROPERTY_DEF(StreamType, type, kStreamTypeNone);
+        TT_PROPERTY_DEF(CodecID, codecID, kCodecIDNone);
+        TT_PROPERTY_DEF(TTRational, timeScale, {});
+        TT_PROPERTY_DEF(uint64_t, duration, 0);
+        TT_PROPERTY_DEF_READONLY(uint8_t *, extraData, nullptr);
+        TT_PROPERTY_DEF(size_t, extraSize, 0);
         
         bool allocExtraData(size_t size);
         
