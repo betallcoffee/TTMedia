@@ -10,7 +10,8 @@
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
 
-#include "TTProcess.h"
+#import "TTProcess.h"
+#import "TTMovieWriter.h"
 
 #import "TTVideoLayer.h"
 

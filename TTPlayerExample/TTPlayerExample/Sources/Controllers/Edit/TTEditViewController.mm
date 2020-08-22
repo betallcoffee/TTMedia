@@ -11,6 +11,8 @@
 #include "TTProcess.h"
 
 #import "TTCapture.h"
+#import "TTRGBTextureFilter.hpp"
+#import "TTImageView.h"
 
 #import "TTEditViewController.h"
 #import "TTPreviewCell.h"
@@ -27,6 +29,7 @@ static NSString *kPreviewCellIdentifier = @"previewCell";
 {
     std::shared_ptr<TT::EditSpace> _editGroup;
     std::shared_ptr<TT::Y420ToRGBFilter> _filterTexture;
+    TT_SP(TT::RGBTextureFilter) _startFilter;
 }
 
 @property (nonatomic, strong) TTSlideSelectView *selectView;
@@ -122,8 +125,11 @@ static NSString *kPreviewCellIdentifier = @"previewCell";
     beautifyFilter->assembleFilters();
     beautifyFilter->addOutput(output);
     
-    _filterTexture = TT_MK_SP(TT::Y420ToRGBFilter)();
-    _filterTexture->addOutput(beautifyFilter);
+//    _filterTexture = TT_MK_SP(TT::Y420ToRGBFilter)();
+//    _filterTexture->addOutput(beautifyFilter);
+    
+    _startFilter = TT_MK_SP(TT::RGBTextureFilter)();
+    _startFilter->addOutput(output);
 }
 
 #pragma mark target/action
@@ -167,12 +173,12 @@ static NSString *kPreviewCellIdentifier = @"previewCell";
 - (void)addMaterial:(NSURL *)url {
     const char *str = [url.absoluteString cStringUsingEncoding:NSUTF8StringEncoding];
     TT_SP(TT::URL) ttUrl = TT_MK_SP(TT::URL)(str);
-//    TTCGImagePicture *picture = [TTCGImagePicture new];
-//    [picture open:ttUrl];
-    std::shared_ptr<TT::Movie> movie = std::make_shared<TT::Movie>();
-    movie->seturl(ttUrl);
-    _editGroup->addMaterial(movie);
-    [self loadMoreForMaterial:movie];
+    TTCGImagePicture *picture = [TTCGImagePicture new];
+    picture.picture->seturl(ttUrl);
+//    std::shared_ptr<TT::Movie> movie = std::make_shared<TT::Movie>();
+//    movie->seturl(ttUrl);
+    _editGroup->addMaterial(picture.picture);
+    [self loadMoreForMaterial:picture.picture];
 }
 
 - (void)loadMoreForMaterial:(std::shared_ptr<TT::Material>)material {
@@ -185,6 +191,12 @@ static NSString *kPreviewCellIdentifier = @"previewCell";
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.selectView.previewBar reloadData];
     });
+}
+
+- (void)processFrame:(TT_SP(TT::Frame))frame
+{
+//    _filterTexture->processFrame(frame);
+    _startFilter->processFrame(frame);
 }
 
 #pragma mark -- UICollectionViewDataSource
@@ -257,7 +269,7 @@ static NSString *kPreviewCellIdentifier = @"previewCell";
         std::shared_ptr<TT::Material> material = _editGroup->material(static_cast<int>(indexPath.section));
         if(material) {
             std::shared_ptr<TT::Frame> frame = material->frameAt(static_cast<int>(indexPath.row));
-            _filterTexture->processFrame(frame);
+            [self processFrame:frame];
         }
     }
 }
@@ -270,7 +282,7 @@ static NSString *kPreviewCellIdentifier = @"previewCell";
     std::shared_ptr<TT::Material> material = _editGroup->material(static_cast<int>(indexPath.section));
     if(material) {
         std::shared_ptr<TT::Frame> frame = material->frameAt(static_cast<int>(indexPath.row));
-        _filterTexture->processFrame(frame);
+        [self processFrame:frame];
     }
     [collectionView reloadData];
 }

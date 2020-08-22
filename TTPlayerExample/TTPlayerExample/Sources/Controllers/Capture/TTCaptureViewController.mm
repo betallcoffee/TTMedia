@@ -7,7 +7,8 @@
 //
 
 #import "TTPlayer_ios.h"
-#include "TTProcess.h"
+#import "TTProcess.h"
+#import "TTImageView.h"
 #import "TTCapture.h"
 #import "TTCaptureButton.h"
 

@@ -32,10 +32,10 @@
     return _picture;
 }
 
-- (BOOL)open:(TT_SP(TT::URL))url
+- (BOOL)open
 {
-    NSString *strUrl = [[NSString alloc] initWithCString:url->cStr()
-                                                encoding:NSUTF8StringEncoding];
+    TT_SP(TT::Picture) picture = [self picture];
+    NSString *strUrl = [[NSString alloc] initWithCString:picture->url()->cStr()                                                encoding:NSUTF8StringEncoding];
     NSURL *nsUrl = [NSURL URLWithString:strUrl];
     CGImageSourceRef source = CGImageSourceCreateWithURL((CFURLRef)nsUrl, nil);
     CGImageRef cgImage = CGImageSourceCreateImageAtIndex(source, 0, nil);
@@ -63,9 +63,9 @@
 
 using namespace TT;
 
-bool Picture_ios::open(TT_SP(URL) url)
+bool Picture_ios::open()
 {
-    CALL_SEL_RETURN_1(Picture, open, url);
+    CALL_SEL_RETURN(Picture, open);
 }
 
 bool Picture_ios::close()

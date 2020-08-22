@@ -218,6 +218,7 @@
 		ECFEDFCB24F0D9C100F94294 /* TTMaterial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECFEDFC624F0D9C100F94294 /* TTMaterial.cpp */; };
 		ECFEDFCC24F0D9C100F94294 /* TTMovie.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECFEDFC824F0D9C100F94294 /* TTMovie.cpp */; };
 		ECFEDFCD24F0D9C100F94294 /* TTPicture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECFEDFCA24F0D9C100F94294 /* TTPicture.cpp */; };
+		ECFEDFD624F1836B00F94294 /* TTRGBTextureFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECFEDFD424F1836B00F94294 /* TTRGBTextureFilter.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -711,6 +712,8 @@
 		ECFEDFC824F0D9C100F94294 /* TTMovie.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TTMovie.cpp; sourceTree = "<group>"; };
 		ECFEDFC924F0D9C100F94294 /* TTMaterial.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TTMaterial.hpp; sourceTree = "<group>"; };
 		ECFEDFCA24F0D9C100F94294 /* TTPicture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TTPicture.cpp; sourceTree = "<group>"; };
+		ECFEDFD424F1836B00F94294 /* TTRGBTextureFilter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTRGBTextureFilter.cpp; sourceTree = "<group>"; };
+		ECFEDFD524F1836B00F94294 /* TTRGBTextureFilter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTRGBTextureFilter.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -810,6 +813,8 @@
 				EC48ACF22053E6C40009C0C2 /* TTFilterFrame.hpp */,
 				ECC66E2F1F5A9AB3003F2076 /* TTFilterTexture.cpp */,
 				ECC66E301F5A9AB3003F2076 /* TTFilterTexture.hpp */,
+				ECFEDFD424F1836B00F94294 /* TTRGBTextureFilter.cpp */,
+				ECFEDFD524F1836B00F94294 /* TTRGBTextureFilter.hpp */,
 				EC1A209C1F45333E00632C0D /* TTY420ToRGBFilter.cpp */,
 				EC1A209D1F45333E00632C0D /* TTY420ToRGBFilter.hpp */,
 				ECE49F5C1F5A44AE004FE7C2 /* TTNV12ToRGBFilter.cpp */,
@@ -1952,6 +1957,7 @@
 				EC56E7802139A3440009D8DC /* mp4_mp4s_box.c in Sources */,
 				EC89E7C621FDC46400E3808E /* TTRenderControl.cpp in Sources */,
 				EC475D2124B9BC8900D738B0 /* TTWeakPixelInclusionFilter.cpp in Sources */,
+				ECFEDFD624F1836B00F94294 /* TTRGBTextureFilter.cpp in Sources */,
 				EC56E7772139A3440009D8DC /* mp4_moov_box.c in Sources */,
 				ECF629CB1F7E4A4D0088CEEA /* TTContrastFilter.cpp in Sources */,
 				ECB053EC1F3E94EC00A49FA5 /* easylogging++.cc in Sources */,

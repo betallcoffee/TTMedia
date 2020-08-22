@@ -6,12 +6,14 @@
 //  Copyright (c) 2015 tina. All rights reserved.
 //
 
-#include <memory>
+#import <memory>
 
 #import "TTPlayer_ios.h"
-#include "TTAudio.h"
-#include "TTProcess.h"
+#import "TTAudio.h"
+#import "TTProcess.h"
 #import "TTCapture.h"
+#import "TTMovieWriter.h"
+#import "TTImageView.h"
 
 #import "TTAVPlayerView.h"
 #import "ViewController.h"

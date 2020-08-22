@@ -8,7 +8,8 @@
 
 #import "Masonry.h"
 
-#include "TTProcess.h"
+#import "TTProcess.h"
+#import "TTImageView.h"
 #import "TTPreviewCell.h"
 
 @interface TTPreviewCell()

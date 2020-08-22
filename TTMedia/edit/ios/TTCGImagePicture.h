@@ -22,7 +22,7 @@
 @required
 - (TT_SP(TT::Picture))picture;
 
-- (BOOL)open:(TT_SP(TT::URL))url;
+- (BOOL)open;
 - (BOOL)close;
 
 @end
@@ -31,7 +31,7 @@
 
 - (TT_SP(TT::Picture))picture;
 
-- (BOOL)open:(TT_SP(TT::URL))url;
+- (BOOL)open;
 - (BOOL)close;
 
 @end
@@ -43,7 +43,7 @@ public:
     Picture_ios() {};
     ~Picture_ios() {};
     
-    bool open(TT_SP(URL) url) override;
+    bool open() override;
     bool close() override;
     
     OBJC_DELEGATE(TTPictureDelegate);
