@@ -18,6 +18,8 @@
 
 @implementation TTEditListViewController
 
+#pragma mark -- UITableViewDelegate
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     TTMovieItemViewModel *item = [self.viewModel itemAtIndex:indexPath.row];
     TTEditViewController *editVC = [[TTEditViewController alloc] initWithURLs:@[item.url]];

@@ -77,6 +77,8 @@
 
 - (void)setupUI {
     self.view.backgroundColor = [UIColor whiteColor];
+    self.view.layer.masksToBounds = YES;
+    self.view.layer.cornerRadius = 5;
     
     _imageView = [TTImageView new];
     _imageView.contentMode = UIViewContentModeScaleAspectFit;
@@ -97,10 +99,9 @@
     }];
     
     self.brightnessLabel.text = @"bright";
-    self.brightnessLabel.textColor = [UIColor whiteColor];
+    self.brightnessLabel.textColor = [UIColor blackColor];
     [self.view addSubview:self.brightnessLabel];
     [self.brightnessLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.brightnessLabel.superview).with.offset(5);
         make.bottom.equalTo(self.captureButton.mas_top).with.offset(-40);
     }];
     
@@ -114,15 +115,15 @@
     [self.brightnessSlider mas_makeConstraints:^(MASConstraintMaker *make) {
         make.width.mas_equalTo(200);
         make.height.mas_equalTo(44);
-        make.left.mas_equalTo(self.brightnessLabel.mas_right).with.offset(5);
+        make.left.equalTo(self.brightnessLabel.mas_right).with.offset(5);
+        make.centerX.equalTo(self.captureButton);
         make.centerY.equalTo(self.brightnessLabel);
     }];
     
     self.contrastLabel.text = @"contrast";
-    self.contrastLabel.textColor = [UIColor whiteColor];
+    self.contrastLabel.textColor = [UIColor blackColor];
     [self.view addSubview:self.contrastLabel];
     [self.contrastLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.contrastLabel.superview).with.offset(5);
         make.bottom.equalTo(self.brightnessLabel.mas_top).with.offset(-10);
     }];
     
@@ -136,15 +137,15 @@
     [self.contrastSlider mas_makeConstraints:^(MASConstraintMaker *make) {
         make.width.mas_equalTo(200);
         make.height.mas_equalTo(44);
-        make.left.mas_equalTo(self.contrastLabel.mas_right).with.offset(5);
+        make.left.equalTo(self.contrastLabel.mas_right).with.offset(5);
+        make.centerX.equalTo(self.captureButton);
         make.centerY.equalTo(self.contrastLabel);
     }];
     
     self.saturationLabel.text = @"saturation";
-    self.saturationLabel.textColor = [UIColor whiteColor];
+    self.saturationLabel.textColor = [UIColor blackColor];
     [self.view addSubview:self.saturationLabel];
     [self.saturationLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.saturationLabel.superview).with.offset(5);
         make.bottom.equalTo(self.contrastLabel.mas_top).with.offset(-10);
     }];
     
@@ -158,7 +159,8 @@
     [self.saturationSlider mas_makeConstraints:^(MASConstraintMaker *make) {
         make.width.mas_equalTo(200);
         make.height.mas_equalTo(44);
-        make.left.mas_equalTo(self.saturationLabel.mas_right).with.offset(5);
+        make.left.equalTo(self.saturationLabel.mas_right).with.offset(5);
+        make.centerX.equalTo(self.captureButton);
         make.centerY.equalTo(self.saturationLabel);
     }];
 }

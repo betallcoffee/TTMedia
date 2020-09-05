@@ -64,6 +64,18 @@ static NSString *kPreviewCellIdentifier = @"previewCell";
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(onSaveButton:)];
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    self.navigationController.navigationBar.hidden = NO;
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    self.navigationController.navigationBar.hidden = YES;
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -73,6 +85,8 @@ static NSString *kPreviewCellIdentifier = @"previewCell";
 #pragma mark UI
 - (void)setupUI {
     self.view.backgroundColor = [UIColor whiteColor];
+    self.view.layer.masksToBounds = YES;
+    self.view.layer.cornerRadius = 5;
     
     self.imageView = [TTImageView new];
     self.imageView.contentMode = UIViewContentModeScaleAspectFit;
@@ -103,7 +117,7 @@ static NSString *kPreviewCellIdentifier = @"previewCell";
 //    
 //    TT_SP(TT::Filter) grayscaleFilter = TT_MK_SP(TT::GrayscaleFilter)();
 //    grayscaleFilter->addOutput(output);
-//    
+//
 //    TT_SP(TT::Filter) singleComponentGaussianBlurFilter = TT_MK_SP(TT::SingleComponentGaussianBlurFilter)();
 //    singleComponentGaussianBlurFilter->addOutput(output);
 //    
@@ -117,9 +131,9 @@ static NSString *kPreviewCellIdentifier = @"previewCell";
 //    TT_SP(TT::Filter) weakPixelInclusionFilter = TT_MK_SP(TT::WeakPixelInclusionFilter)();
 //    weakPixelInclusionFilter->addOutput(output);
     
-//    TT_SP(TT::FilterGroup) cannyEdgeDetectionFilter = TT_MK_SP(TT::CannyEdgeDetectionFilter)();
-//    cannyEdgeDetectionFilter->assembleFilters();
-//    cannyEdgeDetectionFilter->addOutput(output);
+    TT_SP(TT::FilterGroup) cannyEdgeDetectionFilter = TT_MK_SP(TT::CannyEdgeDetectionFilter)();
+    cannyEdgeDetectionFilter->assembleFilters();
+    cannyEdgeDetectionFilter->addOutput(output);
     
     TT_SP(TT::FilterGroup) beautifyFilter = TT_MK_SP(TT::BeautifyFilter)();
     beautifyFilter->assembleFilters();
@@ -129,7 +143,7 @@ static NSString *kPreviewCellIdentifier = @"previewCell";
 //    _filterTexture->addOutput(beautifyFilter);
     
     _startFilter = TT_MK_SP(TT::RGBTextureFilter)();
-    _startFilter->addOutput(output);
+    _startFilter->addOutput(cannyEdgeDetectionFilter);
 }
 
 #pragma mark target/action

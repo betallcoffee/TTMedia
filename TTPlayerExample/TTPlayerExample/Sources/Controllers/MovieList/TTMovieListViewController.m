@@ -62,6 +62,8 @@
 - (void)setupUI {
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
+    self.tableView.layer.masksToBounds = YES;
+    self.tableView.layer.cornerRadius = 5;
     [self.view addSubview:self.tableView];
     [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(self.tableView.superview);
