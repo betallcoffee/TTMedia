@@ -9,12 +9,15 @@
 #ifndef TTProcess_h
 #define TTProcess_h
 
+#include "TTFrame.hpp"
+
 #include "TTFilter.hpp"
 #include "TTFilterGroup.hpp"
 #include "TTTwoPassFilter.hpp"
 
 #include "TTY420ToRGBFilter.hpp"
 #include "TTNV12ToRGBFilter.hpp"
+#include "TTRGBTextureFilter.hpp"
 
 // color
 #include "TTBrightnessFilter.hpp"

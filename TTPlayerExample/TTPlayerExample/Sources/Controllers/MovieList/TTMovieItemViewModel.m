@@ -11,13 +11,23 @@
 @interface TTMovieItemViewModel ()
 
 @property (nonatomic, copy) NSURL *url;
+@property (nonatomic, copy) NSDictionary *attr;
 
 @end
 
 @implementation TTMovieItemViewModel
+@synthesize type = _type;
 
-- (void)configData:(NSURL *)url {
+- (void)configURL:(NSURL *)url
+{
+    NSDictionary *attr = [[NSFileManager defaultManager] attributesOfItemAtPath:url.path error:nil];
     self.url = url;
+    self.attr = attr;
+    if ([self.url.pathExtension isEqualToString:@"png"]) {
+        _type = kItemTypeImage;
+    }
+    NSLog(@"url: %@", url);
+    NSLog(@"attr: %@", attr);
 }
 
 #pragma mark -

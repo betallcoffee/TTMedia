@@ -8,14 +8,21 @@
 
 #import "TTBaseViewModel.h"
 
+typedef enum : NSUInteger {
+    kItemTypeNone,
+    kItemTypeImage,
+    kItemTypeMovie,
+} ItemType;
+
 @interface TTMovieItemViewModel : TTBaseViewModel
 
+@property (nonatomic, assign, readonly) ItemType type;
 @property (nonatomic, assign, readonly) NSUInteger height;
 
-@property (nonatomic, strong, readonly) NSString *name;
-@property (nonatomic, readonly) NSURL *url;
-@property (nonatomic, assign) NSNumber *size;
+@property (nonatomic, copy, readonly) NSString *name;
+@property (nonatomic, copy, readonly) NSURL *url;
+@property (nonatomic, assign, readonly) NSNumber *size;
 
-- (void)configData:(NSURL *)url;
+- (void)configURL:(NSURL *)url;
 
 @end

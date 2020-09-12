@@ -14,4 +14,7 @@
 #include "TTClip.hpp"
 #include "TTCGImagePicture.h"
 
+#include "TTFilterList.hpp"
+#include "TTImageFilterFactory.hpp"
+
 #endif /* TTEdit_h */

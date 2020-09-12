@@ -27,10 +27,8 @@
 - (TTMovieItemViewModel *)itemAtIndex:(NSUInteger)index {
     TTMovieItemViewModel *item = [TTMovieItemViewModel new];
     NSURL *url = [self.movieList objectAtIndex:index];
-    NSDictionary *attr = [[NSFileManager defaultManager] attributesOfItemAtPath:url.path error:nil];
     NSLog(@"url: %@", url);
-    NSLog(@"attr: %@", attr);
-    [item configData:url];
+    [item configURL:url];
     return item;
 }
 

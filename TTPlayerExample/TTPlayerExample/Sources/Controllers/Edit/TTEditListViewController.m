@@ -6,11 +6,12 @@
 //  Copyright © 2018年 tina. All rights reserved.
 //
 
+#import "TTEditListViewController.h"
 #import "TTMovieListViewModel.h"
 #import "TTMovieItemViewModel.h"
-
 #import "TTEditViewController.h"
-#import "TTEditListViewController.h"
+#import "TTEditImageViewController.h"
+
 
 @interface TTEditListViewController ()
 
@@ -22,8 +23,13 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     TTMovieItemViewModel *item = [self.viewModel itemAtIndex:indexPath.row];
-    TTEditViewController *editVC = [[TTEditViewController alloc] initWithURLs:@[item.url]];
-    [self.navigationController pushViewController:editVC animated:YES];
+    if (item.type == kItemTypeImage) {
+        TTEditImageViewController *editVC = [[TTEditImageViewController alloc] initWithURLs:@[item.url]];
+        [self.navigationController pushViewController:editVC animated:YES];
+    } else {
+        TTEditViewController *editVC = [[TTEditViewController alloc] initWithURLs:@[item.url]];
+        [self.navigationController pushViewController:editVC animated:YES];
+    }
 }
 
 @end

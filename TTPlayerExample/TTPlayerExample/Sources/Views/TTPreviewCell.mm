@@ -43,6 +43,7 @@
         _label = [UILabel new];
         _label.backgroundColor = UIColor.clearColor;
         _label.textColor = UIColor.blueColor;
+        _label.numberOfLines = 10;
         [self.contentView addSubview:_label];
         [_label mas_makeConstraints:^(MASConstraintMaker *make) {
             make.edges.equalTo(_label.superview);
