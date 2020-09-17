@@ -1,6 +1,6 @@
 //
 //  TTMessageLoop.hpp
-//  TTPlayerExample
+//  TTMedia
 //
 //  Created by liang on 22/4/18.
 //  Copyright © 2018年 tina. All rights reserved.

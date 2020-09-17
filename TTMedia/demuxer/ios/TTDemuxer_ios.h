@@ -1,6 +1,6 @@
 //
 //  TTDemuxer_ios.h
-//  TTPlayerExample
+//  TTMedia
 //
 //  Created by liang on 19/7/2020.
 //  Copyright © 2020 tina. All rights reserved.

@@ -1,6 +1,6 @@
 //
 //  TTProcess.h
-//  TTPlayerExample
+//  TTMedia
 //
 //  Created by liang on 18/8/17.
 //  Copyright © 2017年 tina. All rights reserved.

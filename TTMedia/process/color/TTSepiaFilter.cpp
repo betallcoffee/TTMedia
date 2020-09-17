@@ -1,6 +1,6 @@
 //
 //  TTSepiaFilter.cpp
-//  TTPlayerExample
+//  TTMedia
 //
 //  Created by liang on 22/1/20.
 //  Copyright © 2020年 tina. All rights reserved.

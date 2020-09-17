@@ -1,6 +1,6 @@
 //
 //  TTIOAudioUnit_ios.hpp
-//  TTPlayerExample
+//  TTMedia
 //
 //  Created by liang on 17/3/19.
 //  Copyright © 2019年 tina. All rights reserved.

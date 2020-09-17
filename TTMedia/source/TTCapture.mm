@@ -1,6 +1,6 @@
 //
 //  TTCapture.m
-//  TTPlayerExample
+//  TTMedia
 //
 //  Created by liang on 1/9/17.
 //  Copyright © 2017年 tina. All rights reserved.

@@ -1,6 +1,6 @@
 //
 //  TTQueue.m
-//  TTPlayerExample
+//  TTMedia
 //
 //  Created by liang on 2/16/16.
 //  Copyright © 2016 tina. All rights reserved.

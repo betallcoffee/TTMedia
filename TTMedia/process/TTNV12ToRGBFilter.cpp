@@ -1,6 +1,6 @@
 //
 //  TTNV12ToRGBFilter.cpp
-//  TTPlayerExample
+//  TTMedia
 //
 //  Created by liang on 2/9/17.
 //  Copyright © 2017年 tina. All rights reserved.

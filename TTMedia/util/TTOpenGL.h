@@ -1,6 +1,6 @@
 //
 //  TTOpenGL.h
-//  TTPlayerExample
+//  TTMedia
 //
 //  Created by liang on 30/10/18.
 //  Copyright © 2018年 tina. All rights reserved.

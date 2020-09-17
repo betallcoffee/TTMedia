@@ -1,6 +1,6 @@
 //
 //  TTRGBTextureFilter.cpp
-//  TTPlayerExample
+//  TTMedia
 //
 //  Created by liang on 23/8/2020.
 //  Copyright © 2020 tina. All rights reserved.

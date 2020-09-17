@@ -1,6 +1,6 @@
 //
 //  TTPlayerControl.m
-//  TTPlayerExample
+//  TTMedia
 //
 //  Created by liang on 12/14/15.
 //  Copyright (c) 2015 tina. All rights reserved.

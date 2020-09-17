@@ -1,6 +1,6 @@
 //
 //  TTImageFilterFactory.hpp
-//  TTPlayerExample
+//  TTMedia
 //
 //  Created by liang on 5/9/2020.
 //  Copyright © 2020 tina. All rights reserved.

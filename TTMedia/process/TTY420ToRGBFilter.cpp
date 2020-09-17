@@ -1,6 +1,6 @@
 //
 //  TTY420ToRGBFilter.cpp
-//  TTPlayerExample
+//  TTMedia
 //
 //  Created by liang on 17/8/17.
 //  Copyright © 2017年 tina. All rights reserved.

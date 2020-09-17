@@ -1,6 +1,6 @@
 //
 //  TTColorMatrixFilter.cpp
-//  TTPlayerExample
+//  TTMedia
 //
 //  Created by liang on 21/1/20.
 //  Copyright © 2020年 tina. All rights reserved.

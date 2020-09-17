@@ -1,6 +1,6 @@
 //
 //  TTPlayer.hpp
-//  TTPlayerExample
+//  TTMedia
 //
 //  Created by liang on 8/21/16.
 //  Copyright © 2016 tina. All rights reserved.

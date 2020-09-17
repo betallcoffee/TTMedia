@@ -1,6 +1,6 @@
 //
 //  TTSaturationFilter.hpp
-//  TTPlayerExample
+//  TTMedia
 //
 //  Created by liang on 30/9/17.
 //  Copyright © 2017年 tina. All rights reserved.

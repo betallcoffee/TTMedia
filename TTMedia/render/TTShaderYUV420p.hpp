@@ -1,6 +1,6 @@
 //
 //  TTRenderYUV420p.hpp
-//  TTPlayerExample
+//  TTMedia
 //
 //  Created by liang on 16/7/17.
 //  Copyright © 2017年 tina. All rights reserved.

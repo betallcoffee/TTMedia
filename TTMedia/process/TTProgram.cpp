@@ -1,6 +1,6 @@
 //
 //  TTProgram.cpp
-//  TTPlayerExample
+//  TTMedia
 //
 //  Created by liang on 16/8/17.
 //  Copyright © 2017年 tina. All rights reserved.

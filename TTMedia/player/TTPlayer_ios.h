@@ -1,6 +1,6 @@
 //
 //  TTPlayer_ios.h
-//  TTPlayerExample
+//  TTMedia
 //
 //  Created by liang on 19/7/17.
 //  Copyright © 2017年 tina. All rights reserved.

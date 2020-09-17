@@ -1,6 +1,6 @@
 //
 //  TTOpenGLLayer.m
-//  TTPlayerExample
+//  TTMedia
 //
 //  Created by liang on 12/21/15.
 //  Copyright (c) 2015 tina. All rights reserved.

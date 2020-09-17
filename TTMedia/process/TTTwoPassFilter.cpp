@@ -1,6 +1,6 @@
 //
 //  TTTwoPassFilter.cpp
-//  TTPlayerExample
+//  TTMedia
 //
 //  Created by liang on 26/1/2020.
 //  Copyright © 2020 tina. All rights reserved.

@@ -1,6 +1,6 @@
 //
 //  TTEdit.h
-//  TTPlayerExample
+//  TTMedia
 //
 //  Created by liang on 24/3/18.
 //  Copyright © 2018年 tina. All rights reserved.
