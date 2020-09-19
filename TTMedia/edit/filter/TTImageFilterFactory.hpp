@@ -11,7 +11,7 @@
 
 #include <string.h>
 #include "TTDef.h"
-#include "TTFilter.hpp"
+#include "TTProcess.h"
 
 namespace TT {
 
@@ -27,6 +27,7 @@ public:
 private:
     static TT_SP(Filter) createBeautifyFilter();
     static TT_SP(Filter) createCannyEdgeDetectionFilter();
+    static TT_SP(Filter) createEmbossFilter();
 };
 
 }

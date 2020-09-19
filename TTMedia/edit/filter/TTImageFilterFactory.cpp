@@ -13,7 +13,7 @@ using namespace TT;
 
 int32_t ImageFilterFactory::filterCount()
 {
-    return 2;
+    return 3;
 }
 
 std::string ImageFilterFactory::filterName(int32_t index)
@@ -23,6 +23,8 @@ std::string ImageFilterFactory::filterName(int32_t index)
             return "CannyEdgeDetection";
         case 1:
             return "Beautify";
+        case 2:
+            return "Emboss";
         default:
             break;
     }
@@ -37,6 +39,8 @@ TT_SP(Filter) ImageFilterFactory::createFilter(int32_t index)
             return createCannyEdgeDetectionFilter();
         case 1:
             return createBeautifyFilter();
+        case 2:
+            return createEmbossFilter();
         default:
             break;
     }
@@ -46,7 +50,7 @@ TT_SP(Filter) ImageFilterFactory::createFilter(int32_t index)
 
 TT_SP(Filter) ImageFilterFactory::createBeautifyFilter()
 {
-    TT_SP(TT::FilterGroup) cannyEdgeDetectionFilter = TT_MK_SP(TT::CannyEdgeDetectionFilter)();
+    TT_SP(FilterGroup) cannyEdgeDetectionFilter = TT_MK_SP(CannyEdgeDetectionFilter)();
     cannyEdgeDetectionFilter->assembleFilters();
     
     return cannyEdgeDetectionFilter;
@@ -54,8 +58,15 @@ TT_SP(Filter) ImageFilterFactory::createBeautifyFilter()
 
 TT_SP(Filter) ImageFilterFactory::createCannyEdgeDetectionFilter()
 {
-    TT_SP(TT::FilterGroup) beautifyFilter = TT_MK_SP(TT::BeautifyFilter)();
+    TT_SP(FilterGroup) beautifyFilter = TT_MK_SP(BeautifyFilter)();
     beautifyFilter->assembleFilters();
     
     return beautifyFilter;
+}
+
+TT_SP(Filter) ImageFilterFactory::createEmbossFilter()
+{
+    TT_SP(EmbossFilter) embossFilter = TT_MK_SP(EmbossFilter)();
+    embossFilter->setintensity(4.0);
+    return embossFilter;
 }

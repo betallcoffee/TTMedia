@@ -22,7 +22,7 @@ public:
     void setTexelWidth(float width) { _texelWidth = width; }
     void setTexelHeight(float height) { _texelHeight = height; }
     
-private:
+protected:
     virtual void setupFilterSize() override;
     
     /**

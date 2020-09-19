@@ -39,7 +39,11 @@
 #include "TTDirectionalNonmaximumSuppressionFilter.hpp"
 #include "TTWeakPixelInclusionFilter.hpp"
 #include "TTCannyEdgeDetectionFilter.hpp"
+
+// effect
+#include "TTBuffingFilter.hpp"
 #include "TTBeautifyFilter.hpp"
+#include "TTEmbossFilter.hpp"
 
 
 

@@ -24,7 +24,7 @@
 @implementation TTPreviewCell
 
 - (void)setupUI {
-    self.backgroundColor = [UIColor redColor];
+    self.backgroundColor = UIColor.clearColor;
     if (_imageView == nil) {
         _imageView = [TTImageView new];
         _imageView.contentMode = UIViewContentModeScaleAspectFit;
