@@ -166,6 +166,8 @@
 		EC960FD92503A04100C2C0F6 /* TTEditImageViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = EC960FD82503A04100C2C0F6 /* TTEditImageViewController.mm */; };
 		EC960FDC25159B3000C2C0F6 /* TTConvolution3x3Filter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC960FDA25159B3000C2C0F6 /* TTConvolution3x3Filter.cpp */; };
 		EC9E48E22515ABCB00DC4DB0 /* TTEmbossFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC9E48E02515ABCB00DC4DB0 /* TTEmbossFilter.cpp */; };
+		EC9E48E6251672C400DC4DB0 /* TTMP4Box.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC9E48E4251672C400DC4DB0 /* TTMP4Box.cpp */; };
+		EC9E48E9251BB3E000DC4DB0 /* TTMP4.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC9E48E7251BB3E000DC4DB0 /* TTMP4.cpp */; };
 		ECB053DA1F3C13AB00A49FA5 /* TTAudioCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECB053D81F3C13AB00A49FA5 /* TTAudioCodec.cpp */; };
 		ECB053E01F3C629100A49FA5 /* TTAudioQueue_ios.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECB053DE1F3C629100A49FA5 /* TTAudioQueue_ios.cpp */; };
 		ECB053E31F3C632D00A49FA5 /* TTAudioQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECB053E11F3C632D00A49FA5 /* TTAudioQueue.cpp */; };
@@ -499,6 +501,10 @@
 		EC960FDB25159B3000C2C0F6 /* TTConvolution3x3Filter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTConvolution3x3Filter.hpp; sourceTree = "<group>"; };
 		EC9E48E02515ABCB00DC4DB0 /* TTEmbossFilter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTEmbossFilter.cpp; sourceTree = "<group>"; };
 		EC9E48E12515ABCB00DC4DB0 /* TTEmbossFilter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTEmbossFilter.hpp; sourceTree = "<group>"; };
+		EC9E48E4251672C400DC4DB0 /* TTMP4Box.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTMP4Box.cpp; sourceTree = "<group>"; };
+		EC9E48E5251672C400DC4DB0 /* TTMP4Box.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTMP4Box.hpp; sourceTree = "<group>"; };
+		EC9E48E7251BB3E000DC4DB0 /* TTMP4.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTMP4.cpp; sourceTree = "<group>"; };
+		EC9E48E8251BB3E000DC4DB0 /* TTMP4.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTMP4.hpp; sourceTree = "<group>"; };
 		ECB04EBA24C3E7BB0095B9DC /* TTDefForObjc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TTDefForObjc.h; sourceTree = "<group>"; };
 		ECB053D81F3C13AB00A49FA5 /* TTAudioCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TTAudioCodec.cpp; sourceTree = "<group>"; };
 		ECB053D91F3C13AB00A49FA5 /* TTAudioCodec.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TTAudioCodec.hpp; sourceTree = "<group>"; };
@@ -1036,6 +1042,7 @@
 				EC5508821FE6610A00C115A8 /* TTFFDemuxer.hpp */,
 				EC56E569212007180009D8DC /* TTMP4Demuxer.cpp */,
 				EC56E56A212007180009D8DC /* TTMP4Demuxer.hpp */,
+				EC9E48E32516726800DC4DB0 /* mp4 */,
 			);
 			path = demuxer;
 			sourceTree = "<group>";
@@ -1238,6 +1245,17 @@
 				EC960FCC2503906E00C2C0F6 /* TTImageFilterFactory.hpp */,
 			);
 			path = filter;
+			sourceTree = "<group>";
+		};
+		EC9E48E32516726800DC4DB0 /* mp4 */ = {
+			isa = PBXGroup;
+			children = (
+				EC9E48E7251BB3E000DC4DB0 /* TTMP4.cpp */,
+				EC9E48E8251BB3E000DC4DB0 /* TTMP4.hpp */,
+				EC9E48E4251672C400DC4DB0 /* TTMP4Box.cpp */,
+				EC9E48E5251672C400DC4DB0 /* TTMP4Box.hpp */,
+			);
+			path = mp4;
 			sourceTree = "<group>";
 		};
 		ECB053E91F3E94EC00A49FA5 /* easylogging */ = {
@@ -1909,6 +1927,7 @@
 				EC4DD37E20E89FEA00CFBF60 /* TTSlideSelectView.m in Sources */,
 				EC56E568211FFC7C0009D8DC /* TTStream.cpp in Sources */,
 				ECB86CB8208BA7DB004ED994 /* TTMessageLoop.cpp in Sources */,
+				EC9E48E9251BB3E000DC4DB0 /* TTMP4.cpp in Sources */,
 				EC56E56B212007180009D8DC /* TTMP4Demuxer.cpp in Sources */,
 				EC56E7992139A3440009D8DC /* mp4_ctts_box.c in Sources */,
 				EC56E7882139A3440009D8DC /* mp4_btrt_box.c in Sources */,
@@ -1959,6 +1978,7 @@
 				EC56E7802139A3440009D8DC /* mp4_mp4s_box.c in Sources */,
 				EC89E7C621FDC46400E3808E /* TTRenderControl.cpp in Sources */,
 				EC475D2124B9BC8900D738B0 /* TTWeakPixelInclusionFilter.cpp in Sources */,
+				EC9E48E6251672C400DC4DB0 /* TTMP4Box.cpp in Sources */,
 				ECFEDFD624F1836B00F94294 /* TTRGBTextureFilter.cpp in Sources */,
 				EC56E7772139A3440009D8DC /* mp4_moov_box.c in Sources */,
 				ECF629CB1F7E4A4D0088CEEA /* TTContrastFilter.cpp in Sources */,
