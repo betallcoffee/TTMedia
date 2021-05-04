@@ -9,7 +9,7 @@
 #ifndef TTFileIO_hpp
 #define TTFileIO_hpp
 
-#include <pthread.h>
+#include "TTDef.h"
 #include "TTIO.hpp"
 
 namespace TT {
@@ -17,6 +17,8 @@ namespace TT {
     public:
         FileIO();
         ~FileIO();
+        
+        static bool canOpen(std::shared_ptr<URL> url);
         
         bool open(std::shared_ptr<URL> url, uint64_t offset, int flag) override;
         void close() override;
@@ -27,13 +29,13 @@ namespace TT {
         size_t write(const uint8_t *pBuf, size_t size) override;
         bool seek(uint64_t pos) override;
         
-        int64_t length() override;
         int64_t readPos() override;
-        int64_t downPos() override;
         int64_t speed() override;
-        
+    
     private:
+        size_t _fileSize = 0;
         
+        TT_PROPERTY_DEF(FILE *, fd, nullptr)
     };
 }
 

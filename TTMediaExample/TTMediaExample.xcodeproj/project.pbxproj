@@ -152,6 +152,7 @@
 		EC7E516923DC78FC009F8193 /* TTGaussianBlurFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC7E516723DC78FB009F8193 /* TTGaussianBlurFilter.cpp */; };
 		EC7E516C23DDA13E009F8193 /* TTTwoPassFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC7E516A23DDA13E009F8193 /* TTTwoPassFilter.cpp */; };
 		EC7E524223E7CDDF009F8193 /* TTBilateralFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC7E524023E7CDDF009F8193 /* TTBilateralFilter.cpp */; };
+		EC7F608225D4D47100E27B3D /* TTBitStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC7F608025D4D47100E27B3D /* TTBitStream.cpp */; };
 		EC89E7AD21B3BF1200E3808E /* TTCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC89E7AB21B3BF1200E3808E /* TTCodec.cpp */; };
 		EC89E7BB21CEAD8C00E3808E /* TTPlayerStateM.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC89E7B921CEAD8800E3808E /* TTPlayerStateM.cpp */; };
 		EC89E7C421FDC46400E3808E /* TTCodecControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC89E7BF21FDC46300E3808E /* TTCodecControl.cpp */; };
@@ -473,6 +474,8 @@
 		EC7E516B23DDA13E009F8193 /* TTTwoPassFilter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTTwoPassFilter.hpp; sourceTree = "<group>"; };
 		EC7E524023E7CDDF009F8193 /* TTBilateralFilter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTBilateralFilter.cpp; sourceTree = "<group>"; };
 		EC7E524123E7CDDF009F8193 /* TTBilateralFilter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTBilateralFilter.hpp; sourceTree = "<group>"; };
+		EC7F608025D4D47100E27B3D /* TTBitStream.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTBitStream.cpp; sourceTree = "<group>"; };
+		EC7F608125D4D47100E27B3D /* TTBitStream.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTBitStream.hpp; sourceTree = "<group>"; };
 		EC89E7A721876A9D00E3808E /* TTOpenGL.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TTOpenGL.h; sourceTree = "<group>"; };
 		EC89E7AB21B3BF1200E3808E /* TTCodec.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TTCodec.cpp; sourceTree = "<group>"; };
 		EC89E7AC21B3BF1200E3808E /* TTCodec.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TTCodec.hpp; sourceTree = "<group>"; };
@@ -1067,6 +1070,8 @@
 				EC56E560211FFB840009D8DC /* TTFileIO.hpp */,
 				EC56E561211FFB840009D8DC /* TTHTTPIO.cpp */,
 				EC56E55D211FFB840009D8DC /* TTHTTPIO.hpp */,
+				EC7F608025D4D47100E27B3D /* TTBitStream.cpp */,
+				EC7F608125D4D47100E27B3D /* TTBitStream.hpp */,
 			);
 			path = io;
 			sourceTree = "<group>";
@@ -1945,6 +1950,7 @@
 				EC4E9C9E1F1A7DE5005C8E36 /* TTPlayerControl.m in Sources */,
 				ECC66F7D1F62313D003F2076 /* TTMovieListViewModel.m in Sources */,
 				EC56E7662139A3440009D8DC /* mp4_padb_box.c in Sources */,
+				EC7F608225D4D47100E27B3D /* TTBitStream.cpp in Sources */,
 				EC25887223D8586C00342541 /* TTSepiaFilter.cpp in Sources */,
 				EC0189591D81D1E6005E46B9 /* TTQoS.cpp in Sources */,
 				EC56E76A2139A3440009D8DC /* mp4_mdat_box.c in Sources */,

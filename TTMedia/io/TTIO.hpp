@@ -38,10 +38,9 @@ namespace TT {
         virtual size_t write(const uint8_t *pBuf, size_t size) = 0;
         virtual bool seek(uint64_t pos) = 0;
         
-        virtual int64_t length() { return _length; };
         virtual int64_t readPos() { return _readPos; };
-        virtual int64_t downPos() { return _downPos; };
-        virtual int64_t readAvailable() { return _downPos - _readPos; };
+        virtual int64_t canReadPos() { return _canReadPos; };
+        virtual int64_t readAvailable() { return canReadPos() - readPos(); };
         virtual int64_t speed() = 0;
         
     protected:
@@ -50,9 +49,8 @@ namespace TT {
         std::shared_ptr<URL> _url;
         
         int _flag;
-        uint64_t _length;
         uint64_t _readPos;
-        uint64_t _downPos;
+        uint64_t _canReadPos;
         
         Cond _cond;
         ByteBuffer _buffer;

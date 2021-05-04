@@ -42,7 +42,7 @@ bool HTTPIO::open(std::shared_ptr<URL> url, uint64_t offset, int flag) {
     std::shared_ptr<Message> openMessage = std::make_shared<Message>(kIOMessageTypeOpen);
     openMessage->setMessageHandle([this, url](std::shared_ptr<Message> msg) {
         _readPos = 0;
-        _downPos = 0;
+        _canReadPos = 0;
         _buffer.clear();
         _client.Get(url, _headers, std::bind(&HTTPIO::onDataRecived, this, std::placeholders::_1), nullptr);
     });
@@ -91,7 +91,7 @@ size_t HTTPIO::write(const uint8_t *pBuf, size_t size) {
 
 bool HTTPIO::seek(uint64_t pos) {
     _buffer.lock();
-    if (pos < _downPos) {
+    if (pos < _canReadPos) {
         size_t offset = pos - _readPos;
         _buffer.retrieve(offset);
     }
@@ -113,7 +113,7 @@ void HTTPIO::onDataRecived(ByteBuffer &data) {
         _cond.notify([this, &data, &isEnd]() {
             size_t size = data.readableBytes();
             size_t n = _buffer.appendBuffer(data);
-            _downPos += n;
+            _canReadPos += n;
             data.retrieve(n);
             if (n == size) {
                 isEnd = true;

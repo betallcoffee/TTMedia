@@ -27,10 +27,10 @@ int Demuxer::probe(TT_SP(URL) url) {
 
 std::shared_ptr<Demuxer> Demuxer::createDemuxer(std::shared_ptr<URL> url) {
     int score = 0;
-//    score = MP4Demuxer::probe(url);
-//    if (score > 0) {
-//        return std::make_shared<MP4Demuxer>();
-//    }
+    score = MP4Demuxer::probe(url);
+    if (score > 0) {
+        return std::make_shared<MP4Demuxer>();
+    }
     score = FFDemuxer::probe(url);
     if (score > 0) {
         return std::make_shared<FFDemuxer>();

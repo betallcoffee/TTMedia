@@ -148,9 +148,9 @@ using namespace TT;
 #pragma mark button selector
 
 - (void)onClickPlay:(UIButton *)button {
-    if (_audio->start()) {
-        return;
-    }
+//    if (_audio->start()) {
+//        return;
+//    }
 
     if (_player == nullptr) {
         return;
@@ -162,10 +162,10 @@ using namespace TT;
         button.selected = YES;
         NSString *filePath = [[NSBundle mainBundle] pathForResource:@"test" ofType:@"mp4"];
 //        NSString *filePath = [[NSBundle mainBundle] pathForResource:@"audio_HEv2" ofType:@"flv"];
-        NSURL *movieDir = [TTMovieFilesManager sharedInstance].movieDir;
-        NSURL *fileURL = [movieDir URLByAppendingPathComponent:@"liangliang3.mp4"];
-        filePath = [fileURL absoluteString];
-        const char *cFilePath = [filePath cStringUsingEncoding:NSUTF8StringEncoding];
+//        NSURL *movieDir = [TTMovieFilesManager sharedInstance].movieDir;
+//        NSURL *fileURL = [movieDir URLByAppendingPathComponent:@"liangliang3.mp4"];
+        NSURL *fileURL = [NSURL fileURLWithPath:filePath];
+        const char *cFilePath = [fileURL.absoluteString cStringUsingEncoding:NSUTF8StringEncoding];
 //        const char *cFilePath = "http://1251845595.vod2.myqcloud.com/9d67116cvodgzp1251845595/eb800eaf9031868223333695199/playlist.m3u8";
 //        const char *cFilePath = "http://down.ttdtweb.com/test/MTV.mp4";
 //        const char *cFilePath = "http://1251316161.vod2.myqcloud.com/918777bavodgzp1251316161/dd2ad6e85285890784107131626/cAAaxsH3F8UA.mp4";
