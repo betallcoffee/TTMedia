@@ -1,13 +1,13 @@
 //
-//  TTMP4Demuxer.hpp
+//  TTLibMP4Demuxer.hpp
 //  TTMedia
 //
 //  Created by liang on 12/8/18.
 //  Copyright © 2018年 tina. All rights reserved.
 //
 
-#ifndef TTMP4Demuxer_hpp
-#define TTMP4Demuxer_hpp
+#ifndef TTLIBMP4Demuxer_hpp
+#define TTLIBMP4Demuxer_hpp
 
 #include <pthread.h>
 
@@ -26,10 +26,10 @@ namespace TT {
     
     class IO;
     
-    class MP4Demuxer : public Demuxer {
+    class LibMP4Demuxer : public Demuxer {
     public:
-        MP4Demuxer();
-        ~MP4Demuxer();
+        LibMP4Demuxer();
+        ~LibMP4Demuxer();
         
         static int probe(std::shared_ptr<URL> url);
         
@@ -96,4 +96,4 @@ namespace TT {
     };
 }
 
-#endif /* TTMP4Demuxer_hpp */
+#endif /* TTLIBMP4Demuxer_hpp */

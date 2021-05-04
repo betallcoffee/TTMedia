@@ -1,5 +1,5 @@
 //
-//  TTMP4Demuxer.cpp
+//  TTLibMP4Demuxer.cpp
 //  TTMedia
 //
 //  Created by liang on 12/8/18.
@@ -8,12 +8,12 @@
 
 #include "easylogging++.h"
 
-#include "TTMP4Demuxer.hpp"
+#include "TTLibMP4Demuxer.hpp"
 #include "TTIO.hpp"
 
 using namespace TT;
 
-MP4Demuxer::MP4Demuxer() : _url(nullptr)
+LibMP4Demuxer::LibMP4Demuxer() : _url(nullptr)
 , _mutex(PTHREAD_MUTEX_INITIALIZER)
 , _isEOF(false)
 , _bitStream(nullptr)
@@ -31,7 +31,7 @@ MP4Demuxer::MP4Demuxer() : _url(nullptr)
     _rootBoxes = mp4_list_create();
 }
 
-MP4Demuxer::~MP4Demuxer() {
+LibMP4Demuxer::~LibMP4Demuxer() {
     if (_rootBoxes) {
         mp4_list_destroy(_rootBoxes);
         _rootBoxes = nullptr;
@@ -40,7 +40,7 @@ MP4Demuxer::~MP4Demuxer() {
     close();
 }
 
-int MP4Demuxer::probe(std::shared_ptr<URL> url) {
+int LibMP4Demuxer::probe(std::shared_ptr<URL> url) {
     const std::string &ext = url->extension();
     if ("mp4" == ext) {
         return 100;
@@ -48,7 +48,7 @@ int MP4Demuxer::probe(std::shared_ptr<URL> url) {
     return 0;
 }
 
-bool MP4Demuxer::open(std::shared_ptr<URL> url) {
+bool LibMP4Demuxer::open(std::shared_ptr<URL> url) {
     _io = IO::createIO(url);
     if (_io) {
         _url = url;
@@ -59,10 +59,10 @@ bool MP4Demuxer::open(std::shared_ptr<URL> url) {
             }
             
             mp4_bs_set_read_opaque(_bitStream, this);
-            mp4_bs_set_read_byte_func(_bitStream, MP4Demuxer::readByte);
-            mp4_bs_set_read_data_func(_bitStream, MP4Demuxer::readData);
-            mp4_bs_set_seek_func(_bitStream, MP4Demuxer::seekOffset);
-            mp4_bs_set_read_available_func(_bitStream, MP4Demuxer::readAvailable);
+            mp4_bs_set_read_byte_func(_bitStream, LibMP4Demuxer::readByte);
+            mp4_bs_set_read_data_func(_bitStream, LibMP4Demuxer::readData);
+            mp4_bs_set_seek_func(_bitStream, LibMP4Demuxer::seekOffset);
+            mp4_bs_set_read_available_func(_bitStream, LibMP4Demuxer::readAvailable);
             do {
                 if (!parseBox()) {
                     _io->close();
@@ -80,7 +80,7 @@ bool MP4Demuxer::open(std::shared_ptr<URL> url) {
     return false;
 }
 
-void MP4Demuxer::close() {
+void LibMP4Demuxer::close() {
     if (_bitStream) {
         mp4_bs_destroy(_bitStream);
         _bitStream = nullptr;
@@ -91,7 +91,7 @@ void MP4Demuxer::close() {
     }
 }
 
-std::shared_ptr<Packet> MP4Demuxer::read() {
+std::shared_ptr<Packet> LibMP4Demuxer::read() {
     if (!_isOpened) {
         return nullptr;
     }
@@ -116,7 +116,7 @@ std::shared_ptr<Packet> MP4Demuxer::read() {
     return packet;
 }
 
-std::shared_ptr<Packet> MP4Demuxer::readAudio() {
+std::shared_ptr<Packet> LibMP4Demuxer::readAudio() {
     if (_audioTrackIdx < 0) {
         return nullptr;
     }
@@ -141,7 +141,7 @@ std::shared_ptr<Packet> MP4Demuxer::readAudio() {
     }
 }
 
-std::shared_ptr<Packet> MP4Demuxer::readVideo() {
+std::shared_ptr<Packet> LibMP4Demuxer::readVideo() {
     if (_videoTrackIdx < 0) {
         return nullptr;
     }
@@ -166,7 +166,7 @@ std::shared_ptr<Packet> MP4Demuxer::readVideo() {
     }
 }
 
-bool MP4Demuxer::readPacketData(std::shared_ptr<Packet> packet, size_t size) {
+bool LibMP4Demuxer::readPacketData(std::shared_ptr<Packet> packet, size_t size) {
     if (packet == nullptr || size <= 0) {
         return false;
     }
@@ -182,35 +182,35 @@ bool MP4Demuxer::readPacketData(std::shared_ptr<Packet> packet, size_t size) {
     }
 }
 
-bool MP4Demuxer::seek(uint64_t pos) {
+bool LibMP4Demuxer::seek(uint64_t pos) {
     return false;
 }
 
-uint8_t MP4Demuxer::readByte(mp4_bits_t *bs) {
+uint8_t LibMP4Demuxer::readByte(mp4_bits_t *bs) {
     void *opaque = mp4_bs_get_read_opaque(bs);
     if (opaque) {
-        MP4Demuxer *self = (MP4Demuxer *)opaque;
+        LibMP4Demuxer *self = (LibMP4Demuxer *)opaque;
         return self->readByte();
     }
     return 0;
 }
 
-uint8_t MP4Demuxer::readByte() {
+uint8_t LibMP4Demuxer::readByte() {
     uint8_t byte = 0;
     _io->read(&byte, 1);
     return byte;
 }
 
-uint32_t MP4Demuxer::readData(mp4_bits_t *bs, char *data, uint32_t nbBytes) {
+uint32_t LibMP4Demuxer::readData(mp4_bits_t *bs, char *data, uint32_t nbBytes) {
     void *opaque = mp4_bs_get_read_opaque(bs);
     if (opaque) {
-        MP4Demuxer *self = (MP4Demuxer *)opaque;
+        LibMP4Demuxer *self = (LibMP4Demuxer *)opaque;
         return self->readData(data, nbBytes);
     }
     return 0;
 }
 
-uint32_t MP4Demuxer::readData(char *data, uint32_t nbBytes) {
+uint32_t LibMP4Demuxer::readData(char *data, uint32_t nbBytes) {
     size_t readSize = _io->read((uint8_t *)data, nbBytes);
     if (readSize < nbBytes) {
         return 0;
@@ -218,36 +218,36 @@ uint32_t MP4Demuxer::readData(char *data, uint32_t nbBytes) {
     return nbBytes;
 }
 
-int MP4Demuxer::seekOffset(mp4_bits_t *bs, uint64_t offset) {
+int LibMP4Demuxer::seekOffset(mp4_bits_t *bs, uint64_t offset) {
     void *opaque = mp4_bs_get_read_opaque(bs);
     if (opaque) {
-        MP4Demuxer *self = (MP4Demuxer *)opaque;
+        LibMP4Demuxer *self = (LibMP4Demuxer *)opaque;
         return self->seekOffset(offset);
     }
     return -1;
 }
 
-int MP4Demuxer::seekOffset(uint64_t offset) {
+int LibMP4Demuxer::seekOffset(uint64_t offset) {
     if (_io->seek(offset)) {
         return 0;
     }
     return -1;
 }
 
-uint64_t MP4Demuxer::readAvailable(mp4_bits_t *bs) {
+uint64_t LibMP4Demuxer::readAvailable(mp4_bits_t *bs) {
     void *opaque = mp4_bs_get_read_opaque(bs);
     if (opaque) {
-        MP4Demuxer *self = (MP4Demuxer *)opaque;
+        LibMP4Demuxer *self = (LibMP4Demuxer *)opaque;
         return self->readAvailable();
     }
     return 0;
 }
 
-uint64_t MP4Demuxer::readAvailable() {
+uint64_t LibMP4Demuxer::readAvailable() {
     return _io->readAvailable();
 }
 
-bool MP4Demuxer::parseBox() {
+bool LibMP4Demuxer::parseBox() {
     int64_t readSize = _io->readAvailable();
     if (readSize < 8) {
         LOG(ERROR) << "can not read box header, so close";
@@ -308,7 +308,7 @@ bool MP4Demuxer::parseBox() {
     }
 }
 
-int64_t MP4Demuxer::parseBoxHeader(struct mp4_box **box, mp4_bits_t * bs) {
+int64_t LibMP4Demuxer::parseBoxHeader(struct mp4_box **box, mp4_bits_t * bs) {
     uint32_t type, hdr_size;
     uint64_t size, start;
     char type_fourcc[5];
@@ -372,7 +372,7 @@ int64_t MP4Demuxer::parseBoxHeader(struct mp4_box **box, mp4_bits_t * bs) {
     return size;
 }
 
-bool MP4Demuxer::parseBoxBody() {
+bool LibMP4Demuxer::parseBoxBody() {
     int ret = _newBox->read(_newBox, _bitStream);
     if (ret) {
         LOG(ERROR) << "read failed";
@@ -384,7 +384,7 @@ bool MP4Demuxer::parseBoxBody() {
     return true;
 }
 
-void MP4Demuxer::dumpStreamInfo() {
+void LibMP4Demuxer::dumpStreamInfo() {
     if (nullptr == _moov) {
         return;
     }
@@ -440,7 +440,7 @@ void MP4Demuxer::dumpStreamInfo() {
     }
 }
 
-void MP4Demuxer::dumpStreamAudioInfo() {
+void LibMP4Demuxer::dumpStreamAudioInfo() {
     _audioNextSampleIdx = 0;
     _audioNextOffset = 0;
     struct mp4_stbl_box *audioStbl = _moov->get_track_of_idx(_moov, _audioTrackIdx);
@@ -458,7 +458,7 @@ void MP4Demuxer::dumpStreamAudioInfo() {
     _audioCodecParams->bits_per_raw_sample = bitsPerSample;
 }
 
-void MP4Demuxer::dumpStreamVideoInfo() {
+void LibMP4Demuxer::dumpStreamVideoInfo() {
     _videoNextSampleIdx = 0;
     _videoNextOffset = 0;
     struct mp4_stbl_box *videoStbl = _moov->get_track_of_idx(_moov, _videoTrackIdx);
