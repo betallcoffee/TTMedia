@@ -81,6 +81,10 @@ size_t HTTPIO::size() {
     return static_cast<size_t>(_client.contentLength());
 }
 
+bool HTTPIO::isEof() {
+    return false;
+}
+
 size_t HTTPIO::readAt(uint8_t *pBuf, size_t size, uint64_t pos) {
     return 0;
 }

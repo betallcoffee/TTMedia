@@ -98,7 +98,7 @@ void FFDemuxer::close() {
     _videoCodec = nullptr;
 }
 
-std::shared_ptr<Packet> FFDemuxer::read() {
+TT_SP(Packet) FFDemuxer::read() {
     Mutex m(&_mutex);
     if (_formatContext == nullptr) {
         return nullptr;

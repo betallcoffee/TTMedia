@@ -91,7 +91,7 @@ void LibMP4Demuxer::close() {
     }
 }
 
-std::shared_ptr<Packet> LibMP4Demuxer::read() {
+TT_SP(Packet) LibMP4Demuxer::read() {
     if (!_isOpened) {
         return nullptr;
     }

@@ -28,13 +28,14 @@ public:
     Demuxer();
     ~Demuxer();
     
-    static int probe(std::shared_ptr<URL> url);
     static TT_SP(Demuxer) createDemuxer(std::shared_ptr<URL> url);
+    
+    static int probe(std::shared_ptr<URL> url);
     
     virtual bool open(std::shared_ptr<URL> url) = 0;
     virtual void close() = 0;
     
-    virtual std::shared_ptr<Packet> read() = 0;
+    virtual TT_SP(Packet) read() = 0;
     
     virtual bool seek(uint64_t pos) = 0;
     virtual bool isEOF() = 0;

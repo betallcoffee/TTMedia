@@ -28,6 +28,7 @@ namespace TT {
         bool open(std::shared_ptr<URL> url, uint64_t offset, int flag) override;
         void close() override;
         size_t size() override;
+        bool isEof() override;
         
         size_t readAt(uint8_t *pBuf, size_t size, uint64_t pos) override;
         size_t write(const uint8_t *pBuf, size_t size) override;

@@ -20,6 +20,9 @@ public:
     BitStream(TT_SP(IO) io);
     ~BitStream();
     
+    bool isEof();
+    bool skipSize(size_t size);
+    
     uint32_t readInt32(uint32_t nBits);
     uint64_t readInt64(uint32_t nBits);
     

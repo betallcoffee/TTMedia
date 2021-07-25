@@ -64,11 +64,25 @@ size_t FileIO::size() {
     return _fileSize;
 }
 
+bool FileIO::isEof() {
+    if (readPos() == size()) {
+        return true;
+    }
+    return false;
+}
+
 size_t FileIO::read(uint8_t *pBuf, size_t size) {
+    if (pBuf == nullptr) {
+        return 0;
+    }
     return fread(pBuf, 1, size, _fd);
 }
 
 size_t FileIO::readAt(uint8_t *pBuf, size_t size, uint64_t pos) {
+    if (pBuf == nullptr) {
+        return 0;
+    }
+    
     if (seek(pos)) {
         return read(pBuf, size);
     }
@@ -86,6 +100,16 @@ bool FileIO::seek(uint64_t pos) {
     }
     return true;
 }
+
+bool FileIO::seek(uint64_t pos, SeekMode mode) {
+    int seekMode = mode;
+    int ret = fseek(_fd, pos, seekMode);
+    if (ret) {
+        return false;
+    }
+    return true;
+}
+
 
 int64_t FileIO::readPos() {
     int64_t ret = ftell(_fd);

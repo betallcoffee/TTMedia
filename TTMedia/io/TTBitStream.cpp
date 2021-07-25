@@ -20,6 +20,22 @@ BitStream::~BitStream()
     
 }
 
+bool BitStream::isEof()
+{
+    if (_io) {
+        return _io->isEof();
+    }
+    return true;
+}
+
+bool BitStream::skipSize(size_t size)
+{
+    if (_io) {
+        return _io->seek(size, kSeekCur);
+    }
+    return false;
+}
+
 uint32_t BitStream::readInt32(uint32_t nBits)
 {
     uint32_t result = 0;
@@ -30,9 +46,13 @@ uint32_t BitStream::readInt32(uint32_t nBits)
         }
         
         int8_t num = nBits;
-        if (nBits > _nBitsOfByte) {
+        if (num > _nBitsOfByte) {
             num = _nBitsOfByte;
+            _nBitsOfByte = 0;
+        } else {
+            _nBitsOfByte -= num;
         }
+        
         result = result << num;
         result += _currentByte >> (8 - num);
         nBits -= num;
@@ -73,7 +93,10 @@ double BitStream::readDouble()
 
 size_t BitStream::readData(uint8_t *pBuf, size_t size)
 {
-    return _io->read(pBuf, size);
+    if (_io) {
+        return _io->read(pBuf, size);
+    }
+    return 0;
 }
 
 uint8_t BitStream::readUInt8()

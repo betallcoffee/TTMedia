@@ -9,6 +9,7 @@
 #include "TTDemuxer.hpp"
 #include "TTFFDemuxer.hpp"
 #include "TTLibMP4Demuxer.hpp"
+#include "TTMP4Demuxer.hpp"
 
 using namespace TT;
 
@@ -21,12 +22,12 @@ Demuxer::~Demuxer() {
     
 }
 
-int Demuxer::probe(TT_SP(URL) url) {
-    return 0;
-}
-
 std::shared_ptr<Demuxer> Demuxer::createDemuxer(std::shared_ptr<URL> url) {
     int score = 0;
+    score = MP4Demuxer::probe(url);
+    if (score > 0) {
+        return std::make_shared<MP4Demuxer>();
+    }
     score = LibMP4Demuxer::probe(url);
     if (score > 0) {
         return std::make_shared<LibMP4Demuxer>();
@@ -36,4 +37,8 @@ std::shared_ptr<Demuxer> Demuxer::createDemuxer(std::shared_ptr<URL> url) {
         return std::make_shared<FFDemuxer>();
     }
     return nullptr;
+}
+
+int Demuxer::probe(TT_SP(URL) url) {
+    return 0;
 }

@@ -36,7 +36,7 @@ namespace TT {
         bool open(std::shared_ptr<URL> url) override;
         void close() override;
         
-        std::shared_ptr<Packet> read() override;
+        TT_SP(Packet) read() override;
         
         bool seek(uint64_t pos) override;
         bool isEOF() override { return _isEOF; };

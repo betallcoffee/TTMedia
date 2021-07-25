@@ -18,6 +18,13 @@
 #include "TTByteBuffer.hpp"
 
 namespace TT {
+
+typedef enum {
+    kSeekSet = 0,
+    kSeekCur = 1,
+    kSeekEnd = 2
+} SeekMode;
+
     class IO {
     public:
         IO();
@@ -29,6 +36,7 @@ namespace TT {
         virtual bool open(std::shared_ptr<URL> url, uint64_t offset, int flag) = 0;
         virtual void close() = 0;
         virtual size_t size() = 0;
+        virtual bool isEof() = 0;
         /**
          * 保证读到的数据大小为 size
          * 否则返回 0
@@ -37,6 +45,7 @@ namespace TT {
         virtual size_t readAt(uint8_t *pBuf, size_t size, uint64_t pos) = 0;
         virtual size_t write(const uint8_t *pBuf, size_t size) = 0;
         virtual bool seek(uint64_t pos) = 0;
+        virtual bool seek(uint64_t pos, SeekMode mode) { return false; };
         
         virtual int64_t readPos() { return _readPos; };
         virtual int64_t canReadPos() { return _canReadPos; };
