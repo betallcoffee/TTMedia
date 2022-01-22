@@ -36,96 +36,57 @@ bool BitStream::skipSize(size_t size)
     return false;
 }
 
-uint32_t BitStream::readInt32(uint32_t nBits)
+int8_t BitStream::readInt8()
 {
-    uint32_t result = 0;
-    while (nBits > 0) {
-        if (_nBitsOfByte == 0) {
-            _io->read(&_currentByte, 1);
-            _nBitsOfByte = 8;
-        }
-        
-        int8_t num = nBits;
-        if (num > _nBitsOfByte) {
-            num = _nBitsOfByte;
-            _nBitsOfByte = 0;
-        } else {
-            _nBitsOfByte -= num;
-        }
-        
-        result = result << num;
-        result += _currentByte >> (8 - num);
-        nBits -= num;
-    }
-    return result;
+    int32_t n = readInt32ForBits(8);
+    return n;
 }
 
-uint64_t BitStream::readInt64(uint32_t nBits)
+int16_t BitStream::readInt16()
 {
-    uint64_t result = 0;
-    while (nBits > 0) {
-        if (_nBitsOfByte == 0) {
-            _io->read(&_currentByte, 1);
-            _nBitsOfByte = 8;
-        }
-        
-        int8_t num = nBits;
-        if (nBits > _nBitsOfByte) {
-            num = _nBitsOfByte;
-        }
-        result = result << num;
-        result += _currentByte >> (8 - num);
-        nBits -= num;
-        _nBitsOfByte -= num;
-    }
-    return result;
+    int32_t n = readInt32ForBits(16);
+    return n;
 }
 
-float BitStream::readFloat()
+int32_t BitStream::readInt32()
 {
-    return 0;
+    int32_t n = readInt32ForBits(32);
+    return n;
 }
 
-double BitStream::readDouble()
+int64_t BitStream::readInt64()
 {
-    return 0;
-}
-
-size_t BitStream::readData(uint8_t *pBuf, size_t size)
-{
-    if (_io) {
-        return _io->read(pBuf, size);
-    }
-    return 0;
+    int64_t n = readInt64ForBits(64);
+    return n;
 }
 
 uint8_t BitStream::readUInt8()
 {
-    int32_t n = readInt32(8);
+    uint32_t n = static_cast<uint32_t>(readInt32ForBits(8));
     return n;
 }
 
 uint16_t BitStream::readUInt16()
 {
-    int32_t n = readInt32(16);
+    uint32_t n = static_cast<uint32_t>(readInt32ForBits(16));
     return n;
 }
 
 uint32_t BitStream::readUInt24()
 {
-    int32_t n = readInt32(24);
+    uint32_t n = static_cast<uint32_t>(readInt32ForBits(24));
     return n;
 }
 
 uint32_t BitStream::readUInt32()
 {
-    int32_t n = readInt32(32);
+    uint32_t n = static_cast<uint32_t>(readInt64ForBits(32));
     return n;
 }
 
 uint64_t BitStream::readUInt64()
 {
-    int64_t n = readInt64(64);
+    uint64_t n = static_cast<uint64_t>(readInt64ForBits(64));
     return n;
 }
 
@@ -149,6 +110,69 @@ uint16_t BitStream::readUInt16Le()
         uint16_t one = readUInt8();
         uint16_t two = readUInt8();
         result = one + (two << 8);
+    }
+    return result;
+}
+
+float BitStream::readFloat()
+{
+    return 0;
+}
+
+double BitStream::readDouble()
+{
+    return 0;
+}
+
+size_t BitStream::readData(uint8_t *pBuf, size_t size)
+{
+    if (_io) {
+        return _io->read(pBuf, size);
+    }
+    return 0;
+}
+
+int32_t BitStream::readInt32ForBits(uint32_t nBits)
+{
+    int32_t result = 0;
+    while (nBits > 0) {
+        if (_nBitsOfByte == 0) {
+            _io->read(&_currentByte, 1);
+            _nBitsOfByte = 8;
+        }
+        
+        int8_t num = nBits;
+        if (num > _nBitsOfByte) {
+            num = _nBitsOfByte;
+            _nBitsOfByte = 0;
+        } else {
+            _nBitsOfByte -= num;
+        }
+        
+        result = result << num;
+        result += _currentByte >> (8 - num);
+        nBits -= num;
+    }
+    return result;
+}
+
+int64_t BitStream::readInt64ForBits(uint32_t nBits)
+{
+    int64_t result = 0;
+    while (nBits > 0) {
+        if (_nBitsOfByte == 0) {
+            _io->read(&_currentByte, 1);
+            _nBitsOfByte = 8;
+        }
+        
+        int8_t num = nBits;
+        if (nBits > _nBitsOfByte) {
+            num = _nBitsOfByte;
+        }
+        result = result << num;
+        result += _currentByte >> (8 - num);
+        nBits -= num;
+        _nBitsOfByte -= num;
     }
     return result;
 }

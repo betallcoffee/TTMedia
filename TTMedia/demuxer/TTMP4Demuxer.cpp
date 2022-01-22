@@ -39,11 +39,15 @@ bool MP4Demuxer::open(std::shared_ptr<URL> url)
             _bitStream = TT_MK_SP(BitStream)(_io);
             _parser = TT_MK_SP(MP4Parser)(_bitStream);
             do {
-                if (!_parser->parseBox()) {
+                if (!_parser->parse()) {
+                    if (_parser->isEof()) {
+                        break;
+                    }
+                    
                     _io->close();
                     return false;
                 }
-            } while (_parser->moov() == nullptr);
+            } while (_parser->moov() == nullptr || _parser->mdat() == nullptr);
             
             return true;
         }

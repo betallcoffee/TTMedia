@@ -20,24 +20,50 @@
 
 namespace TT {
 
+#pragma mark -- 14496-12
+
 class MP4Box {
 public:
-    MP4Box(uint64_t size, uint32_t type);
-    ~MP4Box();
+    MP4Box(uint64_t size, uint32_t type, bool isContainer = false);
+    virtual ~MP4Box();
     
     static bool FourcToStr(uint32_t type, char *buf, size_t size);
-    static uint64_t headSize() { return 8; }
-    virtual bool parseData(TT_SP(BitStream) bitStream) { return false; };
+    virtual uint64_t parseData(TT_SP(BitStream) bitStream);
     
-    // 1 表示 type 接着 Extended Size ，0 表示到文件末尾
+    void addChildBox(TT_SP(MP4Box) box);
+    // childBoxsSize == dataSize 则 hasAllChildBoxs 为 true
+    bool hasAllChildBoxs();
+    
+    // 不包含 box head 的 data size;
+    uint64_t dataSize();
+    
+    // box head size 一般为 8
+    // 当 size == 1 时，box head type 接着 Extended Size, head size 增加 8
+    TT_PROPERTY_DEF(uint64_t, headSize, 8);
+    
+    TT_PROPERTY_DEF_READONLY(bool, isContainer, false);
+    std::vector<TT_SP(MP4Box)> childBoxs;
+    // 添加到 childBoxs 中的 子 box 的 size
+    TT_PROPERTY_DEF_READONLY(uint64_t, childBoxsSize, 0);
+    
+    // 包含 box head 的 size;
+    // 1 表示 type 接着 Extended Size
+    // 0 表示到文件末尾
     TT_PROPERTY_DEF_READONLY(uint64_t, size, 0);
     TT_PROPERTY_DEF_READONLY(uint32_t, type, 0);
     
     uint8_t _uuid[16] = {0};
     TT_PROPERTY_DEF_READONLY(uint32_t, index, 0);
+    
+    TT_PROPERTY_DEF_READONLY(TT_SP(std::vector<uint8_t>), data, nullptr);
 };
 
 class MP4FullBox : public MP4Box {
+public:
+    MP4FullBox(uint64_t size, uint32_t type) : MP4Box(size, type) {}
+    
+    uint64_t parseData(TT_SP(BitStream) bitStream) override;
+    
     TT_PROPERTY_DEF_READONLY(uint8_t, version, 0);
     TT_PROPERTY_DEF_READONLY(uint32_t, flags, 0);
 };
@@ -50,7 +76,7 @@ class MP4BoxFtyp : public MP4Box {
 public:
     MP4BoxFtyp(uint64_t size, uint32_t type) : MP4Box(size, type) {}
     
-    bool parseData(TT_SP(BitStream) bitStream) override;
+    uint64_t parseData(TT_SP(BitStream) bitStream) override;
     
     TT_PROPERTY_DEF_READONLY(uint32_t, majorBrand, 0);
     TT_PROPERTY_DEF_READONLY(uint32_t, minorVersion, 0);
@@ -64,9 +90,7 @@ public:
  */
 class MP4BoxMoov : public MP4Box {
 public:
-    MP4BoxMoov(uint64_t size, uint32_t type) : MP4Box(size, type) {}
-    
-    bool parseData(TT_SP(BitStream) bitStream) override;
+    MP4BoxMoov(uint64_t size, uint32_t type) : MP4Box(size, type, true) {}
 };
 
 /**
@@ -75,8 +99,13 @@ public:
  mandatory
  */
 class MP4BoxMvhd : public MP4FullBox {
+public:
+    MP4BoxMvhd(uint64_t size, uint32_t type) : MP4FullBox(size, type) {}
+    
+    uint64_t parseData(TT_SP(BitStream) bitStream) override;
+    
     TT_PROPERTY_DEF_READONLY(uint64_t, creationTime, 0);
-    TT_PROPERTY_DEF_READONLY(uint64_t, modification, 0);
+    TT_PROPERTY_DEF_READONLY(uint64_t, modificationTime, 0);
     TT_PROPERTY_DEF_READONLY(uint32_t, timeScale, 0);
     TT_PROPERTY_DEF_READONLY(uint64_t, duration , 0);
     
@@ -103,7 +132,8 @@ class MP4BoxUdta : public MP4Box {
  mandatory
  */
 class MP4BoxTrak : public MP4Box {
-    
+public:
+    MP4BoxTrak(uint64_t size, uint32_t type) : MP4Box(size, type, true) {}
 };
 
 /**
@@ -111,7 +141,12 @@ class MP4BoxTrak : public MP4Box {
  trak
  mandatory
  */
-class MP4BoxTkhd : public MP4Box {
+class MP4BoxTkhd : public MP4FullBox {
+public:
+    MP4BoxTkhd(uint64_t size, uint32_t type) : MP4FullBox(size, type) {}
+    
+    uint64_t parseData(TT_SP(BitStream) bitStream) override;
+    
     TT_PROPERTY_DEF_READONLY(uint64_t, creationTime, 0);
     TT_PROPERTY_DEF_READONLY(uint64_t, modificationTime, 0);
     TT_PROPERTY_DEF_READONLY(uint32_t, trackId, 0);
@@ -136,12 +171,22 @@ private:
 };
 
 /**
+ edit list container
+ edts
+ */
+class MP4BoxEdts : public MP4Box {
+public:
+    MP4BoxEdts(uint64_t size, uint32_t type) : MP4Box(size, type, true) {}
+};
+
+/**
  container for the media information in a track
  trak
  mandatory
  */
 class MP4BoxMdia : public MP4Box {
-    
+public:
+    MP4BoxMdia(uint64_t size, uint32_t type) : MP4Box(size, type, true) {}
 };
 
 /**
@@ -150,8 +195,13 @@ class MP4BoxMdia : public MP4Box {
  mandatory
  */
 class MP4BoxMdhd : public MP4FullBox {
+public:
+    MP4BoxMdhd(uint64_t size, uint32_t type) : MP4FullBox(size, type) {}
+    
+    uint64_t parseData(TT_SP(BitStream) bitStream) override;
+    
     TT_PROPERTY_DEF_READONLY(uint64_t, creationTime, 0);
-    TT_PROPERTY_DEF_READONLY(uint64_t, modification, 0);
+    TT_PROPERTY_DEF_READONLY(uint64_t, modificationTime, 0);
     TT_PROPERTY_DEF_READONLY(uint32_t, timeScale, 0);
     TT_PROPERTY_DEF_READONLY(uint64_t, duration , 0);
     
@@ -168,13 +218,18 @@ class MP4BoxMdhd : public MP4FullBox {
  mandatory
  */
 class MP4BoxHdlr : public MP4FullBox {
+public:
+    MP4BoxHdlr(uint64_t size, uint32_t type) : MP4FullBox(size, type) {}
+    
+    uint64_t parseData(TT_SP(BitStream) bitStream) override;
+    
     TT_PROPERTY_DEF_READONLY(uint32_t, preDefined, 0);
     TT_PROPERTY_DEF_READONLY(uint32_t, handlerType, 0);
     
 private:
     int32_t reserved[3] = {0};
     
-    TT_PROPERTY_DEF_READONLY(std::string, name, nullptr);
+    TT_PROPERTY_DEF_READONLY_NOINIT(std::string, name);
 };
 
 /**
@@ -183,7 +238,8 @@ private:
  mandatory
  */
 class MP4BoxMinf : public MP4Box {
-    
+public:
+    MP4BoxMinf(uint64_t size, uint32_t type) : MP4Box(size, type, true) {}
 };
 
 /**
@@ -236,7 +292,8 @@ class MP4BoxNmhd : public MP4FullBox {
  mandatory
  */
 class MP4BoxDinf : public MP4Box {
-    
+public:
+    MP4BoxDinf(uint64_t size, uint32_t type) : MP4Box(size, type, true) {}
 };
 
 /**
@@ -261,6 +318,8 @@ class MP4BoxDref : public MP4Box {
  mandatory
  */
 class MP4BoxStbl : public MP4Box {
+public:
+    MP4BoxStbl(uint64_t size, uint32_t type) : MP4Box(size, type, true) {}
 };
 
 /**
@@ -270,8 +329,75 @@ class MP4BoxStbl : public MP4Box {
  mandatory
  */
 class MP4BoxStsd : public MP4FullBox {
+public:
+    MP4BoxStsd(uint64_t size, uint32_t type) : MP4FullBox(size, type) {}
+    
+    uint64_t parseData(TT_SP(BitStream) bitStream) override;
+    
     // is an integer that gives the number of entries in the following table
     TT_PROPERTY_DEF_READONLY(uint32_t, entryCount, 0);
+};
+
+class MP4BoxSampleEntry : public MP4Box {
+public:
+    MP4BoxSampleEntry(uint64_t size, uint32_t type) : MP4Box(size, type) {}
+    
+    uint64_t parseData(TT_SP(BitStream) bitStream) override;
+    
+    // const unsigned int(8)[6] reserved = 0;
+    TT_PROPERTY_DEF_READONLY_NOINIT(std::vector<uint8_t>, reserved);
+    
+    //  is an integer that contains the index of the data reference to use to retrieve
+    // data associated with samples that use this sample description. Data references are stored in Data
+    // Reference Boxes. The index ranges from 1 to the number of data references.
+    TT_PROPERTY_DEF_READONLY(uint16_t, dataReferenceIndex, 0);
+};
+
+class MP4BoxHintSampleEntry : public MP4BoxSampleEntry {
+public:
+    MP4BoxHintSampleEntry(uint64_t size, uint32_t type) : MP4BoxSampleEntry(size, type) {}
+    
+    uint64_t parseData(TT_SP(BitStream) bitStream) override;
+    
+    // unsigned int(8) data [];
+    TT_PROPERTY_DEF_READONLY_NOINIT(std::vector<uint8_t>, data);
+};
+
+class MP4BoxVisualSampleEntry : public MP4BoxSampleEntry {
+public:
+    MP4BoxVisualSampleEntry(uint64_t size, uint32_t type) : MP4BoxSampleEntry(size, type) {}
+    
+    uint64_t parseData(TT_SP(BitStream) bitStream) override;
+    
+    TT_PROPERTY_DEF_READONLY(uint16_t, preDefined1, 0);
+    TT_PROPERTY_DEF_READONLY(uint16_t, reserved1, 0);
+    // unsigned int(32)[3] pre_defined = 0;
+    TT_PROPERTY_DEF_READONLY_NOINIT(std::vector<uint32_t>, preDefined2);
+    TT_PROPERTY_DEF_READONLY(uint16_t, width, 0);
+    TT_PROPERTY_DEF_READONLY(uint16_t, height, 0);
+    TT_PROPERTY_DEF_READONLY(uint32_t, horizresolution, 0);
+    TT_PROPERTY_DEF_READONLY(uint32_t, vertresolution, 0);
+    TT_PROPERTY_DEF_READONLY(uint32_t, reserved2, 0);
+    TT_PROPERTY_DEF_READONLY(uint16_t, frameCount, 1);
+    // string[32] compressorname;
+    TT_PROPERTY_DEF_READONLY_NOINIT(std::string, compressorname);
+    TT_PROPERTY_DEF_READONLY(uint16_t, depth, 0);
+    TT_PROPERTY_DEF_READONLY(int16_t, preDefined3, -1);
+};
+
+class MP4BoxAudioSampleEntry : public MP4BoxSampleEntry {
+public:
+    MP4BoxAudioSampleEntry(uint64_t size, uint32_t type) : MP4BoxSampleEntry(size, type) {}
+    
+    uint64_t parseData(TT_SP(BitStream) bitStream) override;
+    
+    // const unsigned int(32)[2] reserved = 0;
+    TT_PROPERTY_DEF_READONLY_NOINIT(std::vector<uint32_t>, reserved1);
+    TT_PROPERTY_DEF_READONLY(uint16_t, channelcount, 2);
+    TT_PROPERTY_DEF_READONLY(uint16_t, samplesize, 16);
+    TT_PROPERTY_DEF_READONLY(uint16_t, preDefined, 0);
+    TT_PROPERTY_DEF_READONLY(uint16_t, reserved2, 0);
+    TT_PROPERTY_DEF_READONLY(uint32_t, samplerate, 0);
 };
 
 class MP4SttsEntry {
@@ -354,6 +480,8 @@ class MP4BoxStco : public MP4Box {
  not mandatory
  */
 class MP4BoxMvex : public MP4Box {
+public:
+    MP4BoxMvex(uint64_t size, uint32_t type) : MP4Box(size, type, true) {}
     
 };
 
@@ -371,7 +499,8 @@ class MP4BoxTrex : public MP4Box {
  not mandatory
  */
 class MP4BoxMoof : public MP4Box {
-    
+public:
+    MP4BoxMoof(uint64_t size, uint32_t type) : MP4Box(size, type, true) {}
 };
 
 /**
@@ -380,7 +509,8 @@ class MP4BoxMoof : public MP4Box {
  not mandatory
  */
 class MP4BoxTraf : public MP4Box {
-    
+public:
+    MP4BoxTraf(uint64_t size, uint32_t type) : MP4Box(size, type, true) {}
 };
 
 /**
@@ -397,7 +527,8 @@ class MP4BoxTfhd : public MP4Box {
  not mandatory
  */
 class MP4BoxMfra : public MP4Box {
-    
+public:
+    MP4BoxMfra(uint64_t size, uint32_t type) : MP4Box(size, type, true) {}
 };
 
 /**
@@ -414,7 +545,8 @@ class MP4BoxMfro : public MP4Box {
  not mandatory
  */
 class MP4BoxMeta : public MP4Box {
-    
+public:
+    MP4BoxMeta(uint64_t size, uint32_t type) : MP4Box(size, type, true) {}
 };
 
 
@@ -424,6 +556,30 @@ class MP4BoxMeta : public MP4Box {
  */
 class MP4BoxMdat : public MP4Box {
     
+};
+
+#pragma mark -- 14496-14
+
+
+#pragma mark -- 14496-15
+
+/**
+ 
+ */
+class MP4BoxAvc1 : public MP4BoxVisualSampleEntry {
+public:
+    MP4BoxAvc1(uint64_t size, uint32_t type) : MP4BoxVisualSampleEntry(size, type) {}
+    
+    uint64_t parseData(TT_SP(BitStream) bitStream) override;
+    
+    TT_PROPERTY_DEF_READONLY(TT_SP(MP4Box), avcc, nullptr);
+};
+
+class MP4BoxAvcC : public MP4Box {
+public:
+    MP4BoxAvcC(uint64_t size, uint32_t type) : MP4Box(size, type) {}
+    
+    uint64_t parseData(TT_SP(BitStream) bitStream) override;
 };
 
 }

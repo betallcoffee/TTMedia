@@ -12,13 +12,14 @@
 
 #include "TTMP4Parser.hpp"
 #include "TTMP4Private.h"
+#include "TTMP4BoxFactory.hpp"
 
 using namespace TT;
 
 MP4Parser::MP4Parser(TT_SP(BitStream) bitStream) :
  _bitStream(bitStream)
 {
-    
+
 }
 
 MP4Parser::~MP4Parser()
@@ -26,58 +27,52 @@ MP4Parser::~MP4Parser()
     
 }
 
-bool MP4Parser::parseBox()
+bool MP4Parser::parse()
 {
     if (_bitStream == nullptr || _bitStream->isEof()) {
+        this->setisEof(_bitStream->isEof());
         return false;
     }
     
-    char typeFourcc[5];
-    char uuid[16];
-    
-    uint32_t size = _bitStream->readUInt32();
-    uint32_t type = _bitStream->readUInt32();
-    
-    MP4Box::FourcToStr(type, typeFourcc, sizeof(typeFourcc));
-    LOG(INFO) << "type: " << typeFourcc << " size: " << size ;
-    
-    bool result = false;
-    result = createBox(size, type);
-    
-    if (false) {
-        result = _bitStream->skipSize(size - MP4Box::headSize());
-        LOG(INFO) << "skip result: " << result;
+    TT_SP(MP4Box) box = MP4BoxFactory::createBox(_bitStream);
+    if (box != nullptr) {
+        saveBox(box);
+        return true;
     }
     
-    return true;
+    return false;
 }
 
-bool MP4Parser::createBox(uint64_t size, uint32_t type)
+void MP4Parser::saveBox(TT_SP(MP4Box) box)
 {
-    switch (type) {
+    if (!this->boxs.empty()) {
+        // 非空，栈顶为 parent box
+        this->boxs.top()->addChildBox(box);
+    }
+    
+    if (box->isContainer()) {
+        this->boxs.push(box);
+    } else if (!this->boxs.empty() &&
+               this->boxs.top()->hasAllChildBoxs()) {
+        // 非空，栈顶为 parent box 且 sub box 已经添加结束，出栈
+        this->boxs.pop();
+    }
+    
+    switch (box->type()) {
         case MP4_BOX_TYPE_ftyp:
-            return createFtyp(size, type);
+            _ftyp = std::dynamic_pointer_cast<MP4BoxFtyp>(box);
             break;
         case MP4_BOX_TYPE_moov:
-            return createMoov(size, type);
+            _moov = std::dynamic_pointer_cast<MP4BoxMoov>(box);
+            break;
+        case MP4_BOX_TYPE_mdat:
+            _mdat = std::dynamic_pointer_cast<MP4BoxMdat>(box);
+            break;
+        case MP4_BOX_TYPE_meta:
+            _meta = std::dynamic_pointer_cast<MP4BoxMeta>(box);
             break;
         default:
             break;
     }
-    return false;
-}
-
-bool MP4Parser::createFtyp(uint64_t size, uint32_t type)
-{
-    _ftyp = TT_MK_SP(MP4BoxFtyp)(size, type);
-    _ftyp->parseData(_bitStream);
-    return true;
-}
-
-bool MP4Parser::createMoov(uint64_t size, uint32_t type)
-{
-    _moov = TT_MK_SP(MP4BoxMoov)(size, type);
-    _moov->parseData(_bitStream);
-    return true;
 }
 

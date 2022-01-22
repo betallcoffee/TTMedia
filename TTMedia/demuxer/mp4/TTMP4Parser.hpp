@@ -9,6 +9,7 @@
 #ifndef TTMP4Parser_hpp
 #define TTMP4Parser_hpp
 
+#include <stack>
 
 #include "TTDef.h"
 #include "TTBitStream.hpp"
@@ -24,19 +25,21 @@ public:
     MP4Parser(TT_SP(BitStream) bitStream);
     ~MP4Parser();
     
-    bool parseBox();
+    bool parse();
     
 private:
-    bool createBox(uint64_t size, uint32_t type);
-    bool createFtyp(uint64_t size, uint32_t type);
-    bool createMoov(uint64_t size, uint32_t type);
+    void saveBox(TT_SP(MP4Box) box);
     
+    TT_PROPERTY_DEF_READONLY(bool, isEof, false);
     TT_PROPERTY_DEF_READONLY(TT_SP(BitStream), bitStream, nullptr);
     
     TT_PROPERTY_DEF_READONLY(TT_SP(MP4BoxFtyp), ftyp, nullptr);
     TT_PROPERTY_DEF_READONLY(TT_SP(MP4BoxMoov), moov, nullptr);
     TT_PROPERTY_DEF_READONLY(TT_SP(MP4BoxMdat), mdat, nullptr);
     TT_PROPERTY_DEF_READONLY(TT_SP(MP4BoxMeta), meta, nullptr);
+    
+private:
+    std::stack<TT_SP(MP4Box)> boxs;
 };
 
 }
